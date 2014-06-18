@@ -15,7 +15,7 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniq
 import java.util.LinkedList;
 import java.util.List;
 
-/**
+/** Mockup comment
  * @author Jens Hildebrandt
  */
 public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm, RelationalInputParameterAlgorithm {
