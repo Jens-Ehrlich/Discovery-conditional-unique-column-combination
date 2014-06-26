@@ -41,7 +41,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm, Relat
         List<PositionListIndex> plis = pliBuilder.getPLIList();
         List<ColumnCondition> list = new LinkedList<ColumnCondition>();
         list.add(new ColumnCondition(new ColumnIdentifier(input.relationName(), input.columnNames().get(1)), "a", "b"));
-        resultReceiver.receiveResult(new ConditionalUniqueColumnCombination(new ColumnCombination(new ColumnIdentifier(input.relationName(), input.columnNames().get(0))), list));
+        resultReceiver.receiveResult(new ConditionalUniqueColumnCombination(new ColumnCombination(new ColumnIdentifier(input.relationName(), input.columnNames().get(0))), list.toArray(new ColumnCondition[list.size()])));
         //DuccAlgorithm duccAlgorithm = new DuccAlgorithm(input.relationName(), input.columnNames(), this.resultReceiver);
         //duccAlgorithm.run(plis);
     }
