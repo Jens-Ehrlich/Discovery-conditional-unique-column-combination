@@ -22,10 +22,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="dcucc" />
+        <module name="test_helper" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="dcucc" target="1.7" />
+      <module name="test_helper" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>
