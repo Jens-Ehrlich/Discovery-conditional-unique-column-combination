@@ -5,15 +5,14 @@ import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombin
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PLIBuilder;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInputGenerator;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.FunctionalDependencyResultReceiver;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.InclusionDependencyResultReceiver;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.UniqueColumnCombinationResultReceiver;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.*;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.results.FunctionalDependency;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.results.InclusionDependency;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.results.UniqueColumnCombination;
@@ -37,6 +36,7 @@ public class AlgorithmTestFixture {
     protected FunctionalDependencyResultReceiver functionalDependencyResultReceiver = mock(FunctionalDependencyResultReceiver.class);
     protected UniqueColumnCombinationResultReceiver uniqueColumnCombinationResultReceiver = mock(UniqueColumnCombinationResultReceiver.class);
     protected InclusionDependencyResultReceiver inclusionDependencyResultReceiver = mock(InclusionDependencyResultReceiver.class);
+    protected ConditionalUniqueColumnCombinationResultReceiver conditionalUniqueResultReceiver = mock(ConditionalUniqueColumnCombinationResultReceiver.class);
 
     public AlgorithmTestFixture() throws CouldNotReceiveResultException {
         table.add(ImmutableList.of("NF", "AL", "Tuesday", "09:00", "09:00", "A2", "150", "Monday"));
@@ -138,6 +138,10 @@ public class AlgorithmTestFixture {
 
     public InclusionDependencyResultReceiver getInclusionDependencyResultReceiver() {
         return this.inclusionDependencyResultReceiver;
+    }
+
+    public ConditionalUniqueColumnCombinationResultReceiver getConditionalUniqueResultReceiver() {
+        return this.conditionalUniqueResultReceiver;
     }
 
     public List<ColumnCombinationBitset> getUCCList() {
@@ -244,7 +248,7 @@ public class AlgorithmTestFixture {
         verifyNoMoreInteractions(inclusionDependencyResultReceiver);
     }
 
-    public void verifyFunctionalDependencyResultReceiverForFDMine() throws CouldNotReceiveResultException {
+    public void verifyConditionalUniqueColumnCombination() throws CouldNotReceiveResultException {
         ColumnIdentifier expectedIdentifierPROF = new ColumnIdentifier(this.relationName, this.columnNames.get(0));
         ColumnIdentifier expectedIdentifierCSE = new ColumnIdentifier(this.relationName, this.columnNames.get(1));
         ColumnIdentifier expectedIdentifierDAY = new ColumnIdentifier(this.relationName, this.columnNames.get(2));
@@ -254,48 +258,12 @@ public class AlgorithmTestFixture {
         ColumnIdentifier expectedIdentifierCAP = new ColumnIdentifier(this.relationName, this.columnNames.get(6));
         ColumnIdentifier expectedIdentifierID = new ColumnIdentifier(this.relationName, this.columnNames.get(7));
 
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierPROF), expectedIdentifierCSE));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierPROF), expectedIdentifierDAY));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierPROF), expectedIdentifierBEGIN));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierPROF), expectedIdentifierEND));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierPROF), expectedIdentifierROOM));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierPROF), expectedIdentifierCAP));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierPROF), expectedIdentifierID));
+        verify(conditionalUniqueResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(new ColumnCombination(expectedIdentifierROOM), new ColumnCondition(expectedIdentifierID, "Tuesday")));
+        verify(conditionalUniqueResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(new ColumnCombination(expectedIdentifierROOM), new ColumnCondition(expectedIdentifierID, "Wednesday")));
+        verify(conditionalUniqueResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(new ColumnCombination(expectedIdentifierROOM), new ColumnCondition(expectedIdentifierID, "Friday")));
+        verify(conditionalUniqueResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(new ColumnCombination(expectedIdentifierROOM), new ColumnCondition(expectedIdentifierDAY, "Tuesday")));
 
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierCSE), expectedIdentifierPROF));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierCSE), expectedIdentifierDAY));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierCSE), expectedIdentifierBEGIN));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierCSE), expectedIdentifierEND));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierCSE), expectedIdentifierROOM));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierCSE), expectedIdentifierCAP));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierCSE), expectedIdentifierID));
-
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierID), expectedIdentifierCAP));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierID), expectedIdentifierDAY));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierID), expectedIdentifierEND));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierID), expectedIdentifierBEGIN));
-
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierEND), expectedIdentifierBEGIN));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierEND), expectedIdentifierCAP));
-
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierROOM), expectedIdentifierCAP));
-
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierBEGIN, expectedIdentifierROOM), expectedIdentifierEND));
-
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierBEGIN, expectedIdentifierCAP), expectedIdentifierEND));
-
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierID, expectedIdentifierROOM), expectedIdentifierPROF));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierID, expectedIdentifierROOM), expectedIdentifierCSE));
-
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierDAY, expectedIdentifierEND), expectedIdentifierID));
-
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierDAY, expectedIdentifierBEGIN, expectedIdentifierROOM), expectedIdentifierCSE));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierDAY, expectedIdentifierBEGIN, expectedIdentifierROOM), expectedIdentifierPROF));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierDAY, expectedIdentifierBEGIN, expectedIdentifierROOM), expectedIdentifierID));
-
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierDAY, expectedIdentifierEND, expectedIdentifierROOM), expectedIdentifierCSE));
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierDAY, expectedIdentifierEND, expectedIdentifierROOM), expectedIdentifierPROF));
-
-        verify(functionalDependencyResultReceiver, atLeastOnce()).receiveResult(new FunctionalDependency(new ColumnCombination(expectedIdentifierDAY, expectedIdentifierBEGIN, expectedIdentifierCAP), expectedIdentifierID));
+        verify(conditionalUniqueResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(new ColumnCombination(expectedIdentifierROOM, expectedIdentifierBEGIN), new ColumnCondition(expectedIdentifierDAY, "Monday")));
+        verify(conditionalUniqueResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(new ColumnCombination(expectedIdentifierROOM, expectedIdentifierEND), new ColumnCondition(expectedIdentifierDAY, "Monday")));
     }
 }
