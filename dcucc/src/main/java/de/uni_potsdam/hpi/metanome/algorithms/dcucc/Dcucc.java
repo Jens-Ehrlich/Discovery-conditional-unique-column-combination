@@ -26,7 +26,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm, Relat
     protected static final String FREQUENCY_TAG = "frequency";
     protected static final String PERCENTAGE_TAG = "percentage";
 
-    protected int frequency = 1;
+    protected int frequency = -1;
     protected boolean percentage = false;
     protected List<PositionListIndex> basePLI;
 
@@ -49,14 +49,16 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm, Relat
     public void execute() throws AlgorithmExecutionException {
         RelationalInput input = calculateInput();
 
-        List<ColumnCondition> list = new LinkedList<ColumnCondition>();
-        list.add(new ColumnCondition(new ColumnIdentifier(input.relationName(), input.columnNames().get(1)), "a", "b"));
-        resultReceiver.receiveResult(new ConditionalUniqueColumnCombination(new ColumnCombination(new ColumnIdentifier(input.relationName(), input.columnNames().get(0))), list.toArray(new ColumnCondition[list.size()])));
+//        List<ColumnCondition> list = new LinkedList<ColumnCondition>();
+//        list.add(new ColumnCondition(new ColumnIdentifier(input.relationName(), input.columnNames().get(1)), "a", "b"));
+//        resultReceiver.receiveResult(new ConditionalUniqueColumnCombination(new ColumnCombination(new ColumnIdentifier(input.relationName(), input.columnNames().get(0))), list.toArray(new ColumnCondition[list.size()])));
         //DuccAlgorithm duccAlgorithm = new DuccAlgorithm(input.relationName(), input.columnNames(), this.resultReceiver);
         //duccAlgorithm.run(plis);
+
+
     }
 
-    protected RelationalInput calculateInput() throws InputGenerationException, InputIterationException {
+    protected RelationalInput calculateInput() throws InputGenerationException, InputIterationException, AlgorithmConfigurationException {
         RelationalInput input;
         input = inputGenerator.generateNewCopy();
         PLIBuilder pliBuilder = new PLIBuilder(input);
@@ -65,6 +67,9 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm, Relat
         if (percentage) {
             frequency = (int) Math.ceil(numberOfTuples*frequency*1.0d/100);
         }
+        if (frequency < 0)
+            throw new AlgorithmConfigurationException();
+
         return input;
     }
 
