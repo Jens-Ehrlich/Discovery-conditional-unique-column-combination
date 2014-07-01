@@ -2,18 +2,21 @@ package de.uni_potsdam.hpi.metanome.algorithms.dcucc;
 
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PLIBuilder;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.*;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmConfigurationException;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.BooleanParameterAlgorithm;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.ConditionalUniqueColumnCombinationAlgorithm;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.IntegerParameterAlgorithm;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.RelationalInputParameterAlgorithm;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.configuration.*;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.configuration.ConfigurationSpecification;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.configuration.ConfigurationSpecificationBoolean;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.configuration.ConfigurationSpecificationCsvFile;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.configuration.ConfigurationSpecificationInteger;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInputGenerator;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +30,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm, Relat
     protected static final String PERCENTAGE_TAG = "percentage";
 
     protected int frequency = -1;
+    protected int numberOfTuples = -1;
     protected boolean percentage = false;
     protected List<PositionListIndex> basePLI;
 
@@ -63,7 +67,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm, Relat
         input = inputGenerator.generateNewCopy();
         PLIBuilder pliBuilder = new PLIBuilder(input);
         basePLI = pliBuilder.getPLIList();
-        int numberOfTuples = (int) pliBuilder.getNumberOfTuples();
+        numberOfTuples = (int) pliBuilder.getNumberOfTuples();
         if (percentage) {
             frequency = (int) Math.ceil(numberOfTuples*frequency*1.0d/100);
         }
