@@ -15,7 +15,7 @@
   </properties>
   
   <modules>
-	<module>test_helper</module>
-	<module>dcucc</module>
+      <module>dcucc_test_helper</module>
+      <module>dcucc</module>
   </modules>
 </project>
