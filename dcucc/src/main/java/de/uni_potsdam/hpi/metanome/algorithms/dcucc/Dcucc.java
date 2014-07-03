@@ -1,30 +1,52 @@
 package de.uni_potsdam.hpi.metanome.algorithms.dcucc;
 
+import com.google.common.collect.ImmutableList;
+
+import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PLIBuilder;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmConfigurationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionException;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.BooleanParameterAlgorithm;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.ConditionalUniqueColumnCombinationAlgorithm;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.FileInputParameterAlgorithm;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.IntegerParameterAlgorithm;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.RelationalInputParameterAlgorithm;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.configuration.ConfigurationSpecification;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.configuration.ConfigurationSpecificationBoolean;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.configuration.ConfigurationSpecificationCsvFile;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.configuration.ConfigurationSpecificationInteger;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.input.FileInputGenerator;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInputGenerator;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.OmniscientResultReceiver;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.UniqueColumnCombinationResultReceiver;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.results.BasicStatistic;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.results.FunctionalDependency;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.results.InclusionDependency;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.results.UniqueColumnCombination;
+import de.uni_potsdam.hpi.metanome.algorithms.ducc.DuccAlgorithm;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /** Mockup comment
  * @author Jens Hildebrandt
  */
-public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm, RelationalInputParameterAlgorithm, IntegerParameterAlgorithm, BooleanParameterAlgorithm{
+public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
+                              FileInputParameterAlgorithm,
+                              RelationalInputParameterAlgorithm,
+                              IntegerParameterAlgorithm,
+                              BooleanParameterAlgorithm {
     protected static final String INPUT_FILE_TAG = "csvIterator";
     protected static final String FREQUENCY_TAG = "frequency";
     protected static final String PERCENTAGE_TAG = "percentage";
@@ -33,6 +55,10 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm, Relat
     protected int numberOfTuples = -1;
     protected boolean percentage = false;
     protected List<PositionListIndex> basePLI;
+
+  protected ImmutableList<ColumnCombinationBitset> uccs;
+  protected ImmutableList<ColumnCombinationBitset> partialUccs;
+  protected Map<ColumnCombinationBitset, PositionListIndex> pliMap;
 
     protected RelationalInputGenerator inputGenerator;
     protected ConditionalUniqueColumnCombinationResultReceiver resultReceiver;
@@ -53,14 +79,54 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm, Relat
     public void execute() throws AlgorithmExecutionException {
         RelationalInput input = calculateInput();
 
-//        List<ColumnCondition> list = new LinkedList<ColumnCondition>();
-//        list.add(new ColumnCondition(new ColumnIdentifier(input.relationName(), input.columnNames().get(1)), "a", "b"));
-//        resultReceiver.receiveResult(new ConditionalUniqueColumnCombination(new ColumnCombination(new ColumnIdentifier(input.relationName(), input.columnNames().get(0))), list.toArray(new ColumnCondition[list.size()])));
-        //DuccAlgorithm duccAlgorithm = new DuccAlgorithm(input.relationName(), input.columnNames(), this.resultReceiver);
-        //duccAlgorithm.run(plis);
+      UniqueColumnCombinationResultReceiver dummyReceiver = createDummyResultReceiver();
 
+//        DuccAlgorithm UCCAlgorithm = new DuccAlgorithm(input.relationName(), input.columnNames(), dummyReceiver);
+//        UCCAlgorithm.run(this.basePLI);
+//        this.uccs = UCCAlgorithm.getMinimalUniqueColumnCombinations();
 
+      DuccAlgorithm
+          partialUCCalgorithm =
+          new DuccAlgorithm(input.relationName(), input.columnNames(), dummyReceiver);
+      partialUCCalgorithm.setRawKeyError(this.numberOfTuples - this.frequency);
+      partialUCCalgorithm.run(this.basePLI);
+      this.partialUccs = partialUCCalgorithm.getMinimalUniqueColumnCombinations();
+      this.pliMap = partialUCCalgorithm.getCalculatedPlis();
+
+      //this.calculateConditionalUniques();
+
+      ConditionalUniqueColumnCombination cu = new ConditionalUniqueColumnCombination(
+          new ColumnCombination(
+              new ColumnIdentifier(input.relationName(), input.columnNames().get(0))),
+          new ColumnCondition(
+              new ColumnIdentifier(input.relationName(), input.columnNames().get(0)),
+              "hello world"),
+          new ColumnCondition(
+              new ColumnIdentifier(input.relationName(), input.columnNames().get(0)),
+              "foo bar"));
+      if (this.resultReceiver == null) {
+        System.out.println("receiver was null");
+      } else {
+        this.resultReceiver.receiveResult(cu);
+      }
     }
+
+  protected void calculateConditionalUniques() {
+    List<ColumnCombinationBitset> firstLevel = this.calculateFirstLevel();
+
+
+  }
+
+  protected List<ColumnCombinationBitset> calculateFirstLevel() {
+    List<ColumnCombinationBitset> firstLevel = new LinkedList<>();
+    for (ColumnCombinationBitset columnCombination : this.partialUccs) {
+      if (this.pliMap.get(columnCombination).isUnique()) {
+        continue;
+      }
+      firstLevel.add(columnCombination);
+    }
+    return firstLevel;
+  }
 
     protected RelationalInput calculateInput() throws InputGenerationException, InputIterationException, AlgorithmConfigurationException {
         RelationalInput input;
@@ -85,13 +151,27 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm, Relat
     }
 
     @Override
-    public void setRelationalInputConfigurationValue(String identifier, RelationalInputGenerator... values) throws AlgorithmConfigurationException {
+    public void setFileInputConfigurationValue(String identifier, FileInputGenerator... values)
+        throws AlgorithmConfigurationException {
         if (identifier.equals(INPUT_FILE_TAG)) {
             inputGenerator = values[0];
         } else {
             throw new AlgorithmConfigurationException("Operation should not be called");
         }
     }
+
+
+  @Override
+  public void setRelationalInputConfigurationValue(String identifier,
+                                                   RelationalInputGenerator... values)
+      throws AlgorithmConfigurationException {
+    if (identifier.equals(INPUT_FILE_TAG)) {
+      inputGenerator = values[0];
+    } else {
+      throw new AlgorithmConfigurationException("Operation should not be called");
+    }
+
+  }
 
     @Override
     public void setBooleanConfigurationValue(String identifier, boolean... values) throws AlgorithmConfigurationException {
@@ -110,5 +190,39 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm, Relat
             throw new AlgorithmConfigurationException("Operation should not be called");
         }
     }
+
+  protected UniqueColumnCombinationResultReceiver createDummyResultReceiver() {
+    return new OmniscientResultReceiver() {
+      @Override
+      public void receiveResult(BasicStatistic statistic) throws CouldNotReceiveResultException {
+
+      }
+
+      @Override
+      public void receiveResult(
+          ConditionalUniqueColumnCombination conditionalUniqueColumnCombination)
+          throws CouldNotReceiveResultException {
+
+      }
+
+      @Override
+      public void receiveResult(FunctionalDependency functionalDependency)
+          throws CouldNotReceiveResultException {
+
+      }
+
+      @Override
+      public void receiveResult(InclusionDependency inclusionDependency)
+          throws CouldNotReceiveResultException {
+
+      }
+
+      @Override
+      public void receiveResult(UniqueColumnCombination uniqueColumnCombination)
+          throws CouldNotReceiveResultException {
+
+      }
+    };
+  }
 }
 
