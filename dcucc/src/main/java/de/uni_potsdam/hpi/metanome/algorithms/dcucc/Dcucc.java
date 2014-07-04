@@ -39,7 +39,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/** Mockup comment
+/**
+ * Mockup comment
+ *
  * @author Jens Hildebrandt
  */
 public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
@@ -47,66 +49,73 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
                               RelationalInputParameterAlgorithm,
                               IntegerParameterAlgorithm,
                               BooleanParameterAlgorithm {
-    protected static final String INPUT_FILE_TAG = "csvIterator";
-    protected static final String FREQUENCY_TAG = "frequency";
-    protected static final String PERCENTAGE_TAG = "percentage";
 
-    protected int frequency = -1;
-    protected int numberOfTuples = -1;
-    protected boolean percentage = false;
-    protected List<PositionListIndex> basePLI;
+  protected static final String INPUT_FILE_TAG = "csvIterator";
+  protected static final String FREQUENCY_TAG = "frequency";
+  protected static final String PERCENTAGE_TAG = "percentage";
+
+  protected int frequency = -1;
+  protected int numberOfTuples = -1;
+  protected boolean percentage = false;
+  protected List<PositionListIndex> basePLI;
 
   protected ImmutableList<ColumnCombinationBitset> uccs;
   protected ImmutableList<ColumnCombinationBitset> partialUccs;
   protected Map<ColumnCombinationBitset, PositionListIndex> pliMap;
 
-    protected RelationalInputGenerator inputGenerator;
-    protected ConditionalUniqueColumnCombinationResultReceiver resultReceiver;
+  protected RelationalInputGenerator inputGenerator;
+  protected ConditionalUniqueColumnCombinationResultReceiver resultReceiver;
 
-    @Override
-    public List<ConfigurationSpecification> getConfigurationRequirements() {
-        LinkedList<ConfigurationSpecification> spec = new LinkedList<>();
-        ConfigurationSpecificationCsvFile csvFile = new ConfigurationSpecificationCsvFile(INPUT_FILE_TAG);
-        spec.add(csvFile);
-        ConfigurationSpecificationInteger frequency = new ConfigurationSpecificationInteger(FREQUENCY_TAG);
-        spec.add(frequency);
-        ConfigurationSpecificationBoolean percentage = new ConfigurationSpecificationBoolean(PERCENTAGE_TAG);
-        spec.add(percentage);
-        return spec;
-    }
+  @Override
+  public List<ConfigurationSpecification> getConfigurationRequirements() {
+    LinkedList<ConfigurationSpecification> spec = new LinkedList<>();
+    ConfigurationSpecificationCsvFile
+        csvFile =
+        new ConfigurationSpecificationCsvFile(INPUT_FILE_TAG);
+    spec.add(csvFile);
+    ConfigurationSpecificationInteger
+        frequency =
+        new ConfigurationSpecificationInteger(FREQUENCY_TAG);
+    spec.add(frequency);
+    ConfigurationSpecificationBoolean
+        percentage =
+        new ConfigurationSpecificationBoolean(PERCENTAGE_TAG);
+    spec.add(percentage);
+    return spec;
+  }
 
-    @Override
-    public void execute() throws AlgorithmExecutionException {
-        RelationalInput input = calculateInput();
+  @Override
+  public void execute() throws AlgorithmExecutionException {
+    RelationalInput input = calculateInput();
 
-      UniqueColumnCombinationResultReceiver dummyReceiver = createDummyResultReceiver();
+    UniqueColumnCombinationResultReceiver dummyReceiver = createDummyResultReceiver();
 
 //        DuccAlgorithm UCCAlgorithm = new DuccAlgorithm(input.relationName(), input.columnNames(), dummyReceiver);
 //        UCCAlgorithm.run(this.basePLI);
 //        this.uccs = UCCAlgorithm.getMinimalUniqueColumnCombinations();
 
-      DuccAlgorithm
-          partialUCCalgorithm =
-          new DuccAlgorithm(input.relationName(), input.columnNames(), dummyReceiver);
-      partialUCCalgorithm.setRawKeyError(this.numberOfTuples - this.frequency);
-      partialUCCalgorithm.run(this.basePLI);
-      this.partialUccs = partialUCCalgorithm.getMinimalUniqueColumnCombinations();
-      this.pliMap = partialUCCalgorithm.getCalculatedPlis();
+    DuccAlgorithm
+        partialUCCalgorithm =
+        new DuccAlgorithm(input.relationName(), input.columnNames(), dummyReceiver);
+    partialUCCalgorithm.setRawKeyError(this.numberOfTuples - this.frequency);
+    partialUCCalgorithm.run(this.basePLI);
+    this.partialUccs = partialUCCalgorithm.getMinimalUniqueColumnCombinations();
+    this.pliMap = partialUCCalgorithm.getCalculatedPlis();
 
-      //this.calculateConditionalUniques();
+    //this.calculateConditionalUniques();
 
-      ConditionalUniqueColumnCombination cu = new ConditionalUniqueColumnCombination(
-          new ColumnCombination(
-              new ColumnIdentifier(input.relationName(), input.columnNames().get(0))),
-          new ColumnCondition(
-              new ColumnIdentifier(input.relationName(), input.columnNames().get(0)),
-              "hello world"),
-          new ColumnCondition(
-              new ColumnIdentifier(input.relationName(), input.columnNames().get(0)),
-              "foo bar"));
+    ConditionalUniqueColumnCombination cu = new ConditionalUniqueColumnCombination(
+        new ColumnCombination(
+            new ColumnIdentifier(input.relationName(), input.columnNames().get(0))),
+        new ColumnCondition(
+            new ColumnIdentifier(input.relationName(), input.columnNames().get(0)),
+            "hello world"),
+        new ColumnCondition(
+            new ColumnIdentifier(input.relationName(), input.columnNames().get(0)),
+            "foo bar"));
 
-      this.resultReceiver.receiveResult(cu);
-    }
+    this.resultReceiver.receiveResult(cu);
+  }
 
   protected void calculateConditionalUniques() {
     List<ColumnCombinationBitset> firstLevel = this.calculateFirstLevel();
@@ -125,37 +134,39 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     return firstLevel;
   }
 
-    protected RelationalInput calculateInput() throws InputGenerationException, InputIterationException, AlgorithmConfigurationException {
-        RelationalInput input;
-        input = inputGenerator.generateNewCopy();
-        PLIBuilder pliBuilder = new PLIBuilder(input);
-        basePLI = pliBuilder.getPLIList();
-        numberOfTuples = (int) pliBuilder.getNumberOfTuples();
-        if (percentage) {
-            frequency = (int) Math.ceil(numberOfTuples*frequency*1.0d/100);
-        }
-        if (frequency < 0)
-            throw new AlgorithmConfigurationException();
-
-        return input;
+  protected RelationalInput calculateInput()
+      throws InputGenerationException, InputIterationException, AlgorithmConfigurationException {
+    RelationalInput input;
+    input = inputGenerator.generateNewCopy();
+    PLIBuilder pliBuilder = new PLIBuilder(input);
+    basePLI = pliBuilder.getPLIList();
+    numberOfTuples = (int) pliBuilder.getNumberOfTuples();
+    if (percentage) {
+      frequency = (int) Math.ceil(numberOfTuples * frequency * 1.0d / 100);
+    }
+    if (frequency < 0) {
+      throw new AlgorithmConfigurationException();
     }
 
+    return input;
+  }
 
-    @Override
-    public void setResultReceiver(ConditionalUniqueColumnCombinationResultReceiver resultReceiver) {
-        this.resultReceiver = resultReceiver;
 
+  @Override
+  public void setResultReceiver(ConditionalUniqueColumnCombinationResultReceiver resultReceiver) {
+    this.resultReceiver = resultReceiver;
+
+  }
+
+  @Override
+  public void setFileInputConfigurationValue(String identifier, FileInputGenerator... values)
+      throws AlgorithmConfigurationException {
+    if (identifier.equals(INPUT_FILE_TAG)) {
+      inputGenerator = values[0];
+    } else {
+      throw new AlgorithmConfigurationException("Operation should not be called");
     }
-
-    @Override
-    public void setFileInputConfigurationValue(String identifier, FileInputGenerator... values)
-        throws AlgorithmConfigurationException {
-        if (identifier.equals(INPUT_FILE_TAG)) {
-            inputGenerator = values[0];
-        } else {
-            throw new AlgorithmConfigurationException("Operation should not be called");
-        }
-    }
+  }
 
 
   @Override
@@ -170,23 +181,25 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
   }
 
-    @Override
-    public void setBooleanConfigurationValue(String identifier, boolean... values) throws AlgorithmConfigurationException {
-        if (identifier.equals(PERCENTAGE_TAG)) {
-            this.percentage = values[0];
-        } else {
-            throw new AlgorithmConfigurationException("Operation should not be called");
-        }
+  @Override
+  public void setBooleanConfigurationValue(String identifier, boolean... values)
+      throws AlgorithmConfigurationException {
+    if (identifier.equals(PERCENTAGE_TAG)) {
+      this.percentage = values[0];
+    } else {
+      throw new AlgorithmConfigurationException("Operation should not be called");
     }
+  }
 
-    @Override
-    public void setIntegerConfigurationValue(String identifier, int... values) throws AlgorithmConfigurationException {
-        if (identifier.equals(FREQUENCY_TAG)) {
-            this.frequency = values[0];
-        } else {
-            throw new AlgorithmConfigurationException("Operation should not be called");
-        }
+  @Override
+  public void setIntegerConfigurationValue(String identifier, int... values)
+      throws AlgorithmConfigurationException {
+    if (identifier.equals(FREQUENCY_TAG)) {
+      this.frequency = values[0];
+    } else {
+      throw new AlgorithmConfigurationException("Operation should not be called");
     }
+  }
 
   protected UniqueColumnCombinationResultReceiver createDummyResultReceiver() {
     return new OmniscientResultReceiver() {

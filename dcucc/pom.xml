@@ -98,7 +98,8 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Algorithm-Bootstrap-Class>de.uni_potsdam.hpi.metanome.algorithms.dcucc.Dcucc
+                            <Algorithm-Bootstrap-Class>
+                                de.uni_potsdam.hpi.metanome.algorithms.dcucc.Dcucc
                             </Algorithm-Bootstrap-Class>
                         </manifestEntries>
                     </archive>
