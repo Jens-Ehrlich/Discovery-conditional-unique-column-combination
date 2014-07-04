@@ -104,11 +104,8 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
           new ColumnCondition(
               new ColumnIdentifier(input.relationName(), input.columnNames().get(0)),
               "foo bar"));
-      if (this.resultReceiver == null) {
-        System.out.println("receiver was null");
-      } else {
-        this.resultReceiver.receiveResult(cu);
-      }
+
+      this.resultReceiver.receiveResult(cu);
     }
 
   protected void calculateConditionalUniques() {
