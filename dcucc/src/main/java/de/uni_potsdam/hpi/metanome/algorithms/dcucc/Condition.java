@@ -1,6 +1,7 @@
 package de.uni_potsdam.hpi.metanome.algorithms.dcucc;
 
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
@@ -37,7 +38,8 @@ public class Condition {
     for (ColumnCombinationBitset conditionColumn : this.conditions.keySet()) {
       if (conditionColumn.size() != 1) {
         //TODO throw better Exception
-        throw new Exception();
+        throw new AlgorithmExecutionException(
+            "only a single column was expected for a conditional, but multiple were found");
       }
 
       List<String> conditionValues = new LinkedList<>();

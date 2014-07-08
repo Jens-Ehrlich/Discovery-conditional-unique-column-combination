@@ -113,23 +113,59 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     this.calculateConditionalUniques();
   }
 
-
-  protected void calculateConditionalUniques() {
-    List<ColumnCombinationBitset> firstLevel = this.calculateFirstLevel();
-    for (ColumnCombinationBitset partialUnique : firstLevel) {
-      for (ColumnCombinationBitset conditionColumn : this.baseColumn) {
-        //check which conditions hold
-        List<LongArrayList>
-            conditions =
-            ConditionalPositionListIndex.calculateConditionUnique(this.pliMap.get(partialUnique),
-                                                                  this.pliMap.get(conditionColumn));
-        for (LongArrayList condition : conditions) {
-          if (condition.size() >= this.frequency) {
-            addConditionToResult(partialUnique, conditionColumn, condition);
+  protected void calculateConditionalUniques() throws AlgorithmExecutionException {
+    List<ColumnCombinationBitset> currentLevel = this.calculateFirstLevel();
+    while (!currentLevel.isEmpty()) {
+      for (ColumnCombinationBitset partialUnique : currentLevel) {
+        for (ColumnCombinationBitset conditionColumn : this.baseColumn) {
+          //check which conditions hold
+          List<LongArrayList>
+              conditions =
+              ConditionalPositionListIndex.calculateConditionUnique(this.getPLI(partialUnique),
+                                                                    this.getPLI
+                                                                        (conditionColumn));
+          for (LongArrayList condition : conditions) {
+            if (condition.size() >= this.frequency) {
+              addConditionToResult(partialUnique, conditionColumn, condition);
+            }
           }
         }
       }
+      currentLevel = calculateNextLevel(currentLevel);
     }
+  }
+
+  protected List<ColumnCombinationBitset> calculateNextLevel(
+      List<ColumnCombinationBitset> previousLevel) {
+    return new LinkedList<>();
+  }
+
+  protected PositionListIndex getPLI(ColumnCombinationBitset bitset)
+      throws AlgorithmExecutionException {
+    PositionListIndex pli = this.pliMap.get(bitset);
+    if (null == pli) {
+      //the one of the previous plis always exist
+      ColumnCombinationBitset previous = null;
+      for (ColumnCombinationBitset previousCandidate : bitset
+          .getNSubsetColumnCombinations(bitset.size() - 1)) {
+        if (this.pliMap.containsKey(previousCandidate)) {
+          previous = previousCandidate;
+          break;
+        }
+      }
+
+      if (previous == null) {
+        //TODO throw better Exception
+        throw new AlgorithmExecutionException("An expected PLI was not found in the hashmap");
+      }
+
+      PositionListIndex previousPLI = this.pliMap.get(previous);
+      PositionListIndex missingColumn = this.pliMap.get(bitset.minus(previous));
+
+      pli = previousPLI.intersect(missingColumn);
+      this.pliMap.put(bitset, pli);
+    }
+    return pli;
   }
 
   protected void addConditionToResult(ColumnCombinationBitset partialUnique,
