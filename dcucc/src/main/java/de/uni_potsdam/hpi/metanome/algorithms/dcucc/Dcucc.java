@@ -7,9 +7,6 @@ import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PLIBuilder;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmConfigurationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionException;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.BooleanParameterAlgorithm;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.ConditionalUniqueColumnCombinationAlgorithm;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.FileInputParameterAlgorithm;
@@ -102,19 +99,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     this.partialUccs = partialUCCalgorithm.getMinimalUniqueColumnCombinations();
     this.pliMap = partialUCCalgorithm.getCalculatedPlis();
 
-    //this.calculateConditionalUniques();
-
-    ConditionalUniqueColumnCombination cu = new ConditionalUniqueColumnCombination(
-        new ColumnCombination(
-            new ColumnIdentifier(input.relationName(), input.columnNames().get(0))),
-        new ColumnCondition(
-            new ColumnIdentifier(input.relationName(), input.columnNames().get(0)),
-            "hello world"),
-        new ColumnCondition(
-            new ColumnIdentifier(input.relationName(), input.columnNames().get(0)),
-            "foo bar"));
-
-    this.resultReceiver.receiveResult(cu);
+    this.calculateConditionalUniques();
   }
 
   protected void calculateConditionalUniques() {
