@@ -32,6 +32,10 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.results.InclusionDepend
 import de.uni_potsdam.hpi.metanome.algorithm_integration.results.UniqueColumnCombination;
 import de.uni_potsdam.hpi.metanome.algorithms.ducc.DuccAlgorithm;
 
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -55,13 +59,19 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   protected int numberOfTuples = -1;
   protected boolean percentage = false;
   protected List<PositionListIndex> basePLI;
+  protected List<ColumnCombinationBitset> baseColumn;
 
   protected ImmutableList<ColumnCombinationBitset> uccs;
   protected ImmutableList<ColumnCombinationBitset> partialUccs;
   protected Map<ColumnCombinationBitset, PositionListIndex> pliMap;
+  protected List<Condition> foundConditions;
 
   protected RelationalInputGenerator inputGenerator;
   protected ConditionalUniqueColumnCombinationResultReceiver resultReceiver;
+
+  public Dcucc() {
+    this.foundConditions = new ArrayList<>();
+  }
 
   @Override
   public List<ConfigurationSpecification> getConfigurationRequirements() {
@@ -83,7 +93,8 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
   @Override
   public void execute() throws AlgorithmExecutionException {
-    RelationalInput input = calculateInput();
+    RelationalInput input = this.calculateInput();
+    this.createBaseColumns(input);
 
     UniqueColumnCombinationResultReceiver dummyReceiver = createDummyResultReceiver();
 
@@ -102,10 +113,33 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     this.calculateConditionalUniques();
   }
 
+
   protected void calculateConditionalUniques() {
     List<ColumnCombinationBitset> firstLevel = this.calculateFirstLevel();
+    for (ColumnCombinationBitset partialUnique : firstLevel) {
+      for (ColumnCombinationBitset conditionColumn : this.baseColumn) {
+        //check which conditions hold
+        List<LongArrayList>
+            conditions =
+            ConditionalPositionListIndex.calculateConditionUnique(this.pliMap.get(partialUnique),
+                                                                  this.pliMap.get(conditionColumn));
+        for (LongArrayList condition : conditions) {
+          if (condition.size() >= this.frequency) {
+            addConditonToResult(partialUnique, conditionColumn, condition);
+          }
+        }
+      }
+    }
+  }
 
-
+  protected void addConditonToResult(ColumnCombinationBitset partialUnique,
+                                     ColumnCombinationBitset conditionColumn,
+                                     LongArrayList condition) {
+    Map<ColumnCombinationBitset, LongArrayList> conditionMap = new HashMap<>();
+    for (ColumnCombinationBitset oneColumn : conditionColumn.getContainedOneColumnCombinations()) {
+      conditionMap.put(oneColumn, condition);
+    }
+    this.foundConditions.add(new Condition(partialUnique, conditionMap));
   }
 
   protected List<ColumnCombinationBitset> calculateFirstLevel() {
@@ -134,6 +168,13 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     }
 
     return input;
+  }
+
+  protected void createBaseColumns(RelationalInput input) {
+    this.baseColumn = new ArrayList<>();
+    for (int i = 0; i < input.numberOfColumns(); i++) {
+      this.baseColumn.add(new ColumnCombinationBitset(i));
+    }
   }
 
 
