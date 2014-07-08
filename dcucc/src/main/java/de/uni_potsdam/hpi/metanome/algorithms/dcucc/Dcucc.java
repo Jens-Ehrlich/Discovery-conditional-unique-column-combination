@@ -155,7 +155,6 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
       }
 
       if (previous == null) {
-        //TODO throw better Exception
         throw new AlgorithmExecutionException("An expected PLI was not found in the hashmap");
       }
 

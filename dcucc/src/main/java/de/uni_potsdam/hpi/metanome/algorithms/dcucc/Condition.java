@@ -37,7 +37,6 @@ public class Condition {
     List<ColumnCondition> conditions = new LinkedList<>();
     for (ColumnCombinationBitset conditionColumn : this.conditions.keySet()) {
       if (conditionColumn.size() != 1) {
-        //TODO throw better Exception
         throw new AlgorithmExecutionException(
             "only a single column was expected for a conditional, but multiple were found");
       }
