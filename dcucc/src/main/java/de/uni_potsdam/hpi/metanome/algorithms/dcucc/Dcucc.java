@@ -125,16 +125,16 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
                                                                   this.pliMap.get(conditionColumn));
         for (LongArrayList condition : conditions) {
           if (condition.size() >= this.frequency) {
-            addConditonToResult(partialUnique, conditionColumn, condition);
+            addConditionToResult(partialUnique, conditionColumn, condition);
           }
         }
       }
     }
   }
 
-  protected void addConditonToResult(ColumnCombinationBitset partialUnique,
-                                     ColumnCombinationBitset conditionColumn,
-                                     LongArrayList condition) {
+  protected void addConditionToResult(ColumnCombinationBitset partialUnique,
+                                      ColumnCombinationBitset conditionColumn,
+                                      LongArrayList condition) {
     Map<ColumnCombinationBitset, LongArrayList> conditionMap = new HashMap<>();
     for (ColumnCombinationBitset oneColumn : conditionColumn.getContainedOneColumnCombinations()) {
       conditionMap.put(oneColumn, condition);
