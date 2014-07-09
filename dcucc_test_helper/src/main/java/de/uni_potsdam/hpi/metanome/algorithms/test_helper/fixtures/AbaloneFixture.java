@@ -108,7 +108,6 @@ public class AbaloneFixture {
         URLDecoder.decode(
             Thread.currentThread().getContextClassLoader().getResource(relationName).getPath(),
             "utf-8");
-    System.out.println(pathToInputFile);
 
     RelationalInputGenerator inputGenerator = new CsvFileGenerator(new File(pathToInputFile));
     return inputGenerator;
