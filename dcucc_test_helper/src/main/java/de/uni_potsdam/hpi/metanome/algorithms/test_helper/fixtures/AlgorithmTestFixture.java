@@ -45,6 +45,7 @@ public class AlgorithmTestFixture {
   protected int numberOfColumns = 8;
   protected int rowPosition;
   protected String relationName = "testTable";
+  protected RelationalInput input;
   protected List<ImmutableList<String>> table = new LinkedList<>();
   protected FunctionalDependencyResultReceiver
       functionalDependencyResultReceiver =
@@ -121,9 +122,14 @@ public class AlgorithmTestFixture {
   public RelationalInputGenerator getInputGenerator()
       throws InputGenerationException, InputIterationException {
     RelationalInputGenerator inputGenerator = mock(RelationalInputGenerator.class);
-    RelationalInput input = this.getRelationalInput();
+    this.input = this.getRelationalInput();
     when(inputGenerator.generateNewCopy())
-        .thenReturn(input);
+        .thenAnswer(new Answer<RelationalInput>() {
+          public RelationalInput answer(InvocationOnMock invocation) throws Throwable {
+            rowPosition = 0;
+            return input;
+          }
+        });
     return inputGenerator;
   }
 
@@ -413,7 +419,7 @@ public class AlgorithmTestFixture {
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
                                                new ColumnCondition(end, "09:00", "14:00")));
     verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(end, room),
+        new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
                                                new ColumnCondition(begin, "09:00")));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(begin, cap, day),

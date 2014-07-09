@@ -46,7 +46,7 @@ public class DcuccTest {
     algorithm.execute();
 
     //verify result
-    //fixture.verifyConditionalUniqueColumnCombination();
+    fixture.verifyConditionalUniqueColumnCombination();
   }
 
   @Test

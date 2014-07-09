@@ -13,10 +13,15 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniq
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,8 +63,22 @@ public class ConditionTest {
     ConditionalUniqueColumnCombination
         excpectedConditionalUnique =
         new ConditionalUniqueColumnCombination(partialUniqueCombination, condition1, condition2);
+
+    List<Map<Long, String>> inputMap = new ArrayList();
+    HashMap<Long, String> mockMap = mock(HashMap.class);
+    when(mockMap.get(isA(Long.class))).thenAnswer(new Answer<String>() {
+      @Override
+      public String answer(InvocationOnMock invocation) throws Throwable {
+        return invocation.getArguments()[0].toString();
+      }
+    });
+    for (int i = 0; i < 8; i++) {
+      inputMap.add(mockMap);
+    }
+
+
     //Execute functionality
-    actualCondition.addToResultReceiver(resultReceiver, input);
+    actualCondition.addToResultReceiver(resultReceiver, input, inputMap);
     //Check result
     verify(resultReceiver).receiveResult(excpectedConditionalUnique);
   }

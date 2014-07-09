@@ -111,6 +111,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     this.pliMap = partialUCCalgorithm.getCalculatedPlis();
 
     this.calculateConditionalUniques();
+    this.returnResult();
   }
 
   protected void calculateConditionalUniques() throws AlgorithmExecutionException {
@@ -137,7 +138,29 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
   protected List<ColumnCombinationBitset> calculateNextLevel(
       List<ColumnCombinationBitset> previousLevel) {
-    return new LinkedList<>();
+    List<ColumnCombinationBitset> nextLevel = new LinkedList<>();
+
+    return nextLevel;
+  }
+
+  protected void returnResult() throws AlgorithmExecutionException {
+    RelationalInput input = this.inputGenerator.generateNewCopy();
+    List<Map<Long, String>> inputMap = new ArrayList<>(input.numberOfColumns());
+    for (int i = 0; i < input.numberOfColumns(); i++) {
+      inputMap.add(new HashMap<Long, String>());
+    }
+    long row = 0;
+    while (input.hasNext()) {
+      ImmutableList<String> values = input.next();
+      for (int i = 0; i < input.numberOfColumns(); i++) {
+        inputMap.get(i).put(row, values.get(i));
+      }
+      row++;
+    }
+
+    for (Condition condition : this.foundConditions) {
+      condition.addToResultReceiver(this.resultReceiver, input, inputMap);
+    }
   }
 
   protected PositionListIndex getPLI(ColumnCombinationBitset bitset)

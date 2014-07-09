@@ -29,7 +29,8 @@ public class Condition {
   }
 
   public void addToResultReceiver(ConditionalUniqueColumnCombinationResultReceiver receiver,
-                                  RelationalInput input) throws AlgorithmExecutionException {
+                                  RelationalInput input, List<Map<Long, String>> valuesMap)
+      throws AlgorithmExecutionException {
 
     //build condition
     List<ColumnCondition> conditions = new LinkedList<>();
@@ -42,7 +43,7 @@ public class Condition {
       List<String> conditionValues = new LinkedList<>();
       for (Long index : this.conditions.get(conditionColumn)) {
         //TODO add correct strings
-        conditionValues.add(index.toString());
+        conditionValues.add(valuesMap.get(conditionColumn.getSetBits().get(0)).get(index));
       }
       ColumnCondition
           condition =
