@@ -30,6 +30,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -68,14 +70,6 @@ public class AlgorithmTestFixture {
 
     this.rowPosition = 0;
 
-//		table.add(ImmutableList.of("NF", "AL", "Tuesday", "09:00", "11:00", "A2", "150", "1"));
-//		table.add(ImmutableList.of("DM", "NW", "Friday", "09:00", "11:00", "A2", "150", "2"));
-//		table.add(ImmutableList.of("ML", "OS", "Monday", "09:00", "12:00", "I10", "30", "3"));
-//		table.add(ImmutableList.of("NN", "PL", "Monday", "14:00", "17:00", "I10", "30", "4"));
-//		table.add(ImmutableList.of("AH", "DB", "Monday", "09:00", "12:00", "I11", "30", "3"));
-//		table.add(ImmutableList.of("RC", "SI", "Tuesday", "09:00", "12:00", "I10", "30", "5"));
-//		table.add(ImmutableList.of("KL", "OR", "Tuesday", "09:00", "12:00", "I12", "30", "5"));	
-
     // TODO remove debugging
 //		doAnswer(new Answer() {
 //			public Object answer(InvocationOnMock invocation) {
@@ -100,7 +94,17 @@ public class AlgorithmTestFixture {
 //				return null;
 //			}
 //		}).when(uccResultReceiver).receiveResult(isA(UniqueColumnCombination.class));
+
+    doAnswer(new Answer() {
+      public Object answer(InvocationOnMock invocation) {
+        Object[] args = invocation.getArguments();
+        System.out.println(args[0]);
+        return null;
+      }
+    }).when(conditionalUniqueResultReceiver)
+        .receiveResult(isA(ConditionalUniqueColumnCombination.class));
   }
+
 
   public static Map<ColumnCombinationBitset, PositionListIndex> getPlis(RelationalInput input)
       throws InputIterationException {
@@ -383,52 +387,37 @@ public class AlgorithmTestFixture {
 
   public void verifyConditionalUniqueColumnCombination() throws CouldNotReceiveResultException {
     ColumnIdentifier
-        expectedIdentifierPROF =
-        new ColumnIdentifier(this.relationName, this.columnNames.get(0));
+        prof = new ColumnIdentifier(this.relationName, this.columnNames.get(0));
     ColumnIdentifier
-        expectedIdentifierCSE =
-        new ColumnIdentifier(this.relationName, this.columnNames.get(1));
+        cse = new ColumnIdentifier(this.relationName, this.columnNames.get(1));
     ColumnIdentifier
-        expectedIdentifierDAY =
-        new ColumnIdentifier(this.relationName, this.columnNames.get(2));
+        day = new ColumnIdentifier(this.relationName, this.columnNames.get(2));
     ColumnIdentifier
-        expectedIdentifierBEGIN =
-        new ColumnIdentifier(this.relationName, this.columnNames.get(3));
+        begin = new ColumnIdentifier(this.relationName, this.columnNames.get(3));
     ColumnIdentifier
-        expectedIdentifierEND =
-        new ColumnIdentifier(this.relationName, this.columnNames.get(4));
+        end = new ColumnIdentifier(this.relationName, this.columnNames.get(4));
     ColumnIdentifier
-        expectedIdentifierROOM =
-        new ColumnIdentifier(this.relationName, this.columnNames.get(5));
+        room = new ColumnIdentifier(this.relationName, this.columnNames.get(5));
     ColumnIdentifier
-        expectedIdentifierCAP =
-        new ColumnIdentifier(this.relationName, this.columnNames.get(6));
+        cap = new ColumnIdentifier(this.relationName, this.columnNames.get(6));
     ColumnIdentifier
-        expectedIdentifierID =
-        new ColumnIdentifier(this.relationName, this.columnNames.get(7));
+        id = new ColumnIdentifier(this.relationName, this.columnNames.get(7));
 
     verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(expectedIdentifierROOM),
-                                               new ColumnCondition(expectedIdentifierID,
-                                                                   "Tuesday")));
+        new ConditionalUniqueColumnCombination(new ColumnCombination(id),
+                                               new ColumnCondition(room, "A2", "I10")));
     verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(expectedIdentifierROOM),
-                                               new ColumnCondition(expectedIdentifierID,
-                                                                   "Wednesday")));
+        new ConditionalUniqueColumnCombination(new ColumnCombination(day, end),
+                                               new ColumnCondition(room, "A2", "I10")));
     verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(expectedIdentifierROOM),
-                                               new ColumnCondition(expectedIdentifierID,
-                                                                   "Friday")));
+        new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
+                                               new ColumnCondition(end, "09:00", "14:00")));
     verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(expectedIdentifierROOM),
-                                               new ColumnCondition(expectedIdentifierDAY,
-                                                                   "Tuesday")));
+        new ConditionalUniqueColumnCombination(new ColumnCombination(end, room),
+                                               new ColumnCondition(begin, "09:00")));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(begin, cap, day),
+                                               new ColumnCondition(room, "A2", "I10")));
 
-    verify(conditionalUniqueResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
-        new ColumnCombination(expectedIdentifierROOM, expectedIdentifierBEGIN),
-        new ColumnCondition(expectedIdentifierDAY, "Monday")));
-    verify(conditionalUniqueResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
-        new ColumnCombination(expectedIdentifierROOM, expectedIdentifierEND),
-        new ColumnCondition(expectedIdentifierDAY, "Monday")));
   }
 }
