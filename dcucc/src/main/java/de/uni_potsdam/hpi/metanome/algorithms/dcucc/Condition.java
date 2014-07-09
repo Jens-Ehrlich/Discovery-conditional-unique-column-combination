@@ -2,7 +2,6 @@ package de.uni_potsdam.hpi.metanome.algorithms.dcucc;
 
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionException;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
@@ -30,8 +29,7 @@ public class Condition {
   }
 
   public void addToResultReceiver(ConditionalUniqueColumnCombinationResultReceiver receiver,
-                                  RelationalInput input)
-      throws Exception {
+                                  RelationalInput input) throws AlgorithmExecutionException {
 
     //build condition
     List<ColumnCondition> conditions = new LinkedList<>();
@@ -53,19 +51,10 @@ public class Condition {
       conditions.add(condition);
     }
 
-    //build partial ColumnCombination
-    List<ColumnIdentifier> partialColumnCombination = new LinkedList<>();
-    for (int columnIndex : this.partialUnique.getSetBits()) {
-      partialColumnCombination
-          .add(new ColumnIdentifier(input.relationName(), input.columnNames().get(columnIndex)));
-    }
-
     ConditionalUniqueColumnCombination
         conditionalUniqueColumnCombination =
-        new ConditionalUniqueColumnCombination(new ColumnCombination(partialColumnCombination
-                                                                         .toArray(
-                                                                             new ColumnIdentifier[partialColumnCombination
-                                                                                 .size()])),
+        new ConditionalUniqueColumnCombination(
+            this.partialUnique.createColumnCombination(input.relationName(), input.columnNames()),
                                                conditions);
 
     receiver.receiveResult(conditionalUniqueColumnCombination);
