@@ -116,6 +116,10 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     while (!currentLevel.isEmpty()) {
       for (ColumnCombinationBitset partialUnique : currentLevel) {
         for (ColumnCombinationBitset conditionColumn : this.baseColumn) {
+          //TODO better way to prune this columns
+          if (partialUnique.containsColumn(conditionColumn.getSetBits().get(0))) {
+            continue;
+          }
           //check which conditions hold
           List<LongArrayList>
               conditions =
@@ -148,7 +152,6 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
         continue;
       } else {
         PositionListIndex nextLevelPLI = this.getPLI(nextLevelBitset);
-        //FIXME add FD pruning
         if (nextLevelPLI.isUnique()) {
           this.upperPruningGraph.add(nextLevelBitset);
         } else {
