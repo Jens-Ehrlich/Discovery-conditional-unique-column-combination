@@ -5,6 +5,8 @@ import com.google.common.collect.ImmutableList;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PLIBuilder;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
+import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.SubSetGraph;
+import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.SuperSetGraph;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmConfigurationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.BooleanParameterAlgorithm;
@@ -36,9 +38,11 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Mockup comment
@@ -57,6 +61,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
   protected int frequency = -1;
   protected int numberOfTuples = -1;
+  protected int numberOfColumns = -1;
   protected boolean percentage = false;
   protected List<PositionListIndex> basePLI;
   protected List<ColumnCombinationBitset> baseColumn;
@@ -66,29 +71,14 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   protected Map<ColumnCombinationBitset, PositionListIndex> pliMap;
   protected List<Condition> foundConditions;
 
+  protected SuperSetGraph lowerPruningGraph;
+  protected SubSetGraph upperPruningGraph;
+
   protected RelationalInputGenerator inputGenerator;
   protected ConditionalUniqueColumnCombinationResultReceiver resultReceiver;
 
   public Dcucc() {
     this.foundConditions = new ArrayList<>();
-  }
-
-  @Override
-  public List<ConfigurationSpecification> getConfigurationRequirements() {
-    LinkedList<ConfigurationSpecification> spec = new LinkedList<>();
-    ConfigurationSpecificationCsvFile
-        csvFile =
-        new ConfigurationSpecificationCsvFile(INPUT_FILE_TAG);
-    spec.add(csvFile);
-    ConfigurationSpecificationInteger
-        frequency =
-        new ConfigurationSpecificationInteger(FREQUENCY_TAG);
-    spec.add(frequency);
-    ConfigurationSpecificationBoolean
-        percentage =
-        new ConfigurationSpecificationBoolean(PERCENTAGE_TAG);
-    spec.add(percentage);
-    return spec;
   }
 
   @Override
@@ -109,9 +99,16 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     partialUCCalgorithm.run(this.basePLI);
     this.partialUccs = partialUCCalgorithm.getMinimalUniqueColumnCombinations();
     this.pliMap = partialUCCalgorithm.getCalculatedPlis();
-
+    this.preparePruningGraphs();
     this.calculateConditionalUniques();
     this.returnResult();
+  }
+
+  protected void preparePruningGraphs() {
+    this.lowerPruningGraph = new SuperSetGraph(this.numberOfColumns);
+    this.upperPruningGraph = new SubSetGraph();
+
+    this.lowerPruningGraph.addAll(this.partialUccs);
   }
 
   protected void calculateConditionalUniques() throws AlgorithmExecutionException {
@@ -137,10 +134,37 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   }
 
   protected List<ColumnCombinationBitset> calculateNextLevel(
-      List<ColumnCombinationBitset> previousLevel) {
+      List<ColumnCombinationBitset> previousLevel) throws AlgorithmExecutionException {
     List<ColumnCombinationBitset> nextLevel = new LinkedList<>();
+    Set<ColumnCombinationBitset> unprunedNexLevel = new HashSet<>();
+    for (ColumnCombinationBitset currentColumnCombination : previousLevel) {
+      calculateAllParents(currentColumnCombination, unprunedNexLevel);
+    }
 
+    for (ColumnCombinationBitset nextLevelBitset : unprunedNexLevel) {
+      if ((this.lowerPruningGraph.containsSuperset(nextLevelBitset)) || (this.upperPruningGraph
+                                                                             .containsSubset(
+                                                                                 nextLevelBitset))) {
+        continue;
+      } else {
+        PositionListIndex nextLevelPLI = this.getPLI(nextLevelBitset);
+        //FIXME add FD pruning
+        if (nextLevelPLI.isUnique()) {
+          this.upperPruningGraph.add(nextLevelBitset);
+        } else {
+          this.lowerPruningGraph.add(nextLevelBitset);
+          nextLevel.add(nextLevelBitset);
+        }
+      }
+    }
     return nextLevel;
+  }
+
+  protected void calculateAllParents(ColumnCombinationBitset child,
+                                     Set<ColumnCombinationBitset> set) {
+    for (int newColumn : child.getClearedBits(this.numberOfColumns)) {
+      set.add(new ColumnCombinationBitset(child).addColumn(newColumn));
+    }
   }
 
   protected void returnResult() throws AlgorithmExecutionException {
@@ -218,6 +242,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     PLIBuilder pliBuilder = new PLIBuilder(input);
     basePLI = pliBuilder.getPLIList();
     numberOfTuples = (int) pliBuilder.getNumberOfTuples();
+    numberOfColumns = input.numberOfColumns();
     if (percentage) {
       frequency = (int) Math.ceil(numberOfTuples * frequency * 1.0d / 100);
     }
@@ -317,6 +342,24 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
       }
     };
+  }
+
+  @Override
+  public List<ConfigurationSpecification> getConfigurationRequirements() {
+    LinkedList<ConfigurationSpecification> spec = new LinkedList<>();
+    ConfigurationSpecificationCsvFile
+        csvFile =
+        new ConfigurationSpecificationCsvFile(INPUT_FILE_TAG);
+    spec.add(csvFile);
+    ConfigurationSpecificationInteger
+        frequency =
+        new ConfigurationSpecificationInteger(FREQUENCY_TAG);
+    spec.add(frequency);
+    ConfigurationSpecificationBoolean
+        percentage =
+        new ConfigurationSpecificationBoolean(PERCENTAGE_TAG);
+    spec.add(percentage);
+    return spec;
   }
 }
 
