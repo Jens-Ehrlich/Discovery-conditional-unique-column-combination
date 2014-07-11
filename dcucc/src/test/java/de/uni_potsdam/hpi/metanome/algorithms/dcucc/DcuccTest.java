@@ -8,9 +8,11 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.Conditi
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
 import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.AbaloneFixture;
 import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.AlgorithmTestFixture;
+import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.BridgesFixture;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -34,7 +36,7 @@ public class DcuccTest {
   }
 
   @Test
-  public void testAlgorithmFixtureExecute() throws Exception {
+  public void testAlgorithmFixtureExecute4() throws Exception {
     //Setup
     AlgorithmTestFixture fixture = new AlgorithmTestFixture();
     algorithm
@@ -47,6 +49,56 @@ public class DcuccTest {
 
     //verify result
     fixture.verifyConditionalUniqueColumnCombination();
+  }
+
+  @Test
+  public void testAlgorithmFixtureExecute0() throws Exception {
+    //Setup
+    AlgorithmTestFixture fixture = new AlgorithmTestFixture();
+    algorithm
+        .setRelationalInputConfigurationValue(Dcucc.INPUT_FILE_TAG, fixture.getInputGenerator());
+    algorithm.setResultReceiver(fixture.getConditionalUniqueResultReceiver());
+    algorithm.setBooleanConfigurationValue(Dcucc.PERCENTAGE_TAG, false);
+    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 2);
+    //Execute
+    algorithm.execute();
+
+    //verify result
+    //fixture.verifyConditionalUniqueColumnCombination();
+  }
+
+  @Test
+  @Ignore
+  public void testAbaloneFixtureExecute() throws Exception {
+    //Setup
+    AbaloneFixture fixture = new AbaloneFixture();
+    algorithm
+        .setRelationalInputConfigurationValue(Dcucc.INPUT_FILE_TAG, fixture.getInputGenerator());
+    algorithm.setResultReceiver(fixture.getCUCCResultReceiver());
+    algorithm.setBooleanConfigurationValue(Dcucc.PERCENTAGE_TAG, true);
+    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 80);
+    //Execute
+    algorithm.execute();
+
+    //verify result
+    //fixture.verifyConditionalUniqueColumnCombination();
+  }
+
+  @Test
+  @Ignore
+  public void testBridgesFixtureExecute() throws Exception {
+    //Setup
+    BridgesFixture fixture = new BridgesFixture();
+    algorithm
+        .setRelationalInputConfigurationValue(Dcucc.INPUT_FILE_TAG, fixture.getInputGenerator());
+    algorithm.setResultReceiver(fixture.getCUCCResultReceiver());
+    algorithm.setBooleanConfigurationValue(Dcucc.PERCENTAGE_TAG, true);
+    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 80);
+    //Execute
+    algorithm.execute();
+
+    //verify result
+    //fixture.verifyConditionalUniqueColumnCombination();
   }
 
   @Test
