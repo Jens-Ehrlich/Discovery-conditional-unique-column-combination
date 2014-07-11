@@ -152,12 +152,29 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
         if (nextLevelPLI.isUnique()) {
           this.upperPruningGraph.add(nextLevelBitset);
         } else {
+          if (!this.checkForFD(nextLevelBitset)) {
+            nextLevel.add(nextLevelBitset);
+          }
           this.lowerPruningGraph.add(nextLevelBitset);
-          nextLevel.add(nextLevelBitset);
         }
       }
     }
     return nextLevel;
+  }
+
+  protected boolean checkForFD(ColumnCombinationBitset bitset) {
+    for (ColumnCombinationBitset possibleChild : bitset
+        .getNSubsetColumnCombinations(bitset.getSetBits().size() - 1)) {
+      if (this.pliMap.containsKey(possibleChild)) {
+        if (this.pliMap.get(possibleChild).getRawKeyError() == this.pliMap.get(bitset)
+            .getRawKeyError()) {
+          //FD found
+          this.upperPruningGraph.add(bitset);
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   protected void calculateAllParents(ColumnCombinationBitset child,
