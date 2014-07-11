@@ -32,7 +32,7 @@ public class DcuccTest {
 
   @After
   public void tearDown() throws Exception {
-
+    algorithm = null;
   }
 
   @Test
@@ -48,11 +48,11 @@ public class DcuccTest {
     algorithm.execute();
 
     //verify result
-    fixture.verifyConditionalUniqueColumnCombination();
+    fixture.verifyConditionalUniqueColumnCombinationFor4();
   }
 
   @Test
-  public void testAlgorithmFixtureExecute0() throws Exception {
+  public void testAlgorithmFixtureExecute2() throws Exception {
     //Setup
     AlgorithmTestFixture fixture = new AlgorithmTestFixture();
     algorithm
@@ -64,7 +64,7 @@ public class DcuccTest {
     algorithm.execute();
 
     //verify result
-    //fixture.verifyConditionalUniqueColumnCombination();
+    fixture.verifyConditionalUniqueColumnCombinationFor2();
   }
 
   @Test
@@ -81,7 +81,7 @@ public class DcuccTest {
     algorithm.execute();
 
     //verify result
-    //fixture.verifyConditionalUniqueColumnCombination();
+    //fixture.verifyConditionalUniqueColumnCombinationFor4();
   }
 
   @Test
@@ -98,7 +98,7 @@ public class DcuccTest {
     algorithm.execute();
 
     //verify result
-    //fixture.verifyConditionalUniqueColumnCombination();
+    //fixture.verifyConditionalUniqueColumnCombinationFor4();
   }
 
   @Test

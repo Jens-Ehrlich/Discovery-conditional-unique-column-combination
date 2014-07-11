@@ -33,6 +33,7 @@ import java.util.Map;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -391,7 +392,7 @@ public class AlgorithmTestFixture {
     verifyNoMoreInteractions(inclusionDependencyResultReceiver);
   }
 
-  public void verifyConditionalUniqueColumnCombination() throws CouldNotReceiveResultException {
+  public void verifyConditionalUniqueColumnCombinationFor4() throws CouldNotReceiveResultException {
     ColumnIdentifier
         prof = new ColumnIdentifier(this.relationName, this.columnNames.get(0));
     ColumnIdentifier
@@ -423,6 +424,30 @@ public class AlgorithmTestFixture {
                                                new ColumnCondition(begin, "09:00")));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(begin, cap, day),
+                                               new ColumnCondition(room, "A2", "I10")));
+
+  }
+
+  public void verifyConditionalUniqueColumnCombinationFor2() throws CouldNotReceiveResultException {
+    ColumnIdentifier
+        prof = new ColumnIdentifier(this.relationName, this.columnNames.get(0));
+    ColumnIdentifier
+        cse = new ColumnIdentifier(this.relationName, this.columnNames.get(1));
+    ColumnIdentifier
+        day = new ColumnIdentifier(this.relationName, this.columnNames.get(2));
+    ColumnIdentifier
+        begin = new ColumnIdentifier(this.relationName, this.columnNames.get(3));
+    ColumnIdentifier
+        end = new ColumnIdentifier(this.relationName, this.columnNames.get(4));
+    ColumnIdentifier
+        room = new ColumnIdentifier(this.relationName, this.columnNames.get(5));
+    ColumnIdentifier
+        cap = new ColumnIdentifier(this.relationName, this.columnNames.get(6));
+    ColumnIdentifier
+        id = new ColumnIdentifier(this.relationName, this.columnNames.get(7));
+    //TODO use isA or any()
+    verify(conditionalUniqueResultReceiver, never()).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(begin, cap, day, end),
                                                new ColumnCondition(room, "A2", "I10")));
 
   }
