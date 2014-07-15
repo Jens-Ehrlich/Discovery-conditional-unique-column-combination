@@ -83,9 +83,12 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
   @Override
   public void execute() throws AlgorithmExecutionException {
+    long start = System.nanoTime();
     RelationalInput input = this.calculateInput();
     this.createBaseColumns(input);
+    System.out.println("Build plis: " + ((System.nanoTime() - start) / 1000000));
 
+    start = System.nanoTime();
     UniqueColumnCombinationResultReceiver dummyReceiver = createDummyResultReceiver();
 
 //        DuccAlgorithm UCCAlgorithm = new DuccAlgorithm(input.relationName(), input.columnNames(), dummyReceiver);
@@ -99,9 +102,17 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     partialUCCalgorithm.run(this.basePLI);
     this.partialUccs = partialUCCalgorithm.getMinimalUniqueColumnCombinations();
     this.pliMap = partialUCCalgorithm.getCalculatedPlis();
+    System.out.println("Calculate partial uniques: " + ((System.nanoTime() - start) / 1000000));
+    start = System.nanoTime();
     this.preparePruningGraphs();
+    System.out.println("Prepare pruning graphs: " + ((System.nanoTime() - start) / 1000000));
+    start = System.nanoTime();
     this.calculateConditionalUniques();
+    System.out
+        .println("Calculated conditional uniques: " + ((System.nanoTime() - start) / 1000000));
+    start = System.nanoTime();
     this.returnResult();
+    System.out.println("return results: " + ((System.nanoTime() - start) / 1000000));
   }
 
   protected void preparePruningGraphs() {
