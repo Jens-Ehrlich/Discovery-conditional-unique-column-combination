@@ -51,7 +51,7 @@ public class DcuccTest {
   }
 
   @Test
-  public void testAlgorithmFixtureExecute2() throws Exception {
+  public void testAlgorithmFixtureExecute3() throws Exception {
     //Setup
     AlgorithmTestFixture fixture = new AlgorithmTestFixture();
     algorithm
