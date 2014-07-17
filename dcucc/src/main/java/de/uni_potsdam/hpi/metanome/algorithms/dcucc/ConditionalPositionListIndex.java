@@ -5,8 +5,6 @@ import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionList
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,67 +29,28 @@ public class ConditionalPositionListIndex extends PositionListIndex {
    * for the condition. Only on of the condition holds at a time (xor).
    */
   public static List<LongArrayList> calculateConditionUnique(PositionListIndex partialUnique,
-                                                             PositionListIndex PLICondition) {
-    ConditionTask firstTask = new ConditionTask(0);
-    LinkedList<ConditionTask> queue = new LinkedList<>();
-    queue.add(firstTask);
+                                                             PositionListIndex PLICondition,
+                                                             int frequency) {
+    List<LongArrayList> result = new LinkedList<>();
     Long2LongOpenHashMap uniqueHashMap = partialUnique.asHashMap();
-    List<LongArrayList> result = new ArrayList<>();
-
-    discardCurrentTask:
-    while (!queue.isEmpty()) {
-      ConditionTask currentTask = queue.remove();
-      if (currentTask.clusterIndex >= PLICondition.getClusters().size()) {
-        //task is finished, add to result
-        result.add(currentTask.containedRows);
-
-      } else {
-        ConditionTask
-            nextTask =
-            new ConditionTask(currentTask.clusterIndex + 1, currentTask.containedClusters,
-                              currentTask.containedRows);
-        queue.add(nextTask);
-
-        for (long clusterItem : PLICondition.getClusters().get(currentTask.clusterIndex)) {
-          if (!uniqueHashMap.containsKey(clusterItem)) {
-            // no cluster exists, way to go
-            continue;
-          }
-
-          long clusterID = uniqueHashMap.get(clusterItem);
-
-          if (currentTask.containedClusters.contains(clusterID)) {
-            continue discardCurrentTask;
+    LongArrayList touchedClusters = new LongArrayList();
+    nextCluster:
+    for (LongArrayList cluster : PLICondition.getClusters()) {
+      if (cluster.size() < frequency) {
+        continue;
+      }
+      touchedClusters.clear();
+      for (long rowNumber : cluster) {
+        if (uniqueHashMap.containsKey(rowNumber)) {
+          if (touchedClusters.contains(uniqueHashMap.get(rowNumber))) {
+            continue nextCluster;
           } else {
-            currentTask.containedClusters.add(clusterID);
+            touchedClusters.add(uniqueHashMap.get(rowNumber));
           }
         }
-        //still here - added a cluster and spawn an additional task
-        currentTask.containedRows.addAll(PLICondition.getClusters().get(currentTask.clusterIndex));
-        ConditionTask
-            nextTask2 =
-            new ConditionTask(currentTask.clusterIndex + 1, currentTask.containedClusters,
-                              currentTask.containedRows);
-        queue.add(nextTask2);
       }
-
+      result.add(cluster);
     }
-    //clean result
-    Iterator<LongArrayList> iterator = result.iterator();
-    while (iterator.hasNext()) {
-      LongArrayList currentList = iterator.next();
-      boolean isSubset = false;
-      for (LongArrayList list : result) {
-        if (list.containsAll(currentList) && (!list.equals(currentList))) {
-          isSubset = true;
-          break;
-        }
-      }
-      if (isSubset) {
-        iterator.remove();
-      }
-    }
-
     return result;
   }
 }

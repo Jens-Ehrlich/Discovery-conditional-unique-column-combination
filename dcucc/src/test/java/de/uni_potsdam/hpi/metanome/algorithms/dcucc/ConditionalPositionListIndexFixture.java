@@ -24,6 +24,10 @@ public class ConditionalPositionListIndexFixture {
     return new PositionListIndex(clusters);
   }
 
+  public int getFrequency() {
+    return 3;
+  }
+
   public PositionListIndex getConditionPLIForConditionTest() {
     List<LongArrayList> clusters = new ArrayList<>();
     long[] cluster1 = {2, 3, 7};
@@ -38,8 +42,8 @@ public class ConditionalPositionListIndexFixture {
 
   public List<LongArrayList> getExpectedConditions() {
     List<LongArrayList> conditions = new ArrayList<>();
-    long[] condition1 = {2, 3, 7, 4, 5};
-    long[] condition2 = {2, 3, 7, 6, 9, 10};
+    long[] condition1 = {2, 3, 7};
+    long[] condition2 = {6, 9, 10};
     conditions.add(new LongArrayList(condition1));
     conditions.add(new LongArrayList(condition2));
 

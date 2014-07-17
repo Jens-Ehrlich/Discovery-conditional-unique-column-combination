@@ -12,7 +12,6 @@ import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.BridgesFixtur
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -59,16 +58,16 @@ public class DcuccTest {
         .setRelationalInputConfigurationValue(Dcucc.INPUT_FILE_TAG, fixture.getInputGenerator());
     algorithm.setResultReceiver(fixture.getConditionalUniqueResultReceiver());
     algorithm.setBooleanConfigurationValue(Dcucc.PERCENTAGE_TAG, false);
-    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 2);
+    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 3);
     //Execute
     algorithm.execute();
 
     //verify result
-    fixture.verifyConditionalUniqueColumnCombinationFor2();
+    fixture.verifyConditionalUniqueColumnCombinationFor3();
   }
 
   @Test
-  @Ignore
+
   public void testAbaloneFixtureExecute() throws Exception {
     //Setup
     AbaloneFixture fixture = new AbaloneFixture();
@@ -76,7 +75,7 @@ public class DcuccTest {
         .setRelationalInputConfigurationValue(Dcucc.INPUT_FILE_TAG, fixture.getInputGenerator());
     algorithm.setResultReceiver(fixture.getCUCCResultReceiver());
     algorithm.setBooleanConfigurationValue(Dcucc.PERCENTAGE_TAG, true);
-    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 80);
+    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 30);
     //Execute
     algorithm.execute();
 
@@ -85,7 +84,7 @@ public class DcuccTest {
   }
 
   @Test
-  @Ignore
+
   public void testBridgesFixtureExecute() throws Exception {
     //Setup
     BridgesFixture fixture = new BridgesFixture();
@@ -93,7 +92,7 @@ public class DcuccTest {
         .setRelationalInputConfigurationValue(Dcucc.INPUT_FILE_TAG, fixture.getInputGenerator());
     algorithm.setResultReceiver(fixture.getCUCCResultReceiver());
     algorithm.setBooleanConfigurationValue(Dcucc.PERCENTAGE_TAG, true);
-    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 80);
+    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 30);
     //Execute
     algorithm.execute();
 

@@ -27,7 +27,8 @@ public class ConditionalPositionListIndexTest {
     //Execute functionality
     List<LongArrayList>
         actualConditions =
-        ConditionalPositionListIndex.calculateConditionUnique(uniquePLI, conditionPLI);
+        ConditionalPositionListIndex
+            .calculateConditionUnique(uniquePLI, conditionPLI, fixture.getFrequency());
     //Check result
     assertThat(actualConditions,
                IsIterableContainingInAnyOrder.containsInAnyOrder(
