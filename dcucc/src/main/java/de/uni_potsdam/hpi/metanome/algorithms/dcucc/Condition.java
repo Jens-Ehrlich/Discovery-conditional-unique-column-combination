@@ -28,6 +28,7 @@ public class Condition {
     this.conditions = conditions;
   }
 
+
   public void addToResultReceiver(ConditionalUniqueColumnCombinationResultReceiver receiver,
                                   RelationalInput input, List<Map<Long, String>> valuesMap)
       throws AlgorithmExecutionException {
@@ -59,6 +60,35 @@ public class Condition {
                                                conditions);
 
     receiver.receiveResult(conditionalUniqueColumnCombination);
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    Condition condition = (Condition) o;
+
+    if (!conditions.equals(condition.conditions)) {
+      return false;
+    }
+    if (!partialUnique.equals(condition.partialUnique)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = partialUnique.hashCode();
+    result = 31 * result + conditions.hashCode();
+    return result;
   }
 
 }
