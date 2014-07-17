@@ -250,18 +250,22 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
   protected void addConditionToResult(ColumnCombinationBitset partialUnique,
                                       ColumnCombinationBitset conditionColumn,
-                                      LongArrayList condition) {
+                                      LongArrayList conditionArray) {
     Map<ColumnCombinationBitset, LongArrayList> conditionMap = new HashMap<>();
     for (ColumnCombinationBitset oneColumn : conditionColumn.getContainedOneColumnCombinations()) {
-      conditionMap.put(oneColumn, condition);
+      conditionMap.put(oneColumn, conditionArray);
     }
+    Condition condition = new Condition(partialUnique, conditionMap);
+
     for (ColumnCombinationBitset subset : this.conditionMinimalityGraph
         .getExistingSubsets(partialUnique)) {
-      if (this.foundConditions.contains(new Condition(subset, conditionMap))) {
+      condition.partialUnique = subset;
+      if (this.foundConditions.contains(condition)) {
         return;
       }
     }
-    this.foundConditions.add(new Condition(partialUnique, conditionMap));
+    condition.partialUnique = partialUnique;
+    this.foundConditions.add(condition);
   }
 
   protected List<ColumnCombinationBitset> calculateFirstLevel() {
