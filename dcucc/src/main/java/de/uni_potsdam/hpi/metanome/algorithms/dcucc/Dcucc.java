@@ -49,6 +49,12 @@ import java.util.Set;
  *
  * @author Jens Hildebrandt
  */
+
+
+/*TODO:
+add use calculate not condition
+adjust condition and result to return found not conditions
+traverse condition lattice*/
 public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
                               FileInputParameterAlgorithm,
                               RelationalInputParameterAlgorithm,

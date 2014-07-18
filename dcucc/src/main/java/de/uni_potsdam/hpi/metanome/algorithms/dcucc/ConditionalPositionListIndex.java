@@ -58,12 +58,23 @@ public class ConditionalPositionListIndex extends PositionListIndex {
                                                            PositionListIndex PLIcondition,
                                                            int frequency, int numberOfTuples) {
     List<LongArrayList> result = new LinkedList<>();
-
+    int clusterSize = numberOfTuples - frequency;
     outer:
     for (LongArrayList cluster : PLIcondition.getClusters()) {
+      if (cluster.size() >= clusterSize) {
+        continue;
+      }
       for (LongArrayList uniqueCluster : partialUnique.getClusters()) {
-        if (!cluster.containsAll(uniqueCluster)) {
-          continue outer;
+        boolean intersectedCurrentCluster = false;
+        for (long rowCount : uniqueCluster) {
+          //TODO peformance: contains on list vs containsKey on hashmap/set
+          if (!cluster.contains(rowCount)) {
+            if (!intersectedCurrentCluster) {
+              intersectedCurrentCluster = true;
+            } else {
+              continue outer;
+            }
+          }
         }
       }
       result.add(cluster);
