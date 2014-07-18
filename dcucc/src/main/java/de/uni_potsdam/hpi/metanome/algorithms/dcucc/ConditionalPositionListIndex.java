@@ -56,7 +56,7 @@ public class ConditionalPositionListIndex extends PositionListIndex {
 
   public static List<LongArrayList> calculateNotConditions(PositionListIndex partialUnique,
                                                            PositionListIndex PLIcondition,
-                                                           int frequency) {
+                                                           int frequency, int numberOfTuples) {
     List<LongArrayList> result = new LinkedList<>();
 
     outer:

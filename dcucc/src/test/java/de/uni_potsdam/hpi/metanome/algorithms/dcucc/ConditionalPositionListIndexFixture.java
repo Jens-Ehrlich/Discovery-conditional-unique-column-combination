@@ -62,7 +62,7 @@ public class ConditionalPositionListIndexFixture {
 
   public PositionListIndex getConditionPLIForNotConditionTest() {
     List<LongArrayList> clusters = new ArrayList<>();
-    long[] cluster1 = {1, 2, 3, 5, 6};
+    long[] cluster1 = {2, 3, 5, 6};
     clusters.add(new LongArrayList(cluster1));
 
     return new PositionListIndex(clusters);
@@ -70,10 +70,29 @@ public class ConditionalPositionListIndexFixture {
 
   public List<LongArrayList> getExpectedNotConditions() {
     List<LongArrayList> conditions = new ArrayList<>();
-    long[] condition1 = {1, 2, 3, 5, 6};
+    long[] condition1 = {2, 3, 5, 6};
     conditions.add(new LongArrayList(condition1));
 
     return conditions;
   }
 
+  public PositionListIndex getUniquePLIForNotConditionEmptyTest() {
+    List<LongArrayList> clusters = new ArrayList<>();
+    long[] cluster1 = {1, 2};
+    clusters.add(new LongArrayList(cluster1));
+
+    return new PositionListIndex(clusters);
+  }
+
+  public PositionListIndex getConditionPLIForNotConditionEmptyTest() {
+    List<LongArrayList> clusters = new ArrayList<>();
+    long[] cluster1 = {1, 2, 3, 5, 6};
+    clusters.add(new LongArrayList(cluster1));
+
+    return new PositionListIndex(clusters);
+  }
+
+  public int getNumberOfTuplesEmptyTest() {
+    return 8;
+  }
 }

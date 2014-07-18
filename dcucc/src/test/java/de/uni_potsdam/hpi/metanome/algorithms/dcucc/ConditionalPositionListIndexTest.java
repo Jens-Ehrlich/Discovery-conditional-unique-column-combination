@@ -11,6 +11,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class ConditionalPositionListIndexTest {
 
@@ -54,12 +55,29 @@ public class ConditionalPositionListIndexTest {
     List<LongArrayList>
         actualConditions =
         ConditionalPositionListIndex
-            .calculateNotConditions(uniquePLI, conditionPLI, fixture.getFrequency());
+            .calculateNotConditions(uniquePLI, conditionPLI, fixture.getFrequency(),
+                                    fixture.getNumberOfTuplesEmptyTest());
     //Check result
     assertThat(actualConditions,
                IsIterableContainingInAnyOrder.containsInAnyOrder(
                    expectedConditions.toArray()
                )
     );
+  }
+
+  @Test
+  public void testCalculateConditionsNotEmpty() {
+    //Setup
+    PositionListIndex uniquePLI = fixture.getUniquePLIForNotConditionEmptyTest();
+    PositionListIndex conditionPLI = fixture.getConditionPLIForNotConditionEmptyTest();
+
+    //Execute functionality
+    List<LongArrayList>
+        actualConditions =
+        ConditionalPositionListIndex
+            .calculateNotConditions(uniquePLI, conditionPLI, fixture.getFrequency(),
+                                    fixture.getNumberOfTuplesEmptyTest());
+    //Check result
+    assertTrue(actualConditions.isEmpty());
   }
 }
