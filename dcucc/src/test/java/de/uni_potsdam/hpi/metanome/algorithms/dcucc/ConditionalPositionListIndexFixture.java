@@ -12,6 +12,10 @@ import java.util.List;
  */
 public class ConditionalPositionListIndexFixture {
 
+  public int getFrequency() {
+    return 3;
+  }
+
   public PositionListIndex getUniquePLIForConditionTest() {
     List<LongArrayList> clusters = new ArrayList<>();
     long[] cluster1 = {1, 2};
@@ -22,10 +26,6 @@ public class ConditionalPositionListIndexFixture {
     clusters.add(new LongArrayList(cluster3));
 
     return new PositionListIndex(clusters);
-  }
-
-  public int getFrequency() {
-    return 3;
   }
 
   public PositionListIndex getConditionPLIForConditionTest() {
@@ -46,6 +46,32 @@ public class ConditionalPositionListIndexFixture {
     long[] condition2 = {6, 9, 10};
     conditions.add(new LongArrayList(condition1));
     conditions.add(new LongArrayList(condition2));
+
+    return conditions;
+  }
+
+  public PositionListIndex getUniquePLIForNotConditionTest() {
+    List<LongArrayList> clusters = new ArrayList<>();
+    long[] cluster1 = {1, 2};
+    clusters.add(new LongArrayList(cluster1));
+    long[] cluster2 = {5, 6};
+    clusters.add(new LongArrayList(cluster2));
+
+    return new PositionListIndex(clusters);
+  }
+
+  public PositionListIndex getConditionPLIForNotConditionTest() {
+    List<LongArrayList> clusters = new ArrayList<>();
+    long[] cluster1 = {1, 2, 3, 5, 6};
+    clusters.add(new LongArrayList(cluster1));
+
+    return new PositionListIndex(clusters);
+  }
+
+  public List<LongArrayList> getExpectedNotConditions() {
+    List<LongArrayList> conditions = new ArrayList<>();
+    long[] condition1 = {1, 2, 3, 5, 6};
+    conditions.add(new LongArrayList(condition1));
 
     return conditions;
   }

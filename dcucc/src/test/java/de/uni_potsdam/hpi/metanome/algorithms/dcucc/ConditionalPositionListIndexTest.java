@@ -5,6 +5,7 @@ import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionList
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -13,14 +14,19 @@ import static org.junit.Assert.assertThat;
 
 public class ConditionalPositionListIndexTest {
 
+  ConditionalPositionListIndexFixture fixture;
+
+  @Before
+  public void setup() {
+    fixture = new ConditionalPositionListIndexFixture();
+  }
 
   /**
-   * Test method for {@link de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex::calculateConditionUnique}
+   * Test method for {@link de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex::calculateConditions}
    */
   @Test
-  public void testCalculateConditionUnique() {
+  public void testCalculateConditions() {
     //Setup
-    ConditionalPositionListIndexFixture fixture = new ConditionalPositionListIndexFixture();
     PositionListIndex uniquePLI = fixture.getUniquePLIForConditionTest();
     PositionListIndex conditionPLI = fixture.getConditionPLIForConditionTest();
     List<LongArrayList> expectedConditions = fixture.getExpectedConditions();
@@ -28,13 +34,32 @@ public class ConditionalPositionListIndexTest {
     List<LongArrayList>
         actualConditions =
         ConditionalPositionListIndex
-            .calculateConditionUnique(uniquePLI, conditionPLI, fixture.getFrequency());
+            .calculateConditions(uniquePLI, conditionPLI, fixture.getFrequency());
     //Check result
     assertThat(actualConditions,
                IsIterableContainingInAnyOrder.containsInAnyOrder(
                    expectedConditions.toArray()
                )
     );
+  }
 
+  @Test
+  public void testCalculateConditionsNot() {
+    //Setup
+    PositionListIndex uniquePLI = fixture.getUniquePLIForNotConditionTest();
+    PositionListIndex conditionPLI = fixture.getConditionPLIForNotConditionTest();
+    List<LongArrayList> expectedConditions = fixture.getExpectedNotConditions();
+
+    //Execute functionality
+    List<LongArrayList>
+        actualConditions =
+        ConditionalPositionListIndex
+            .calculateNotConditions(uniquePLI, conditionPLI, fixture.getFrequency());
+    //Check result
+    assertThat(actualConditions,
+               IsIterableContainingInAnyOrder.containsInAnyOrder(
+                   expectedConditions.toArray()
+               )
+    );
   }
 }

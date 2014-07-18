@@ -137,10 +137,10 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
           //check which conditions hold
           List<LongArrayList>
               conditions =
-              ConditionalPositionListIndex.calculateConditionUnique(this.getPLI(partialUnique),
-                                                                    this.getPLI
-                                                                        (conditionColumn),
-                                                                    this.frequency);
+              ConditionalPositionListIndex.calculateConditions(this.getPLI(partialUnique),
+                                                               this.getPLI
+                                                                   (conditionColumn),
+                                                               this.frequency);
           for (LongArrayList condition : conditions) {
             addConditionToResult(partialUnique, conditionColumn, condition);
           }

@@ -28,9 +28,9 @@ public class ConditionalPositionListIndex extends PositionListIndex {
    * @return a list of conditions that hold. Each condition is maximal e.g. there exists no superset
    * for the condition. Only on of the condition holds at a time (xor).
    */
-  public static List<LongArrayList> calculateConditionUnique(PositionListIndex partialUnique,
-                                                             PositionListIndex PLICondition,
-                                                             int frequency) {
+  public static List<LongArrayList> calculateConditions(PositionListIndex partialUnique,
+                                                        PositionListIndex PLICondition,
+                                                        int frequency) {
     List<LongArrayList> result = new LinkedList<>();
     Long2LongOpenHashMap uniqueHashMap = partialUnique.asHashMap();
     LongArrayList touchedClusters = new LongArrayList();
@@ -53,4 +53,23 @@ public class ConditionalPositionListIndex extends PositionListIndex {
     }
     return result;
   }
+
+  public static List<LongArrayList> calculateNotConditions(PositionListIndex partialUnique,
+                                                           PositionListIndex PLIcondition,
+                                                           int frequency) {
+    List<LongArrayList> result = new LinkedList<>();
+
+    outer:
+    for (LongArrayList cluster : PLIcondition.getClusters()) {
+      for (LongArrayList uniqueCluster : partialUnique.getClusters()) {
+        if (!cluster.containsAll(uniqueCluster)) {
+          continue outer;
+        }
+      }
+      result.add(cluster);
+    }
+    return result;
+  }
 }
+
+
