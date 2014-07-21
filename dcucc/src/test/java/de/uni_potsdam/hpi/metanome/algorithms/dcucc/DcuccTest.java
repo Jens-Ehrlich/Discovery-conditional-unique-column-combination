@@ -13,6 +13,7 @@ import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.ConditionalUn
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -68,6 +69,7 @@ public class DcuccTest {
   }
 
   @Test
+  @Ignore
   public void testConditionalUniqueFixtureExecute() throws Exception {
     //Setup
     ConditionalUniqueFixture fixture = new ConditionalUniqueFixture();

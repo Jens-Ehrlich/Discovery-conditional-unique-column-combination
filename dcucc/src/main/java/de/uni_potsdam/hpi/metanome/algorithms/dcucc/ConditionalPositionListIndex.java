@@ -30,7 +30,8 @@ public class ConditionalPositionListIndex extends PositionListIndex {
    */
   public static List<LongArrayList> calculateConditions(PositionListIndex partialUnique,
                                                         PositionListIndex PLICondition,
-                                                        int frequency) {
+                                                        int frequency,
+                                                        List<LongArrayList> unsatisfiedClusters) {
     List<LongArrayList> result = new LinkedList<>();
     Long2LongOpenHashMap uniqueHashMap = partialUnique.asHashMap();
     LongArrayList touchedClusters = new LongArrayList();

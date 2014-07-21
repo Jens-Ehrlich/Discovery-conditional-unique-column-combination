@@ -148,13 +148,15 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
       if (partialUnique.containsColumn(conditionColumn.getSetBits().get(0))) {
         continue;
       }
+
+      List<LongArrayList> unsatisfiedClusters = new LinkedList<>();
       //check which conditions hold
       List<LongArrayList>
           conditions =
           ConditionalPositionListIndex.calculateConditions(this.getPLI(partialUnique),
                                                            this.getPLI
                                                                (conditionColumn),
-                                                           this.frequency);
+                                                           this.frequency, unsatisfiedClusters);
       for (LongArrayList condition : conditions) {
         addConditionToResult(partialUnique, conditionColumn, condition);
       }
@@ -192,6 +194,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   }
 
   protected boolean checkForFD(ColumnCombinationBitset bitset) {
+    //TODO is this check really reasonable (performance)?
     for (ColumnCombinationBitset possibleChild : bitset
         .getNSubsetColumnCombinations(bitset.getSetBits().size() - 1)) {
       if (this.pliMap.containsKey(possibleChild)) {

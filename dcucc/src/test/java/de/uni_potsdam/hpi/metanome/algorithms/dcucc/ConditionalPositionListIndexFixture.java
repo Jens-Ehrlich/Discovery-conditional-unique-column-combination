@@ -5,6 +5,7 @@ import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionList
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -24,7 +25,8 @@ public class ConditionalPositionListIndexFixture {
     clusters.add(new LongArrayList(cluster2));
     long[] cluster3 = {10, 11, 12};
     clusters.add(new LongArrayList(cluster3));
-
+    long[] cluster4 = {13, 14};
+    clusters.add(new LongArrayList(cluster4));
     return new PositionListIndex(clusters);
   }
 
@@ -37,6 +39,9 @@ public class ConditionalPositionListIndexFixture {
 
     long[] cluster3 = {6, 9, 10};
     clusters.add(new LongArrayList(cluster3));
+
+    long[] cluster4 = {13, 14, 15, 16};
+    clusters.add(new LongArrayList(cluster4));
     return new PositionListIndex(clusters);
   }
 
@@ -48,6 +53,12 @@ public class ConditionalPositionListIndexFixture {
     conditions.add(new LongArrayList(condition2));
 
     return conditions;
+  }
+
+  public List<LongArrayList> getExpectedUnsatisfiedClusters() {
+    List<LongArrayList> unsatisfied = new LinkedList<>();
+    unsatisfied.add(getConditionPLIForConditionTest().getClusters().get(3));
+    return unsatisfied;
   }
 
   public PositionListIndex getUniquePLIForNotConditionTest() {

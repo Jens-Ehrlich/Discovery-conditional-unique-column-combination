@@ -8,8 +8,10 @@ import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.LinkedList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -32,16 +34,21 @@ public class ConditionalPositionListIndexTest {
     PositionListIndex conditionPLI = fixture.getConditionPLIForConditionTest();
     List<LongArrayList> expectedConditions = fixture.getExpectedConditions();
     //Execute functionality
+    List<LongArrayList> unsatisfiedClusters = new LinkedList<>();
+
     List<LongArrayList>
         actualConditions =
         ConditionalPositionListIndex
-            .calculateConditions(uniquePLI, conditionPLI, fixture.getFrequency());
+            .calculateConditions(uniquePLI, conditionPLI, fixture.getFrequency(),
+                                 unsatisfiedClusters);
     //Check result
     assertThat(actualConditions,
                IsIterableContainingInAnyOrder.containsInAnyOrder(
                    expectedConditions.toArray()
                )
     );
+
+    assertEquals(unsatisfiedClusters.get(0), fixture.getExpectedUnsatisfiedClusters().get(0));
   }
 
   @Test
