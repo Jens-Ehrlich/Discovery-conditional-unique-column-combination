@@ -114,7 +114,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     this.preparePruningGraphs();
     System.out.println("Prepare pruning graphs: " + ((System.nanoTime() - start) / 1000000));
     start = System.nanoTime();
-    this.calculateConditionalUniques();
+    this.iteratePartialUniqueLattice();
     System.out
         .println("Calculated conditional uniques: " + ((System.nanoTime() - start) / 1000000));
     start = System.nanoTime();
@@ -131,29 +131,35 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     this.conditionMinimalityGraph.addAll(this.partialUccs);
   }
 
-  protected void calculateConditionalUniques() throws AlgorithmExecutionException {
+  protected void iteratePartialUniqueLattice() throws AlgorithmExecutionException {
     List<ColumnCombinationBitset> currentLevel = this.calculateFirstLevel();
     while (!currentLevel.isEmpty()) {
       for (ColumnCombinationBitset partialUnique : currentLevel) {
-        for (ColumnCombinationBitset conditionColumn : this.baseColumn) {
-          //TODO better way to prune this columns
-          if (partialUnique.containsColumn(conditionColumn.getSetBits().get(0))) {
-            continue;
-          }
-          //check which conditions hold
-          List<LongArrayList>
-              conditions =
-              ConditionalPositionListIndex.calculateConditions(this.getPLI(partialUnique),
-                                                               this.getPLI
-                                                                   (conditionColumn),
-                                                               this.frequency);
-          for (LongArrayList condition : conditions) {
-            addConditionToResult(partialUnique, conditionColumn, condition);
-          }
-        }
+        iterateConditionLattice(partialUnique);
       }
       currentLevel = calculateNextLevel(currentLevel);
     }
+  }
+
+  protected void iterateConditionLattice(ColumnCombinationBitset partialUnique)
+      throws AlgorithmExecutionException {
+    for (ColumnCombinationBitset conditionColumn : this.baseColumn) {
+      //TODO better way to prune this columns
+      if (partialUnique.containsColumn(conditionColumn.getSetBits().get(0))) {
+        continue;
+      }
+      //check which conditions hold
+      List<LongArrayList>
+          conditions =
+          ConditionalPositionListIndex.calculateConditions(this.getPLI(partialUnique),
+                                                           this.getPLI
+                                                               (conditionColumn),
+                                                           this.frequency);
+      for (LongArrayList condition : conditions) {
+        addConditionToResult(partialUnique, conditionColumn, condition);
+      }
+    }
+
   }
 
   protected List<ColumnCombinationBitset> calculateNextLevel(
