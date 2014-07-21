@@ -40,17 +40,24 @@ public class ConditionalPositionListIndex extends PositionListIndex {
       if (cluster.size() < frequency) {
         continue;
       }
+      int unsatisfactionCount = 0;
       touchedClusters.clear();
       for (long rowNumber : cluster) {
         if (uniqueHashMap.containsKey(rowNumber)) {
           if (touchedClusters.contains(uniqueHashMap.get(rowNumber))) {
-            continue nextCluster;
+            unsatisfactionCount++;
           } else {
             touchedClusters.add(uniqueHashMap.get(rowNumber));
           }
         }
       }
-      result.add(cluster);
+      if (unsatisfactionCount == 0) {
+        result.add(cluster);
+      } else {
+        if ((cluster.size() - unsatisfactionCount) >= frequency) {
+          unsatisfiedClusters.add(cluster);
+        }
+      }
     }
     return result;
   }
