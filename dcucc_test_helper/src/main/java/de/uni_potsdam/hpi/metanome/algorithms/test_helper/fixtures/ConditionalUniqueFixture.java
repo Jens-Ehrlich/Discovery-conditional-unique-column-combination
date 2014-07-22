@@ -38,8 +38,8 @@ public class ConditionalUniqueFixture {
 
   protected ImmutableList<String>
       columnNames =
-      ImmutableList.of("A", "B", "C");
-  protected int numberOfColumns = 3;
+      ImmutableList.of("A", "B", "C", "D");
+  protected int numberOfColumns = 4;
   protected int rowPosition;
   protected String relationName = "testTable";
   protected RelationalInput input;
@@ -49,11 +49,12 @@ public class ConditionalUniqueFixture {
       mock(ConditionalUniqueColumnCombinationResultReceiver.class);
 
   public ConditionalUniqueFixture() throws CouldNotReceiveResultException {
-    table.add(ImmutableList.of("1", "1", "1"));
-    table.add(ImmutableList.of("1", "2", "1"));
-    table.add(ImmutableList.of("1", "2", "2"));
-    table.add(ImmutableList.of("1", "2", "3"));
-    table.add(ImmutableList.of("2", "2", "3"));
+    table.add(ImmutableList.of("1", "1", "1", "2"));
+    table.add(ImmutableList.of("1", "2", "1", "1"));
+    table.add(ImmutableList.of("1", "2", "2", "2"));
+    table.add(ImmutableList.of("1", "2", "3", "3"));
+    table.add(ImmutableList.of("2", "2", "3", "2"));
+    table.add(ImmutableList.of("3", "3", "4", "2"));
 
     this.rowPosition = 0;
 
@@ -130,6 +131,8 @@ public class ConditionalUniqueFixture {
         B = new ColumnIdentifier(this.relationName, this.columnNames.get(1));
     ColumnIdentifier
         C = new ColumnIdentifier(this.relationName, this.columnNames.get(2));
+    ColumnIdentifier
+        D = new ColumnIdentifier(this.relationName, this.columnNames.get(3));
 
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(C),
@@ -142,6 +145,23 @@ public class ConditionalUniqueFixture {
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(B, C),
                                                new ColumnCondition(A, "1")));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(A, B),
+                                               new ColumnCondition(D, "2")));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(B, D),
+                                               new ColumnCondition(A, "1")));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(A, D),
+                                               new ColumnCondition(B, "2")));
+
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(C),
+                                               new ColumnCondition(D, "2")));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(D),
+                                               new ColumnCondition(A, "1"),
+                                               new ColumnCondition(B, "2")));
 
     verifyNoMoreInteractions(conditionalUniqueResultReceiver);
 

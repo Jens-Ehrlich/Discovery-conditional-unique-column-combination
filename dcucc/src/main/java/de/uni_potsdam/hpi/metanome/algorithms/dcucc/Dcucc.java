@@ -151,8 +151,8 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
       if (partialUnique.containsColumn(conditionColumn.getSetBits().get(0))) {
         continue;
       }
-
-      calculateCondition(partialUnique, currentLevel, conditionColumn);
+      calculateCondition(partialUnique, currentLevel, conditionColumn,
+                         this.getPLI(conditionColumn));
     }
 
     currentLevel = apprioriGenerate(currentLevel);
@@ -160,7 +160,10 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     Map<ColumnCombinationBitset, PositionListIndex> nextLevel = new HashMap<>();
     while (!currentLevel.isEmpty()) {
       for (ColumnCombinationBitset potentialCondition : currentLevel.keySet()) {
-        List<LongArrayList> unsatisfiedClusters = new LinkedList<>();
+        nextLevel.clear();
+        calculateCondition(partialUnique, nextLevel, potentialCondition,
+                           currentLevel.get(potentialCondition));
+/*        List<LongArrayList> unsatisfiedClusters = new LinkedList<>();
         List<LongArrayList>
             conditions =
             ConditionalPositionListIndex.calculateConditions(this.getPLI(partialUnique),
@@ -168,31 +171,28 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
                                                              this.frequency, unsatisfiedClusters);
 
         if (!unsatisfiedClusters.isEmpty()) {
-          //some times there only empty LongArrayLists, maybe?
-          PositionListIndex newPLI = new PositionListIndex(unsatisfiedClusters);
-          if (newPLI.isUnique()) {
-            nextLevel.put(potentialCondition, new PositionListIndex(unsatisfiedClusters));
-          }
+          nextLevel.put(potentialCondition, new PositionListIndex(unsatisfiedClusters));
         }
         for (LongArrayList validConditions : conditions) {
           addConditionToResult(partialUnique, potentialCondition, validConditions);
-        }
+        }*/
       }
+      //TODO what if nextLevel is already empty?
       currentLevel = apprioriGenerate(nextLevel);
     }
   }
 
   protected void calculateCondition(ColumnCombinationBitset partialUnique,
                                     Map<ColumnCombinationBitset, PositionListIndex> currentLevel,
-                                    ColumnCombinationBitset conditionColumn)
+                                    ColumnCombinationBitset conditionColumn,
+                                    PositionListIndex conditionPLI)
       throws AlgorithmExecutionException {
     List<LongArrayList> unsatisfiedClusters = new LinkedList<>();
     //check which conditions hold
     List<LongArrayList>
         conditions =
         ConditionalPositionListIndex.calculateConditions(this.getPLI(partialUnique),
-                                                         this.getPLI
-                                                             (conditionColumn),
+                                                         conditionPLI,
                                                          this.frequency, unsatisfiedClusters);
     if (!unsatisfiedClusters.isEmpty()) {
       currentLevel.put(conditionColumn, new PositionListIndex(unsatisfiedClusters));
@@ -206,11 +206,11 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   protected Map<ColumnCombinationBitset, PositionListIndex> apprioriGenerate(
       Map<ColumnCombinationBitset, PositionListIndex> previousLevel) {
     Map<ColumnCombinationBitset, PositionListIndex> nextLevel = new HashMap<>();
-    int level = -1;
+    int nextLevelCount = -1;
     ColumnCombinationBitset union = new ColumnCombinationBitset();
     for (ColumnCombinationBitset bitset : previousLevel.keySet()) {
-      if (level == -1) {
-        level = bitset.size();
+      if (nextLevelCount == -1) {
+        nextLevelCount = bitset.size() + 1;
       }
       union = bitset.union(union);
     }
@@ -218,7 +218,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     List<ColumnCombinationBitset> nextLevelCandidates;
     Map<ColumnCombinationBitset, Integer> candidateGenerationCount = new HashMap<>();
     for (ColumnCombinationBitset subset : previousLevel.keySet()) {
-      nextLevelCandidates = union.getNSubsetColumnCombinationsSupersetOf(subset, level + 1);
+      nextLevelCandidates = union.getNSubsetColumnCombinationsSupersetOf(subset, nextLevelCount);
       for (ColumnCombinationBitset nextLevelCandidateBitset : nextLevelCandidates) {
         if (candidateGenerationCount.containsKey(nextLevelCandidateBitset)) {
           int count = candidateGenerationCount.get(nextLevelCandidateBitset);
@@ -231,11 +231,10 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     }
 
     for (ColumnCombinationBitset candidate : candidateGenerationCount.keySet()) {
-      if (candidateGenerationCount.get(candidate) == (level + 1)) {
+      if (candidateGenerationCount.get(candidate) == nextLevelCount) {
         nextLevel.put(candidate, getConditionPLI(candidate, previousLevel));
       }
     }
-
     return nextLevel;
   }
 
