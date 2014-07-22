@@ -3,6 +3,7 @@ package de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures;
 import com.google.common.collect.ImmutableList;
 
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
@@ -604,4 +605,50 @@ public class BridgesFixture {
 //
 //		verifyNoMoreInteractions(uccResultReceiver);
 //	}
+
+  public void verifyConditionalUniqueColumnCombination() throws CouldNotReceiveResultException {
+
+    ColumnIdentifier
+        c1 = new ColumnIdentifier(this.relationName, this.columnNames.get(0));
+    ColumnIdentifier
+        c2 = new ColumnIdentifier(this.relationName, this.columnNames.get(1));
+    ColumnIdentifier
+        c3 = new ColumnIdentifier(this.relationName, this.columnNames.get(2));
+    ColumnIdentifier
+        c4 = new ColumnIdentifier(this.relationName, this.columnNames.get(3));
+    ColumnIdentifier
+        c5 = new ColumnIdentifier(this.relationName, this.columnNames.get(4));
+    ColumnIdentifier
+        c6 = new ColumnIdentifier(this.relationName, this.columnNames.get(5));
+    ColumnIdentifier
+        c7 = new ColumnIdentifier(this.relationName, this.columnNames.get(6));
+    ColumnIdentifier
+        c8 = new ColumnIdentifier(this.relationName, this.columnNames.get(7));
+    ColumnIdentifier
+        c9 = new ColumnIdentifier(this.relationName, this.columnNames.get(8));
+    ColumnIdentifier
+        c10 = new ColumnIdentifier(this.relationName, this.columnNames.get(9));
+    ColumnIdentifier
+        c11 = new ColumnIdentifier(this.relationName, this.columnNames.get(10));
+    ColumnIdentifier
+        c12 = new ColumnIdentifier(this.relationName, this.columnNames.get(11));
+    ColumnIdentifier
+        c13 = new ColumnIdentifier(this.relationName, this.columnNames.get(12));
+
+    verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
+        new ColumnCombination(c3, c6, c13), new ColumnCondition(c10, "STEEL"),
+        new ColumnCondition(c8, "G")));
+    verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
+        new ColumnCombination(c3, c6), new ColumnCondition(c10, "STEEL"),
+        new ColumnCondition(c11, "MEDIUM")));
+    verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
+        new ColumnCombination(c3, c6), new ColumnCondition(c10, "STEEL"),
+        new ColumnCondition(c13, "SIMPLE-T")));
+    verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
+        new ColumnCombination(c3, c6), new ColumnCondition(c10, "STEEL"),
+        new ColumnCondition(c9, "THROUGH")));
+    verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
+        new ColumnCombination(c11, c12, c4, c5, c7), new ColumnCondition(c2, "M"),
+        new ColumnCondition(c9, "THROUGH")));
+  }
 }

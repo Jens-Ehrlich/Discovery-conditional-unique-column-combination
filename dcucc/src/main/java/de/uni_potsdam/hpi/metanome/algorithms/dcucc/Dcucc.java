@@ -152,20 +152,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
         continue;
       }
 
-      List<LongArrayList> unsatisfiedClusters = new LinkedList<>();
-      //check which conditions hold
-      List<LongArrayList>
-          conditions =
-          ConditionalPositionListIndex.calculateConditions(this.getPLI(partialUnique),
-                                                           this.getPLI
-                                                               (conditionColumn),
-                                                           this.frequency, unsatisfiedClusters);
-      if (!unsatisfiedClusters.isEmpty()) {
-        currentLevel.put(conditionColumn, new PositionListIndex(unsatisfiedClusters));
-      }
-      for (LongArrayList condition : conditions) {
-        addConditionToResult(partialUnique, conditionColumn, condition);
-      }
+      calculateCondition(partialUnique, currentLevel, conditionColumn);
     }
 
     currentLevel = apprioriGenerate(currentLevel);
@@ -194,6 +181,27 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
       currentLevel = apprioriGenerate(nextLevel);
     }
   }
+
+  protected void calculateCondition(ColumnCombinationBitset partialUnique,
+                                    Map<ColumnCombinationBitset, PositionListIndex> currentLevel,
+                                    ColumnCombinationBitset conditionColumn)
+      throws AlgorithmExecutionException {
+    List<LongArrayList> unsatisfiedClusters = new LinkedList<>();
+    //check which conditions hold
+    List<LongArrayList>
+        conditions =
+        ConditionalPositionListIndex.calculateConditions(this.getPLI(partialUnique),
+                                                         this.getPLI
+                                                             (conditionColumn),
+                                                         this.frequency, unsatisfiedClusters);
+    if (!unsatisfiedClusters.isEmpty()) {
+      currentLevel.put(conditionColumn, new PositionListIndex(unsatisfiedClusters));
+    }
+    for (LongArrayList condition : conditions) {
+      addConditionToResult(partialUnique, conditionColumn, condition);
+    }
+  }
+
 
   protected Map<ColumnCombinationBitset, PositionListIndex> apprioriGenerate(
       Map<ColumnCombinationBitset, PositionListIndex> previousLevel) {

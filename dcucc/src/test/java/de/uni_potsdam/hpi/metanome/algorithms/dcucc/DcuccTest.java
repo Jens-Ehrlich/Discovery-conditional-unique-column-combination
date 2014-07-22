@@ -113,7 +113,7 @@ public class DcuccTest {
     algorithm.execute();
 
     //verify result
-    //fixture.verifyConditionalUniqueColumnCombinationFor4();
+    fixture.verifyConditionalUniqueColumnCombination();
   }
 
   @Test
