@@ -143,6 +143,9 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
   protected void iterateConditionLattice(ColumnCombinationBitset partialUnique)
       throws AlgorithmExecutionException {
+    Map<ColumnCombinationBitset, PositionListIndex> currentLevel = new HashMap<>();
+
+    //calculate first level - initialisation
     for (ColumnCombinationBitset conditionColumn : this.baseColumn) {
       //TODO better way to prune this columns
       if (partialUnique.containsColumn(conditionColumn.getSetBits().get(0))) {
@@ -157,11 +160,91 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
                                                            this.getPLI
                                                                (conditionColumn),
                                                            this.frequency, unsatisfiedClusters);
+      if (!unsatisfiedClusters.isEmpty()) {
+        currentLevel.put(conditionColumn, new PositionListIndex(unsatisfiedClusters));
+      }
       for (LongArrayList condition : conditions) {
         addConditionToResult(partialUnique, conditionColumn, condition);
       }
     }
 
+    currentLevel = apprioriGenerate(currentLevel);
+
+    Map<ColumnCombinationBitset, PositionListIndex> nextLevel = new HashMap<>();
+    while (!currentLevel.isEmpty()) {
+      for (ColumnCombinationBitset potentialCondition : currentLevel.keySet()) {
+        List<LongArrayList> unsatisfiedClusters = new LinkedList<>();
+        List<LongArrayList>
+            conditions =
+            ConditionalPositionListIndex.calculateConditions(this.getPLI(partialUnique),
+                                                             currentLevel.get(potentialCondition),
+                                                             this.frequency, unsatisfiedClusters);
+
+        if (!unsatisfiedClusters.isEmpty()) {
+          //some times there only empty LongArrayLists, maybe?
+          PositionListIndex newPLI = new PositionListIndex(unsatisfiedClusters);
+          if (newPLI.isUnique()) {
+            nextLevel.put(potentialCondition, new PositionListIndex(unsatisfiedClusters));
+          }
+        }
+        for (LongArrayList validConditions : conditions) {
+          addConditionToResult(partialUnique, potentialCondition, validConditions);
+        }
+      }
+      currentLevel = apprioriGenerate(nextLevel);
+    }
+  }
+
+  protected Map<ColumnCombinationBitset, PositionListIndex> apprioriGenerate(
+      Map<ColumnCombinationBitset, PositionListIndex> previousLevel) {
+    Map<ColumnCombinationBitset, PositionListIndex> nextLevel = new HashMap<>();
+    int level = -1;
+    ColumnCombinationBitset union = new ColumnCombinationBitset();
+    for (ColumnCombinationBitset bitset : previousLevel.keySet()) {
+      if (level == -1) {
+        level = bitset.size();
+      }
+      union = bitset.union(union);
+    }
+
+    List<ColumnCombinationBitset> nextLevelCandidates;
+    Map<ColumnCombinationBitset, Integer> candidateGenerationCount = new HashMap<>();
+    for (ColumnCombinationBitset subset : previousLevel.keySet()) {
+      nextLevelCandidates = union.getNSubsetColumnCombinationsSupersetOf(subset, level + 1);
+      for (ColumnCombinationBitset nextLevelCandidateBitset : nextLevelCandidates) {
+        if (candidateGenerationCount.containsKey(nextLevelCandidateBitset)) {
+          int count = candidateGenerationCount.get(nextLevelCandidateBitset);
+          count++;
+          candidateGenerationCount.put(nextLevelCandidateBitset, count);
+        } else {
+          candidateGenerationCount.put(nextLevelCandidateBitset, 1);
+        }
+      }
+    }
+
+    for (ColumnCombinationBitset candidate : candidateGenerationCount.keySet()) {
+      if (candidateGenerationCount.get(candidate) == (level + 1)) {
+        nextLevel.put(candidate, getConditionPLI(candidate, previousLevel));
+      }
+    }
+
+    return nextLevel;
+  }
+
+  protected PositionListIndex getConditionPLI(ColumnCombinationBitset candidate,
+                                              Map<ColumnCombinationBitset, PositionListIndex> pliMap) {
+    PositionListIndex firstChild = null;
+    for (ColumnCombinationBitset subset : candidate.getDirectSubsets()) {
+      if (pliMap.containsKey(subset)) {
+        if (firstChild == null) {
+          firstChild = pliMap.get(subset);
+        } else {
+          return pliMap.get(subset).intersect(firstChild);
+        }
+      }
+    }
+    //should never arrive here
+    return null;
   }
 
   protected List<ColumnCombinationBitset> calculateNextLevel(

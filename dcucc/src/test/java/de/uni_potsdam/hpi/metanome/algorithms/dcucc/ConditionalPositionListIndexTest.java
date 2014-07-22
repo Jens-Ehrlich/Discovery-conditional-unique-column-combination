@@ -47,7 +47,6 @@ public class ConditionalPositionListIndexTest {
                    expectedConditions.toArray()
                )
     );
-
     assertEquals(unsatisfiedClusters.get(0), fixture.getExpectedUnsatisfiedClusters().get(0));
   }
 
