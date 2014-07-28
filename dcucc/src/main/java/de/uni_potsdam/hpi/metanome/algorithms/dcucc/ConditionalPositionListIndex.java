@@ -70,9 +70,9 @@ public class ConditionalPositionListIndex extends PositionListIndex {
       if (cluster.size() >= clusterSize) {
         continue;
       }
-      for (LongArrayList uniqueCluster : partialUnique.getClusters()) {
+      for (LongArrayList uniqueClusterNumber : partialUnique.getClusters()) {
         boolean intersectedCurrentCluster = false;
-        for (long rowCount : uniqueCluster) {
+        for (long rowCount : uniqueClusterNumber) {
           //TODO peformance: contains on list vs containsKey on hashmap/set
           if (!cluster.contains(rowCount)) {
             if (!intersectedCurrentCluster) {

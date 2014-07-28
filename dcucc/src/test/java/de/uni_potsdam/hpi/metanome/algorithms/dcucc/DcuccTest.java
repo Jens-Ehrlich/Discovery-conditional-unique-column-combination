@@ -11,7 +11,6 @@ import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.AlgorithmTest
 import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.BridgesFixture;
 import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.ConditionalUniqueFixture;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -31,11 +30,6 @@ public class DcuccTest {
     algorithm = new Dcucc();
   }
 
-  @After
-  public void tearDown() throws Exception {
-    algorithm = null;
-  }
-
   @Test
   public void testAlgorithmFixtureExecute4() throws Exception {
     //Setup
@@ -51,6 +45,7 @@ public class DcuccTest {
     //verify result
     fixture.verifyConditionalUniqueColumnCombinationFor4();
   }
+
 
   @Test
   public void testAlgorithmFixtureExecute3() throws Exception {

@@ -81,14 +81,15 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   protected SuperSetGraph lowerPruningGraph;
   protected SubSetGraph upperPruningGraph;
   protected SubSetGraph conditionMinimalityGraph;
-
+  protected RelationalInput input;
   protected RelationalInputGenerator inputGenerator;
   protected ConditionalUniqueColumnCombinationResultReceiver resultReceiver;
+  List<Map<Long, String>> inputMap;
 
   public Dcucc() {
     this.foundConditions = new HashSet<>();
     this.conditionLatticeTraverser = new SimpleAndConditionTraverser(this);
-    //this.conditionLatticeTraverser = new AndOrConditionTraverser(this);
+    //this.conditionLatticeTraverser = new OrConditionTraverser(this);
   }
 
   @Override
@@ -113,6 +114,8 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     this.partialUccs = partialUCCalgorithm.getMinimalUniqueColumnCombinations();
     this.pliMap = partialUCCalgorithm.getCalculatedPlis();
     System.out.println("Calculate partial uniques: " + ((System.nanoTime() - start) / 1000000));
+    prepareOutput();
+
     start = System.nanoTime();
     this.preparePruningGraphs();
     System.out.println("Prepare pruning graphs: " + ((System.nanoTime() - start) / 1000000));
@@ -123,6 +126,22 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     start = System.nanoTime();
     this.returnResult();
     System.out.println("return results: " + ((System.nanoTime() - start) / 1000000));
+  }
+
+  protected void prepareOutput() throws InputGenerationException, InputIterationException {
+    this.input = this.inputGenerator.generateNewCopy();
+    this.inputMap = new ArrayList<>(input.numberOfColumns());
+    for (int i = 0; i < input.numberOfColumns(); i++) {
+      inputMap.add(new HashMap<Long, String>());
+    }
+    long row = 0;
+    while (input.hasNext()) {
+      ImmutableList<String> values = input.next();
+      for (int i = 0; i < input.numberOfColumns(); i++) {
+        inputMap.get(i).put(row, values.get(i));
+      }
+      row++;
+    }
   }
 
   protected void preparePruningGraphs() {
@@ -197,7 +216,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   }
 
   protected void returnResult() throws AlgorithmExecutionException {
-    RelationalInput input = this.inputGenerator.generateNewCopy();
+/*    RelationalInput input = this.inputGenerator.generateNewCopy();
     List<Map<Long, String>> inputMap = new ArrayList<>(input.numberOfColumns());
     for (int i = 0; i < input.numberOfColumns(); i++) {
       inputMap.add(new HashMap<Long, String>());
@@ -209,11 +228,11 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
         inputMap.get(i).put(row, values.get(i));
       }
       row++;
-    }
+    }*/
 
-    for (Condition condition : this.foundConditions) {
+/*    for (Condition condition : this.foundConditions) {
       condition.addToResultReceiver(this.resultReceiver, input, inputMap);
-    }
+    }*/
   }
 
   protected PositionListIndex getPLI(ColumnCombinationBitset bitset)
@@ -245,7 +264,8 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
   protected void addConditionToResult(ColumnCombinationBitset partialUnique,
                                       ColumnCombinationBitset conditionColumn,
-                                      LongArrayList conditionArray) {
+                                      LongArrayList conditionArray)
+      throws AlgorithmExecutionException {
     Map<ColumnCombinationBitset, LongArrayList> conditionMap = new HashMap<>();
     for (ColumnCombinationBitset oneColumn : conditionColumn.getContainedOneColumnCombinations()) {
       conditionMap.put(oneColumn, conditionArray);
@@ -261,6 +281,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     }
     condition.partialUnique = partialUnique;
     this.foundConditions.add(condition);
+    condition.addToResultReceiver(this.resultReceiver, input, inputMap);
   }
 
   protected List<ColumnCombinationBitset> calculateFirstLevel() {
