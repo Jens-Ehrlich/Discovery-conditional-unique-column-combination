@@ -71,6 +71,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   protected boolean percentage = false;
   protected List<PositionListIndex> basePLI;
   protected List<ColumnCombinationBitset> baseColumn;
+  protected ConditionLatticeTraverser conditionLatticeTraverser;
 
   protected ImmutableList<ColumnCombinationBitset> uccs;
   protected ImmutableList<ColumnCombinationBitset> partialUccs;
@@ -86,6 +87,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
   public Dcucc() {
     this.foundConditions = new HashSet<>();
+    this.conditionLatticeTraverser = new SimpleAndConditionTraverser(this);
   }
 
   @Override
@@ -135,115 +137,10 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     List<ColumnCombinationBitset> currentLevel = this.calculateFirstLevel();
     while (!currentLevel.isEmpty()) {
       for (ColumnCombinationBitset partialUnique : currentLevel) {
-        iterateConditionLattice(partialUnique);
+        this.conditionLatticeTraverser.iterateConditionLattice(partialUnique);
       }
       currentLevel = calculateNextLevel(currentLevel);
     }
-  }
-
-  protected void iterateConditionLattice(ColumnCombinationBitset partialUnique)
-      throws AlgorithmExecutionException {
-    Map<ColumnCombinationBitset, PositionListIndex> currentLevel = new HashMap<>();
-
-    //calculate first level - initialisation
-    for (ColumnCombinationBitset conditionColumn : this.baseColumn) {
-      //TODO better way to prune this columns
-      if (partialUnique.containsColumn(conditionColumn.getSetBits().get(0))) {
-        continue;
-      }
-      calculateCondition(partialUnique, currentLevel, conditionColumn,
-                         this.getPLI(conditionColumn));
-    }
-
-    currentLevel = apprioriGenerate(currentLevel);
-
-    Map<ColumnCombinationBitset, PositionListIndex> nextLevel = new HashMap<>();
-    while (!currentLevel.isEmpty()) {
-      for (ColumnCombinationBitset potentialCondition : currentLevel.keySet()) {
-        nextLevel.clear();
-        calculateCondition(partialUnique, nextLevel, potentialCondition,
-                           currentLevel.get(potentialCondition));
-      }
-      //TODO what if nextLevel is already empty?
-      currentLevel = apprioriGenerate(nextLevel);
-    }
-  }
-
-  protected void calculateCondition(ColumnCombinationBitset partialUnique,
-                                    Map<ColumnCombinationBitset, PositionListIndex> currentLevel,
-                                    ColumnCombinationBitset conditionColumn,
-                                    PositionListIndex conditionPLI)
-      throws AlgorithmExecutionException {
-    List<LongArrayList> unsatisfiedClusters = new LinkedList<>();
-    //check which conditions hold
-    List<LongArrayList>
-        conditions =
-        ConditionalPositionListIndex.calculateConditions(this.getPLI(partialUnique),
-                                                         conditionPLI,
-                                                         this.frequency, unsatisfiedClusters);
-    List<LongArrayList>
-        negatedConditions =
-        ConditionalPositionListIndex
-            .calculateNotConditions(this.getPLI(partialUnique), conditionPLI, this.frequency,
-                                    this.numberOfTuples);
-    if (!unsatisfiedClusters.isEmpty()) {
-      currentLevel.put(conditionColumn, new PositionListIndex(unsatisfiedClusters));
-    }
-    for (LongArrayList condition : conditions) {
-      addConditionToResult(partialUnique, conditionColumn, condition);
-    }
-  }
-
-
-  protected Map<ColumnCombinationBitset, PositionListIndex> apprioriGenerate(
-      Map<ColumnCombinationBitset, PositionListIndex> previousLevel) {
-    Map<ColumnCombinationBitset, PositionListIndex> nextLevel = new HashMap<>();
-    int nextLevelCount = -1;
-    ColumnCombinationBitset union = new ColumnCombinationBitset();
-    for (ColumnCombinationBitset bitset : previousLevel.keySet()) {
-      if (nextLevelCount == -1) {
-        nextLevelCount = bitset.size() + 1;
-      }
-      union = bitset.union(union);
-    }
-
-    List<ColumnCombinationBitset> nextLevelCandidates;
-    Map<ColumnCombinationBitset, Integer> candidateGenerationCount = new HashMap<>();
-    for (ColumnCombinationBitset subset : previousLevel.keySet()) {
-      nextLevelCandidates = union.getNSubsetColumnCombinationsSupersetOf(subset, nextLevelCount);
-      for (ColumnCombinationBitset nextLevelCandidateBitset : nextLevelCandidates) {
-        if (candidateGenerationCount.containsKey(nextLevelCandidateBitset)) {
-          int count = candidateGenerationCount.get(nextLevelCandidateBitset);
-          count++;
-          candidateGenerationCount.put(nextLevelCandidateBitset, count);
-        } else {
-          candidateGenerationCount.put(nextLevelCandidateBitset, 1);
-        }
-      }
-    }
-
-    for (ColumnCombinationBitset candidate : candidateGenerationCount.keySet()) {
-      if (candidateGenerationCount.get(candidate) == nextLevelCount) {
-        nextLevel.put(candidate, getConditionPLI(candidate, previousLevel));
-      }
-    }
-    return nextLevel;
-  }
-
-  protected PositionListIndex getConditionPLI(ColumnCombinationBitset candidate,
-                                              Map<ColumnCombinationBitset, PositionListIndex> pliMap) {
-    PositionListIndex firstChild = null;
-    for (ColumnCombinationBitset subset : candidate.getDirectSubsets()) {
-      if (pliMap.containsKey(subset)) {
-        if (firstChild == null) {
-          firstChild = pliMap.get(subset);
-        } else {
-          return pliMap.get(subset).intersect(firstChild);
-        }
-      }
-    }
-    //should never arrive here
-    return null;
   }
 
   protected List<ColumnCombinationBitset> calculateNextLevel(
