@@ -163,6 +163,11 @@ public class ConditionalUniqueFixture {
                                                new ColumnCondition(A, "1"),
                                                new ColumnCondition(B, "2")));
 
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(C),
+                                               new ColumnCondition(B, "1"),
+                                               new ColumnCondition(D, "2").setNegated(true)));
+
     verifyNoMoreInteractions(conditionalUniqueResultReceiver);
 
   }

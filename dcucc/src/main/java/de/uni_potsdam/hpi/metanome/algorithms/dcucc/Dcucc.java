@@ -163,19 +163,6 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
         nextLevel.clear();
         calculateCondition(partialUnique, nextLevel, potentialCondition,
                            currentLevel.get(potentialCondition));
-/*        List<LongArrayList> unsatisfiedClusters = new LinkedList<>();
-        List<LongArrayList>
-            conditions =
-            ConditionalPositionListIndex.calculateConditions(this.getPLI(partialUnique),
-                                                             currentLevel.get(potentialCondition),
-                                                             this.frequency, unsatisfiedClusters);
-
-        if (!unsatisfiedClusters.isEmpty()) {
-          nextLevel.put(potentialCondition, new PositionListIndex(unsatisfiedClusters));
-        }
-        for (LongArrayList validConditions : conditions) {
-          addConditionToResult(partialUnique, potentialCondition, validConditions);
-        }*/
       }
       //TODO what if nextLevel is already empty?
       currentLevel = apprioriGenerate(nextLevel);
@@ -194,6 +181,11 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
         ConditionalPositionListIndex.calculateConditions(this.getPLI(partialUnique),
                                                          conditionPLI,
                                                          this.frequency, unsatisfiedClusters);
+    List<LongArrayList>
+        negatedConditions =
+        ConditionalPositionListIndex
+            .calculateNotConditions(this.getPLI(partialUnique), conditionPLI, this.frequency,
+                                    this.numberOfTuples);
     if (!unsatisfiedClusters.isEmpty()) {
       currentLevel.put(conditionColumn, new PositionListIndex(unsatisfiedClusters));
     }
