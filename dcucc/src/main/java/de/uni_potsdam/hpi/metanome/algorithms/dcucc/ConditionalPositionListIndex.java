@@ -2,10 +2,8 @@ package de.uni_potsdam.hpi.metanome.algorithms.dcucc;
 
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
 
-import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -28,7 +26,7 @@ public class ConditionalPositionListIndex extends PositionListIndex {
    * @return a list of conditions that hold. Each condition is maximal e.g. there exists no superset
    * for the condition. Only on of the condition holds at a time (xor).
    */
-  public static List<LongArrayList> calculateConditions(PositionListIndex partialUnique,
+/*  public static List<LongArrayList> calculateConditions(PositionListIndex partialUnique,
                                                         PositionListIndex PLICondition,
                                                         int frequency,
                                                         List<LongArrayList> unsatisfiedClusters) {
@@ -88,7 +86,7 @@ public class ConditionalPositionListIndex extends PositionListIndex {
       result.add(cluster);
     }
     return result;
-  }
+  }*/
 }
 
 

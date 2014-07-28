@@ -1,19 +1,6 @@
 package de.uni_potsdam.hpi.metanome.algorithms.dcucc;
 
-import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
-
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Before;
-import org.junit.Test;
-
-import java.util.LinkedList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class ConditionalPositionListIndexTest {
 
@@ -27,7 +14,7 @@ public class ConditionalPositionListIndexTest {
   /**
    * Test method for {@link de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex::calculateConditions}
    */
-  @Test
+ /* @Test
   public void testCalculateConditions() {
     //Setup
     PositionListIndex uniquePLI = fixture.getUniquePLIForConditionTest();
@@ -85,5 +72,5 @@ public class ConditionalPositionListIndexTest {
                                     fixture.getNumberOfTuplesEmptyTest());
     //Check result
     assertTrue(actualConditions.isEmpty());
-  }
+  }*/
 }
