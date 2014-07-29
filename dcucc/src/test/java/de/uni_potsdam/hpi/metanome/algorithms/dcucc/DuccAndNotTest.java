@@ -1,6 +1,6 @@
 package de.uni_potsdam.hpi.metanome.algorithms.dcucc;
 
-import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.ConditionalUniqueFixture;
+import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.ConditionalUniqueNotFixture;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -23,7 +23,7 @@ public class DuccAndNotTest {
   @Ignore
   public void testConditionalUniqueFixtureExecuteWithNotConditions() throws Exception {
     //Setup
-    ConditionalUniqueFixture fixture = new ConditionalUniqueFixture();
+    ConditionalUniqueNotFixture fixture = new ConditionalUniqueNotFixture();
     algorithm
         .setRelationalInputConfigurationValue(Dcucc.INPUT_FILE_TAG, fixture.getInputGenerator());
     algorithm.setResultReceiver(fixture.getConditionalUniqueResultReceiver());
