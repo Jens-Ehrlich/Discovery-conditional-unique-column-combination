@@ -145,15 +145,15 @@ public class OrConditionTraverser extends AndConditionTraverser {
         }
       }
     }
+    Long2ObjectOpenHashMap<LongArrayList> purgedResult = new Long2ObjectOpenHashMap<>();
     Iterator<Long> resultIterator = result.keySet().iterator();
     while (resultIterator.hasNext()) {
       long uniqueCluster = resultIterator.next();
-      if (result.get(uniqueCluster).size() == 1) {
-        result.remove(uniqueCluster);
+      if (result.get(uniqueCluster).size() != 1) {
+        purgedResult.put(uniqueCluster, result.get(uniqueCluster));
       }
     }
-
-    return result;
+    return purgedResult;
   }
 
   protected class ConditionTask {

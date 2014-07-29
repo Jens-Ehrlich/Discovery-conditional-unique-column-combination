@@ -651,4 +651,38 @@ public class BridgesFixture {
         new ColumnCombination(c11, c12, c4, c5, c7), new ColumnCondition(c2, "M"),
         new ColumnCondition(c9, "THROUGH")));
   }
+
+  public void verifyConditionalUniqueColumnCombinationOr90() throws CouldNotReceiveResultException {
+
+    ColumnIdentifier
+        c1 = new ColumnIdentifier(this.relationName, this.columnNames.get(0));
+    ColumnIdentifier
+        c2 = new ColumnIdentifier(this.relationName, this.columnNames.get(1));
+    ColumnIdentifier
+        c3 = new ColumnIdentifier(this.relationName, this.columnNames.get(2));
+    ColumnIdentifier
+        c4 = new ColumnIdentifier(this.relationName, this.columnNames.get(3));
+    ColumnIdentifier
+        c5 = new ColumnIdentifier(this.relationName, this.columnNames.get(4));
+    ColumnIdentifier
+        c6 = new ColumnIdentifier(this.relationName, this.columnNames.get(5));
+    ColumnIdentifier
+        c7 = new ColumnIdentifier(this.relationName, this.columnNames.get(6));
+    ColumnIdentifier
+        c8 = new ColumnIdentifier(this.relationName, this.columnNames.get(7));
+    ColumnIdentifier
+        c9 = new ColumnIdentifier(this.relationName, this.columnNames.get(8));
+    ColumnIdentifier
+        c10 = new ColumnIdentifier(this.relationName, this.columnNames.get(9));
+    ColumnIdentifier
+        c11 = new ColumnIdentifier(this.relationName, this.columnNames.get(10));
+    ColumnIdentifier
+        c12 = new ColumnIdentifier(this.relationName, this.columnNames.get(11));
+    ColumnIdentifier
+        c13 = new ColumnIdentifier(this.relationName, this.columnNames.get(12));
+
+    verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
+        new ColumnCombination(c4, c6), new ColumnCondition(c2, "A", "M", "O")));
+
+  }
 }

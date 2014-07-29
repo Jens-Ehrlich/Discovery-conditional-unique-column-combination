@@ -65,6 +65,6 @@ public class DcuccOrTest {
     algorithm.execute();
 
     //verify result
-    //fixture.verifyConditionalUniqueColumnCombination();
+    fixture.verifyConditionalUniqueColumnCombinationOr90();
   }
 }
