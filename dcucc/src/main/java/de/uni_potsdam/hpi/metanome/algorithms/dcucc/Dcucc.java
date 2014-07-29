@@ -61,9 +61,9 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
                               IntegerParameterAlgorithm,
                               BooleanParameterAlgorithm {
 
-  protected static final String INPUT_FILE_TAG = "csvIterator";
-  protected static final String FREQUENCY_TAG = "frequency";
-  protected static final String PERCENTAGE_TAG = "percentage";
+  public static final String INPUT_FILE_TAG = "csvIterator";
+  public static final String FREQUENCY_TAG = "frequency";
+  public static final String PERCENTAGE_TAG = "percentage";
 
   protected int frequency = -1;
   protected int numberOfTuples = -1;

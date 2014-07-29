@@ -6,7 +6,11 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionExcep
 /**
  * @author Jens Hildebrandt
  */
-public class AndOrConditionTraverser implements ConditionLatticeTraverser {
+public class AndOrConditionTraverser extends OrConditionTraverser {
+
+  public AndOrConditionTraverser(Dcucc algorithm) {
+    super(algorithm);
+  }
 
   @Override
   public void iterateConditionLattice(ColumnCombinationBitset partialUnique)

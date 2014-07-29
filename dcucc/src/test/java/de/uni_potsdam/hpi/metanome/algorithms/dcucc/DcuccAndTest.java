@@ -9,10 +9,8 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.CouldNo
 import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.AbaloneFixture;
 import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.AlgorithmTestFixture;
 import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.BridgesFixture;
-import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.ConditionalUniqueFixture;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -21,13 +19,14 @@ import java.io.UnsupportedEncodingException;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class DcuccTest {
+public class DcuccAndTest {
 
   Dcucc algorithm;
 
   @Before
   public void setUp() throws Exception {
     algorithm = new Dcucc();
+    algorithm.conditionLatticeTraverser = new AndConditionTraverser(algorithm);
   }
 
   @Test
@@ -63,22 +62,7 @@ public class DcuccTest {
     fixture.verifyConditionalUniqueColumnCombinationFor3();
   }
 
-  @Test
-  @Ignore
-  public void testConditionalUniqueFixtureExecuteWithNotConditions() throws Exception {
-    //Setup
-    ConditionalUniqueFixture fixture = new ConditionalUniqueFixture();
-    algorithm
-        .setRelationalInputConfigurationValue(Dcucc.INPUT_FILE_TAG, fixture.getInputGenerator());
-    algorithm.setResultReceiver(fixture.getConditionalUniqueResultReceiver());
-    algorithm.setBooleanConfigurationValue(Dcucc.PERCENTAGE_TAG, false);
-    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 3);
-    //Execute
-    algorithm.execute();
 
-    //verify result
-    fixture.verifyConditionalUniqueColumnCombinationFor();
-  }
 
 
   @Test
