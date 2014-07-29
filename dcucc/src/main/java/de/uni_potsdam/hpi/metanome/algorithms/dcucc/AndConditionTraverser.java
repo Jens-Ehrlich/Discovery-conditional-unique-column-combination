@@ -15,11 +15,11 @@ import java.util.Map;
 /**
  * @author Jens Hildebrandt
  */
-public class SimpleAndConditionTraverser implements ConditionLatticeTraverser {
+public class AndConditionTraverser implements ConditionLatticeTraverser {
 
   protected Dcucc algorithm;
 
-  public SimpleAndConditionTraverser(Dcucc algorithm) {
+  public AndConditionTraverser(Dcucc algorithm) {
     this.algorithm = algorithm;
   }
 

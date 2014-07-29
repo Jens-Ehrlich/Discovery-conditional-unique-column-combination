@@ -88,7 +88,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
   public Dcucc() {
     this.foundConditions = new HashSet<>();
-    this.conditionLatticeTraverser = new SimpleAndConditionTraverser(this);
+    this.conditionLatticeTraverser = new AndConditionTraverser(this);
     //this.conditionLatticeTraverser = new OrConditionTraverser(this);
   }
 

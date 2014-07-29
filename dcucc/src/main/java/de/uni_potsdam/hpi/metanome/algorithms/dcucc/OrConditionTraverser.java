@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * @author Jens Hildebrandt
  */
-public class OrConditionTraverser extends SimpleAndConditionTraverser {
+public class OrConditionTraverser extends AndConditionTraverser {
 
   public OrConditionTraverser(Dcucc algorithm) {
     super(algorithm);

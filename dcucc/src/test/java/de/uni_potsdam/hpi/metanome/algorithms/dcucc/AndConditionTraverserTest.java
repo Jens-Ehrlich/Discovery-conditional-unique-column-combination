@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-public class SimpleAndConditionTraverserTest {
+public class AndConditionTraverserTest {
 
   ConditionalPositionListIndexFixture fixture;
 
@@ -31,7 +31,7 @@ public class SimpleAndConditionTraverserTest {
     List<LongArrayList> expectedConditions = fixture.getExpectedConditions();
     //Execute functionality
     List<LongArrayList> unsatisfiedClusters = new LinkedList<>();
-    SimpleAndConditionTraverser traverser = new SimpleAndConditionTraverser(new Dcucc());
+    AndConditionTraverser traverser = new AndConditionTraverser(new Dcucc());
 
     List<LongArrayList>
         actualConditions =
