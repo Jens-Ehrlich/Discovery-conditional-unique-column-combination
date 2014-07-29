@@ -137,6 +137,12 @@ public class ConditionalUniqueAndOrFixture {
         new ConditionalUniqueColumnCombination(new ColumnCombination(A),
                                                new ColumnCondition(B, "1"),
                                                new ColumnCondition(C, "1", "2")));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(A, B),
+                                               new ColumnCondition(C, "1", "2")));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(A, C),
+                                               new ColumnCondition(B, "1")));
     //verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }
 }

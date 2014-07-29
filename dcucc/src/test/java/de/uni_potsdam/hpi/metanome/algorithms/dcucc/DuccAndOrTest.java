@@ -4,7 +4,6 @@ import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.AlgorithmTest
 import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.ConditionalUniqueAndOrFixture;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -37,7 +36,6 @@ public class DuccAndOrTest {
   }
 
   @Test
-  @Ignore
   public void testConditionalUniqueAndOrFixture3() throws Exception {
     //Setup
     ConditionalUniqueAndOrFixture fixture = new ConditionalUniqueAndOrFixture();
