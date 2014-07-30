@@ -2,6 +2,7 @@ package de.uni_potsdam.hpi.metanome.algorithms.dcucc;
 
 import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.AbaloneFixture;
 import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.AlgorithmTestFixture;
+import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.BreastCancerFixture;
 import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.BridgesFixture;
 import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.ConditionalUniqueAndOrFixture;
 
@@ -83,5 +84,21 @@ public class DuccAndOrTest {
 
     //verify result
     //fixture.verifyConditionalUniqueColumnCombination();
+  }
+
+  @Test
+  public void testBreastCancerFixtureExecute() throws Exception {
+    //Setup
+    BreastCancerFixture fixture = new BreastCancerFixture();
+    algorithm
+        .setRelationalInputConfigurationValue(Dcucc.INPUT_FILE_TAG, fixture.getInputGenerator());
+    algorithm.setResultReceiver(fixture.getCUCCResultReceiver());
+    algorithm.setBooleanConfigurationValue(Dcucc.PERCENTAGE_TAG, true);
+    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 50);
+    //Execute
+    algorithm.execute();
+
+    //verify result
+    fixture.verifyConditionalUniqueColumnCombinationAndOr();
   }
 }
