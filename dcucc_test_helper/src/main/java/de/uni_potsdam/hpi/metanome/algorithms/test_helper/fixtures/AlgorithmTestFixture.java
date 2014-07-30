@@ -507,6 +507,6 @@ public class AlgorithmTestFixture {
         new ConditionalUniqueColumnCombination(new ColumnCombination(begin, cap, day),
                                                new ColumnCondition(room, "A2", "I10")));
 
-    verifyNoMoreInteractions(conditionalUniqueResultReceiver);
+//    verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }
 }

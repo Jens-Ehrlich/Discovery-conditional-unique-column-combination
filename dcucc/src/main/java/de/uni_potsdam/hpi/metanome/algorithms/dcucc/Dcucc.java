@@ -13,11 +13,13 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.Boolean
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.ConditionalUniqueColumnCombinationAlgorithm;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.FileInputParameterAlgorithm;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.IntegerParameterAlgorithm;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.ListBoxParameterAlgorithm;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.algorithm_types.RelationalInputParameterAlgorithm;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.configuration.ConfigurationSpecification;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.configuration.ConfigurationSpecificationBoolean;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.configuration.ConfigurationSpecificationCsvFile;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.configuration.ConfigurationSpecificationInteger;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.configuration.ConfigurationSpecificationListBox;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.FileInputGenerator;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
@@ -59,12 +61,15 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
                               FileInputParameterAlgorithm,
                               RelationalInputParameterAlgorithm,
                               IntegerParameterAlgorithm,
-                              BooleanParameterAlgorithm {
+                              BooleanParameterAlgorithm,
+                              ListBoxParameterAlgorithm {
 
   public static final String INPUT_FILE_TAG = "csvIterator";
   public static final String FREQUENCY_TAG = "frequency";
   public static final String PERCENTAGE_TAG = "percentage";
+  public static final String ALGORITHM_TAG = "algorithm_type";
 
+  protected String algorithmDescription = "";
   protected int frequency = -1;
   protected int numberOfTuples = -1;
   protected int numberOfColumns = -1;
@@ -72,28 +77,38 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   protected List<PositionListIndex> basePLI;
   protected List<ColumnCombinationBitset> baseColumn;
   protected ConditionLatticeTraverser conditionLatticeTraverser;
-
   protected ImmutableList<ColumnCombinationBitset> uccs;
   protected ImmutableList<ColumnCombinationBitset> partialUccs;
   protected Map<ColumnCombinationBitset, PositionListIndex> pliMap;
   protected Set<Condition> foundConditions;
-
   protected SuperSetGraph lowerPruningGraph;
   protected SubSetGraph upperPruningGraph;
   protected SubSetGraph conditionMinimalityGraph;
   protected RelationalInput input;
   protected RelationalInputGenerator inputGenerator;
   protected ConditionalUniqueColumnCombinationResultReceiver resultReceiver;
+  Map<String, ConditionLatticeTraverser> algorithmDescriptionMap;
   List<Map<Long, String>> inputMap;
 
   public Dcucc() {
     this.foundConditions = new HashSet<>();
-    this.conditionLatticeTraverser = new AndConditionTraverser(this);
+//    this.conditionLatticeTraverser = new AndConditionTraverser(this);
     //this.conditionLatticeTraverser = new OrConditionTraverser(this);
+    algorithmDescriptionMap = new HashMap<>();
+    algorithmDescriptionMap.put("SingleValueSingleCondition", new SimpleConditionTraverser(this));
+    algorithmDescriptionMap.put("MultipleValueSingleCondition", new OrConditionTraverser(this));
+    algorithmDescriptionMap.put("SingleValueMultipleCondition", new AndConditionTraverser(this));
+    algorithmDescriptionMap
+        .put("MultipleValueMultipleCondition", new AndOrConditionTraverser(this));
+
   }
 
   @Override
   public void execute() throws AlgorithmExecutionException {
+
+    if (this.algorithmDescription != "") {
+      this.conditionLatticeTraverser = this.algorithmDescriptionMap.get(this.algorithmDescription);
+    }
     long start = System.nanoTime();
     RelationalInput input = this.calculateInput();
     this.createBaseColumns(input);
@@ -419,7 +434,24 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
         percentage =
         new ConfigurationSpecificationBoolean(PERCENTAGE_TAG);
     spec.add(percentage);
+
+    ArrayList<String> algorithmOptions = new ArrayList<>();
+    algorithmOptions.addAll(this.algorithmDescriptionMap.keySet());
+    ConfigurationSpecificationListBox
+        listBox =
+        new ConfigurationSpecificationListBox(ALGORITHM_TAG, algorithmOptions);
+    spec.add(listBox);
     return spec;
+  }
+
+  @Override
+  public void setListBoxConfigurationValue(String identifier, String... selectedValues)
+      throws AlgorithmConfigurationException {
+    if (identifier.equals(ALGORITHM_TAG)) {
+      this.algorithmDescription = selectedValues[0];
+    } else {
+      throw new AlgorithmConfigurationException("Operation should not be called");
+    }
   }
 }
 
