@@ -5,7 +5,7 @@ import org.junit.Before;
 /**
  * @author Jens Hildebrandt
  */
-public class DuccSimpleTest {
+public class DcuccSimpleTest {
 
   Dcucc algorithm;
 

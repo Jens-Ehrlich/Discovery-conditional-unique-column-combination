@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * @author Jens Hildebrandt
  */
-public class DuccAndNotTest {
+public class DcuccAndNotTest {
 
   Dcucc algorithm;
 

@@ -12,7 +12,7 @@ import org.junit.Test;
 /**
  * @author Jens Hildebrandt
  */
-public class DuccAndOrTest {
+public class DcuccAndOrTest {
 
   Dcucc algorithm;
 
