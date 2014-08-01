@@ -25,9 +25,11 @@ public class PartialUniqueTest {
         ducc =
         new DuccAlgorithm(input.relationName(), input.columnNames(),
                           fixture.getUCCResultReceiver());
-    ducc.setRawKeyError(10);
+    ducc.setRawKeyError(152);
     PLIBuilder builder = new PLIBuilder(input);
     ducc.run(builder.getPLIList());
+
+    fixture.verifyConditionalUniqueColumnCombination();
   }
 
 }
