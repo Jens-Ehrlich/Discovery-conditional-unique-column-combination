@@ -18,12 +18,50 @@ import java.util.Map;
  */
 public class AndOrConditionTraverser extends OrConditionTraverser {
 
-  Map<ColumnCombinationBitset, Map<ColumnCombinationBitset, Long2ObjectOpenHashMap<LongArrayList>>>
-      clusterCombinationMap =
-      new HashMap<>();
+  Map<ColumnCombinationBitset, List<ConditionEntry>> singleConditions;
 
   public AndOrConditionTraverser(Dcucc algorithm) {
     super(algorithm);
+  }
+
+  @Override
+  public void iterateConditionLattice(ColumnCombinationBitset partialUnique)
+      throws AlgorithmExecutionException {
+    singleConditions = new HashMap<>();
+    Map<ColumnCombinationBitset, PositionListIndex> currentLevel = new HashMap<>();
+
+    //calculate first level - initialisation
+    for (ColumnCombinationBitset conditionColumn : this.algorithm.baseColumn) {
+      //TODO better way to prune this columns
+      if (partialUnique.containsColumn(conditionColumn.getSetBits().get(0))) {
+        continue;
+      }
+      calculateCondition(partialUnique, currentLevel, conditionColumn,
+                         this.algorithm.getPLI(conditionColumn));
+    }
+
+    currentLevel = apprioriGenerate(currentLevel);
+
+    Map<ColumnCombinationBitset, PositionListIndex> nextLevel = new HashMap<>();
+    while (!currentLevel.isEmpty()) {
+      for (ColumnCombinationBitset potentialCondition : currentLevel.keySet()) {
+        nextLevel.clear();
+        calculateCondition(partialUnique, nextLevel, potentialCondition,
+                           currentLevel.get(potentialCondition));
+      }
+      //TODO what if nextLevel is already empty?
+      currentLevel = apprioriGenerate(nextLevel);
+    }
+
+    //return result
+
+    for (ColumnCombinationBitset condition : this.singleConditions.keySet()) {
+      Long2ObjectOpenHashMap<ConditionEntry> intersectingCluster = new Long2ObjectOpenHashMap<>();
+      for (ConditionEntry singleCluster : this.singleConditions.get(condition)) {
+
+      }
+
+    }
   }
 
   @Override
@@ -32,147 +70,80 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
                                     ColumnCombinationBitset conditionColumn,
                                     PositionListIndex conditionPLI) throws
                                                                     AlgorithmExecutionException {
-    boolean isLevelOne = conditionColumn.size() == 1;
-    PositionListIndex partialUniquePLI = this.algorithm.getPLI(partialUnique);
     List<LongArrayList> unsatisfiedClusters = new LinkedList<>();
-    //not first level
-    if (!isLevelOne) {
-      //check if new matching clusters exist
-      if (!this.checkForMatchingClusters(partialUniquePLI, conditionPLI, unsatisfiedClusters)) {
-        if (!unsatisfiedClusters.isEmpty()) {
-          currentLevel.put(conditionColumn, new PositionListIndex(unsatisfiedClusters));
-        }
-        return;
-      } else {
-        conditionPLI = this.algorithm.getPLI(conditionColumn);
-      }
-
-    }
-
     //check which conditions hold
     List<LongArrayList>
         conditions =
-        this.calculateConditions(partialUniquePLI,
+        this.calculateConditions(this.algorithm.getPLI(partialUnique),
                                  conditionPLI,
                                  this.algorithm.frequency,
                                  unsatisfiedClusters);
-    if (isLevelOne) {
-      if (!unsatisfiedClusters.isEmpty()) {
-        currentLevel.put(conditionColumn, new PositionListIndex(unsatisfiedClusters));
-      }
-    }
-    if (!isLevelOne) {
-      //FIXME purge not minimal Results
-      this.filterNonValidConditions(conditionColumn, conditions);
+
+    if (!unsatisfiedClusters.isEmpty()) {
+      currentLevel.put(conditionColumn, new PositionListIndex(unsatisfiedClusters));
     }
 
-    for (LongArrayList condition : conditions) {
-      this.algorithm.addConditionToResult(partialUnique, conditionColumn, condition);
+    List<ConditionEntry> clusters = new LinkedList<>();
+    for (LongArrayList cluster : conditions) {
+      clusters.add(new ConditionEntry(conditionColumn, cluster));
     }
+
+    for (ColumnCombinationBitset singeConditionColumn : conditionColumn
+        .getContainedOneColumnCombinations()) {
+      List<ConditionEntry> existingCluster;
+      if (singleConditions.containsKey(singeConditionColumn)) {
+        existingCluster = singleConditions.get(singeConditionColumn);
+      } else {
+        existingCluster = new LinkedList<>();
+        singleConditions.put(singeConditionColumn, existingCluster);
+      }
+      existingCluster.addAll(clusters);
+    }
+
+//    for (LongArrayList condition : conditions) {
+//      this.algorithm.addConditionToResult(partialUnique, conditionColumn, condition);
+//    }
   }
 
-  protected void filterNonValidConditions(ColumnCombinationBitset conditionColumns,
-                                          List<LongArrayList> conditions)
-      throws AlgorithmExecutionException {
-    Map<ColumnCombinationBitset, Long2LongOpenHashMap> columnPLIHashMap = new HashMap<>();
-    Map<ColumnCombinationBitset, Map<ColumnCombinationBitset, Long2ObjectOpenHashMap<LongArrayList>>>
-        currentClusterCombinations =
-        new HashMap<>();
-
-    for (ColumnCombinationBitset currentColumn : conditionColumns
-        .getContainedOneColumnCombinations()) {
-      columnPLIHashMap.put(currentColumn, this.algorithm.getPLI(currentColumn).asHashMap());
-    }
-    //build clusterCombinationMap
-    for (LongArrayList condition : conditions) {
-      for (long rowNumber : condition) {
-        for (ColumnCombinationBitset currentColumn : conditionColumns
-            .getContainedOneColumnCombinations()) {
-          long currentClusterNumber = columnPLIHashMap.get(currentColumn).get(rowNumber);
-          for (ColumnCombinationBitset otherColumns : conditionColumns.minus(currentColumn)
-              .getContainedOneColumnCombinations()) {
-            if (currentClusterCombinations.containsKey(currentColumn)) {
-              Map<ColumnCombinationBitset, Long2ObjectOpenHashMap<LongArrayList>>
-                  currentClusterMap =
-                  currentClusterCombinations.get(currentColumn);
-              updateClusterMap(columnPLIHashMap, rowNumber, currentClusterNumber, otherColumns,
-                               currentClusterMap);
-            } else {
-              Map<ColumnCombinationBitset, Long2ObjectOpenHashMap<LongArrayList>>
-                  currentClusterMap =
-                  new HashMap<>();
-              updateClusterMap(columnPLIHashMap, rowNumber, currentClusterNumber, otherColumns,
-                               currentClusterMap);
-              currentClusterCombinations.put(currentColumn, currentClusterMap);
-            }
+  public List<LongArrayList> calculateConditions(PositionListIndex partialUnique,
+                                                 PositionListIndex PLICondition,
+                                                 int frequency,
+                                                 List<LongArrayList> unsatisfiedClusters) {
+    List<LongArrayList> result = new LinkedList<>();
+    Long2LongOpenHashMap uniqueHashMap = partialUnique.asHashMap();
+    LongArrayList touchedClusters = new LongArrayList();
+    nextCluster:
+    for (LongArrayList cluster : PLICondition.getClusters()) {
+      int unsatisfactionCount = 0;
+      touchedClusters.clear();
+      for (long rowNumber : cluster) {
+        if (uniqueHashMap.containsKey(rowNumber)) {
+          if (touchedClusters.contains(uniqueHashMap.get(rowNumber))) {
+            unsatisfactionCount++;
+          } else {
+            touchedClusters.add(uniqueHashMap.get(rowNumber));
           }
         }
       }
-    }
-    for (ColumnCombinationBitset currentColumn : conditionColumns
-        .getContainedOneColumnCombinations()) {
-      for (ColumnCombinationBitset otherColumns : conditionColumns.minus(currentColumn)
-          .getContainedOneColumnCombinations()) {
-        Long2ObjectOpenHashMap<LongArrayList>
-            actualClusterMap =
-            currentClusterCombinations.get(currentColumn).get(otherColumns);
-        for (long actualCluster : actualClusterMap.keySet()) {
-          for (long actualTouchedClusters : actualClusterMap.get(actualCluster)) {
-
-          }
+      if (unsatisfactionCount == 0) {
+        result.add(cluster);
+      } else {
+        if ((cluster.size() - unsatisfactionCount) >= frequency) {
+          unsatisfiedClusters.add(cluster);
         }
       }
     }
+    return result;
   }
 
-  protected void updateClusterMap(
-      Map<ColumnCombinationBitset, Long2LongOpenHashMap> columnPLIHashMap, long rowNumber,
-      long currentClusterNumber, ColumnCombinationBitset otherColumns,
-      Map<ColumnCombinationBitset, Long2ObjectOpenHashMap<LongArrayList>> currentClusterMap) {
-    if (currentClusterMap.containsKey(otherColumns)) {
-      Long2ObjectOpenHashMap<LongArrayList>
-          currentClusterToClusterMap =
-          currentClusterMap.get(otherColumns);
-      updateOtherClusterNumber(columnPLIHashMap, rowNumber, currentClusterNumber,
-                               otherColumns,
-                               currentClusterToClusterMap);
-    } else {
-      Long2ObjectOpenHashMap<LongArrayList>
-          currentClusterToClusterMap =
-          new Long2ObjectOpenHashMap<LongArrayList>();
-      updateOtherClusterNumber(columnPLIHashMap, rowNumber, currentClusterNumber,
-                               otherColumns,
-                               currentClusterToClusterMap);
-      currentClusterMap.put(otherColumns, currentClusterToClusterMap);
+  protected class ConditionEntry {
+
+    public ColumnCombinationBitset condition;
+    public LongArrayList cluster;
+
+    public ConditionEntry(ColumnCombinationBitset condition, LongArrayList cluster) {
+      this.condition = condition;
+      this.cluster = cluster;
     }
-  }
-
-  protected void updateOtherClusterNumber(
-      Map<ColumnCombinationBitset, Long2LongOpenHashMap> columnPLIHashMap, long rowNumber,
-      long currentClusterNumber, ColumnCombinationBitset otherColumns,
-      Long2ObjectOpenHashMap<LongArrayList> currentClusterToClusterMap) {
-    long otherClusterNumber = columnPLIHashMap.get(otherColumns).get(rowNumber);
-    if (currentClusterToClusterMap.containsKey(currentClusterNumber)) {
-      LongArrayList touchedCluster = currentClusterToClusterMap.get(currentClusterNumber);
-      if (!touchedCluster.contains(otherClusterNumber)) {
-        touchedCluster.add(otherClusterNumber);
-      }
-    } else {
-      LongArrayList touchedCluster = new LongArrayList();
-      touchedCluster.add(otherClusterNumber);
-      currentClusterToClusterMap.put(currentClusterNumber, touchedCluster);
-    }
-  }
-
-
-  protected boolean checkForMatchingClusters(PositionListIndex partialUniquePLI,
-                                             PositionListIndex conditionPLI,
-                                             List<LongArrayList> unsatisfiedCluster) {
-
-    List<LongArrayList> satisfiedCluster = new LinkedList<>();
-    this.purgePossibleConditions(partialUniquePLI.asHashMap(), conditionPLI.asHashMap(),
-                                 conditionPLI, satisfiedCluster, unsatisfiedCluster);
-
-    return !satisfiedCluster.isEmpty();
   }
 }

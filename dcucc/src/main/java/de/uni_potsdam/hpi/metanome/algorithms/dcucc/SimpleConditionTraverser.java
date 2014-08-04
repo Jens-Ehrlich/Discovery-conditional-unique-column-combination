@@ -37,6 +37,7 @@ public class SimpleConditionTraverser implements ConditionLatticeTraverser {
       calculateCondition(partialUnique, currentLevel, conditionColumn,
                          this.algorithm.getPLI(conditionColumn));
     }
+    //Intentionally nothing is done with the currentLevel as no complex conditions should be traversed
   }
 
   protected void calculateCondition(ColumnCombinationBitset partialUnique,
