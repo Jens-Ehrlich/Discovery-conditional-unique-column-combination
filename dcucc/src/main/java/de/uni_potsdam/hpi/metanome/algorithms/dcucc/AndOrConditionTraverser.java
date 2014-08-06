@@ -52,15 +52,30 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
       //TODO what if nextLevel is already empty?
       currentLevel = apprioriGenerate(nextLevel);
     }
-
+    LongArrayList touchedCluster = new LongArrayList();
     //return result
-
+    Long2LongOpenHashMap partialUniqueHash = this.algorithm.getPLI(partialUnique).asHashMap();
     for (ColumnCombinationBitset condition : this.singleConditions.keySet()) {
-      Long2ObjectOpenHashMap<ConditionEntry> intersectingCluster = new Long2ObjectOpenHashMap<>();
+      Long2ObjectOpenHashMap<LongArrayList> intersectingCluster = new Long2ObjectOpenHashMap<>();
+
       for (ConditionEntry singleCluster : this.singleConditions.get(condition)) {
+        touchedCluster.clear();
+        for (long rowNumber : singleCluster.cluster) {
+          if (partialUniqueHash.containsKey(rowNumber)) {
+            touchedCluster.add(partialUniqueHash.get(rowNumber));
+          }
+        }
 
+        for (long partialUniqueClusterNumber : touchedCluster) {
+          if (intersectingCluster.containsKey(partialUniqueClusterNumber)) {
+            intersectingCluster.get(partialUniqueClusterNumber).add(singleCluster.clusterNumber);
+          } else {
+            LongArrayList newConditionClusterNumbers = new LongArrayList();
+            newConditionClusterNumbers.add(singleCluster.clusterNumber);
+            intersectingCluster.put(partialUniqueClusterNumber, newConditionClusterNumbers);
+          }
+        }
       }
-
     }
   }
 
@@ -82,10 +97,12 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
     if (!unsatisfiedClusters.isEmpty()) {
       currentLevel.put(conditionColumn, new PositionListIndex(unsatisfiedClusters));
     }
+    Long2LongOpenHashMap conditionHashMap = conditionPLI.asHashMap();
 
     List<ConditionEntry> clusters = new LinkedList<>();
     for (LongArrayList cluster : conditions) {
-      clusters.add(new ConditionEntry(conditionColumn, cluster));
+      clusters
+          .add(new ConditionEntry(conditionColumn, cluster, conditionHashMap.get(cluster.get(0))));
     }
 
     for (ColumnCombinationBitset singeConditionColumn : conditionColumn
@@ -140,10 +157,13 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
 
     public ColumnCombinationBitset condition;
     public LongArrayList cluster;
+    public long clusterNumber;
 
-    public ConditionEntry(ColumnCombinationBitset condition, LongArrayList cluster) {
+    public ConditionEntry(ColumnCombinationBitset condition, LongArrayList cluster,
+                          long clusterNumber) {
       this.condition = condition;
       this.cluster = cluster;
+      this.clusterNumber = clusterNumber;
     }
   }
 }
