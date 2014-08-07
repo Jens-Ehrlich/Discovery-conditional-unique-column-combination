@@ -62,6 +62,35 @@ public class DcuccSimpleTest {
         assertEquals(pliHash.get(row), pliCopyHash.get(row));
       }
     }
+  }
 
+  @Test
+  public void pliHashmapTest2()
+      throws CouldNotReceiveResultException, UnsupportedEncodingException, FileNotFoundException,
+             InputGenerationException, InputIterationException {
+    //Setup
+    AbaloneFixture fixture = new AbaloneFixture();
+    RelationalInput input = fixture.getInputGenerator().generateNewCopy();
+    PLIBuilder builder = new PLIBuilder(input);
+    List<PositionListIndex> pliList = builder.getPLIList();
+
+    List<Long2LongOpenHashMap> pliListCopy = new ArrayList<>();
+    for (int i = 0; i < pliList.size(); i++) {
+      pliListCopy.add(i, pliList.get(i).asHashMap());
+    }
+
+    for (int i = 0; i < pliList.size(); i++) {
+      PositionListIndex pli = pliList.get(i);
+
+      Long2LongOpenHashMap pliHash = pli.asHashMap();
+      Long2LongOpenHashMap pliCopyHash = pliListCopy.get(i);
+
+      assertEquals(pliHash, pliCopyHash);
+      assertEquals(pliHash.keySet(), pliCopyHash.keySet());
+
+      for (long row : pliHash.keySet()) {
+        assertEquals(pliHash.get(row), pliCopyHash.get(row));
+      }
+    }
   }
 }

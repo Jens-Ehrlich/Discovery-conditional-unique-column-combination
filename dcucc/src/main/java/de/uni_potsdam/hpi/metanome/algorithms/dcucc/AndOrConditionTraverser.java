@@ -52,14 +52,14 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
       //TODO what if nextLevel is already empty?
       currentLevel = apprioriGenerate(nextLevel);
     }
-    LongArrayList touchedCluster = new LongArrayList();
     //return result
+    LongArrayList touchedCluster = new LongArrayList();
     Long2LongOpenHashMap partialUniqueHash = this.algorithm.getPLI(partialUnique).asHashMap();
     for (ColumnCombinationBitset condition : this.singleConditions.keySet()) {
       List<LongArrayList> satisfiedCluster = new LinkedList();
       Long2ObjectOpenHashMap<LongArrayList> intersectingCluster = new Long2ObjectOpenHashMap<>();
       Long2ObjectOpenHashMap<ConditionEntry> clusterToEntryMap = new Long2ObjectOpenHashMap<>();
-      //TODO build a map from cluster ->Condition Entry
+      //build intersecting cluster
       for (ConditionEntry singleCluster : this.singleConditions.get(condition)) {
         clusterToEntryMap.put(singleCluster.clusterNumber, singleCluster);
         satisfiedCluster.add(singleCluster.cluster);
@@ -80,17 +80,31 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
           }
         }
       }
+      intersectingCluster = purgeIntersectingClusterEntries(intersectingCluster);
+
+
       List<LongArrayList>
           clustergroups =
           this.combineClusters(this.algorithm.frequency, satisfiedCluster, intersectingCluster);
       for (LongArrayList clusterNumbers : clustergroups) {
+        Map<ColumnCombinationBitset, LongArrayList> conditionMap = new HashMap<>();
         for (long clusterNumber : clusterNumbers) {
+          ConditionEntry entry = clusterToEntryMap.get(clusterNumber);
+          if (conditionMap.containsKey(entry.condition)) {
+            LongArrayList cluster = conditionMap.get(entry.condition);
+            cluster.addAll(entry.cluster);
+          } else {
+            conditionMap.put(entry.condition, entry.cluster);
+          }
           //this.algorithm.addConditionToResult(partialUnique, );
         }
+
+        Condition resultCondition = new Condition(partialUnique, conditionMap);
       }
     }
   }
 
+  @Override
   protected List<LongArrayList> combineClusters(int frequency,
                                                 List<LongArrayList> satisfiedClusters,
                                                 Long2ObjectOpenHashMap<LongArrayList> intersectingClusters) {
@@ -174,6 +188,9 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
           .add(new ConditionEntry(conditionColumn, cluster, conditionHashMap.get(cluster.get(0))));
     }
 
+    if (clusters.isEmpty()) {
+      return;
+    }
     for (ColumnCombinationBitset singeConditionColumn : conditionColumn
         .getContainedOneColumnCombinations()) {
       List<ConditionEntry> existingCluster;
@@ -230,8 +247,8 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
 
     public ConditionEntry(ColumnCombinationBitset condition, LongArrayList cluster,
                           long clusterNumber) {
-      this.condition = condition;
-      this.cluster = cluster;
+      this.condition = new ColumnCombinationBitset(condition);
+      this.cluster = cluster.clone();
       this.clusterNumber = clusterNumber;
     }
   }

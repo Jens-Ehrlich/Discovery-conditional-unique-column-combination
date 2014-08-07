@@ -151,6 +151,11 @@ public class OrConditionTraverser extends AndConditionTraverser {
         }
       }
     }
+    return purgeIntersectingClusterEntries(result);
+  }
+
+  protected Long2ObjectOpenHashMap<LongArrayList> purgeIntersectingClusterEntries(
+      Long2ObjectOpenHashMap<LongArrayList> result) {
     Long2ObjectOpenHashMap<LongArrayList> purgedResult = new Long2ObjectOpenHashMap<>();
     Iterator<Long> resultIterator = result.keySet().iterator();
     while (resultIterator.hasNext()) {
