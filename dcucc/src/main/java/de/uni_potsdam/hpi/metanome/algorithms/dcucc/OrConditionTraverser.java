@@ -55,6 +55,13 @@ public class OrConditionTraverser extends AndConditionTraverser {
         intersectingClusters =
         this.purgePossibleConditions(uniqueMap, conditionMap, PLICondition, satisfiedClusters,
                                      unsatisfiedClusters);
+
+    return combineClusters(frequency, satisfiedClusters, intersectingClusters);
+  }
+
+  protected List<LongArrayList> combineClusters(int frequency,
+                                                List<LongArrayList> satisfiedClusters,
+                                                Long2ObjectOpenHashMap<LongArrayList> intersectingClusters) {
     List<LongArrayList> result = new LinkedList<>();
     LinkedList<ConditionTask> queue = new LinkedList();
     LongArrayList satisfiedClusterNumbers = new LongArrayList();
@@ -108,7 +115,6 @@ public class OrConditionTraverser extends AndConditionTraverser {
         }
       }
     }
-
     return result;
   }
 

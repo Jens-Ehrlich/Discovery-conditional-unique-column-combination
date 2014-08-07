@@ -56,9 +56,13 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
     //return result
     Long2LongOpenHashMap partialUniqueHash = this.algorithm.getPLI(partialUnique).asHashMap();
     for (ColumnCombinationBitset condition : this.singleConditions.keySet()) {
+      List<LongArrayList> satisfiedCluster = new LinkedList();
       Long2ObjectOpenHashMap<LongArrayList> intersectingCluster = new Long2ObjectOpenHashMap<>();
-
+      Long2ObjectOpenHashMap<ConditionEntry> clusterToEntryMap = new Long2ObjectOpenHashMap<>();
+      //TODO build a map from cluster ->Condition Entry
       for (ConditionEntry singleCluster : this.singleConditions.get(condition)) {
+        clusterToEntryMap.put(singleCluster.clusterNumber, singleCluster);
+        satisfiedCluster.add(singleCluster.cluster);
         touchedCluster.clear();
         for (long rowNumber : singleCluster.cluster) {
           if (partialUniqueHash.containsKey(rowNumber)) {
@@ -76,7 +80,72 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
           }
         }
       }
+      List<LongArrayList>
+          clustergroups =
+          this.combineClusters(this.algorithm.frequency, satisfiedCluster, intersectingCluster);
+      for (LongArrayList clusterNumbers : clustergroups) {
+        for (long clusterNumber : clusterNumbers) {
+          //this.algorithm.addConditionToResult(partialUnique, );
+        }
+      }
     }
+  }
+
+  protected List<LongArrayList> combineClusters(int frequency,
+                                                List<LongArrayList> satisfiedClusters,
+                                                Long2ObjectOpenHashMap<LongArrayList> intersectingClusters) {
+    List<LongArrayList> result = new LinkedList<>();
+    LinkedList<ConditionTask> queue = new LinkedList();
+    LongArrayList satisfiedClusterNumbers = new LongArrayList();
+    long totalSize = 0;
+    int i = 0;
+    for (LongArrayList clusters : satisfiedClusters) {
+      //satisfiedClusterNumbers.add(conditionMap.get(clusters.get(0)));
+      satisfiedClusterNumbers.add(i);
+      i++;
+      totalSize = totalSize + clusters.size();
+    }
+    if (totalSize < frequency) {
+      return result;
+    }
+
+    LongArrayList
+        uniqueClusterNumbers =
+        new LongArrayList(intersectingClusters.keySet().toLongArray());
+    ConditionTask
+        firstTask =
+        new ConditionTask(0, satisfiedClusterNumbers, new LongArrayList(), totalSize);
+    queue.add(firstTask);
+
+    while (!queue.isEmpty()) {
+      ConditionTask currentTask = queue.remove();
+
+      if (currentTask.uniqueClusterNumber >= uniqueClusterNumbers.size()) {
+        LongArrayList validCondition = new LongArrayList();
+        validCondition.addAll(currentTask.conditionClusters);
+        result.add(validCondition);
+        continue;
+      }
+      for (long conditionCluster : currentTask.conditionClusters) {
+        if (intersectingClusters.get(uniqueClusterNumbers.get(currentTask.uniqueClusterNumber))
+            .contains(conditionCluster)) {
+          ConditionTask newTask = currentTask.generateNextTask();
+          if (newTask.remove(conditionCluster, satisfiedClusters.get((int) conditionCluster).size(),
+                             frequency)) {
+            queue.add(newTask);
+          }
+        }
+      }
+      for (long removedConditionCluster : currentTask.removedConditionClusters) {
+        if (intersectingClusters.get((uniqueClusterNumbers.get(currentTask.uniqueClusterNumber)))
+            .contains(removedConditionCluster)) {
+          ConditionTask newTask = currentTask.generateNextTask();
+          queue.add(newTask);
+          break;
+        }
+      }
+    }
+    return result;
   }
 
   @Override
