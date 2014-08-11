@@ -13,6 +13,7 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * @author Jens Hildebrandt
@@ -41,7 +42,7 @@ public class Condition {
             "only a single column was expected for a conditional, but multiple were found");
       }
 
-      List<String> conditionValues = new LinkedList<>();
+      TreeSet<String> conditionValues = new TreeSet<>();
       for (Long index : this.conditions.get(conditionColumn)) {
         //TODO add correct strings
         conditionValues.add(valuesMap.get(conditionColumn.getSetBits().get(0)).get(index));
