@@ -61,7 +61,7 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
       Long2ObjectOpenHashMap<ConditionEntry> clusterToEntryMap = new Long2ObjectOpenHashMap<>();
       //build intersecting cluster
       for (ConditionEntry singleCluster : this.singleConditions.get(condition)) {
-        clusterToEntryMap.put(singleCluster.clusterNumber, singleCluster);
+        clusterToEntryMap.put(singleCluster.firstValue, singleCluster);
         satisfiedCluster.add(singleCluster.cluster);
         touchedCluster.clear();
         for (long rowNumber : singleCluster.cluster) {
@@ -72,10 +72,10 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
 
         for (long partialUniqueClusterNumber : touchedCluster) {
           if (intersectingCluster.containsKey(partialUniqueClusterNumber)) {
-            intersectingCluster.get(partialUniqueClusterNumber).add(singleCluster.clusterNumber);
+            intersectingCluster.get(partialUniqueClusterNumber).add(singleCluster.cluster.get(0));
           } else {
             LongArrayList newConditionClusterNumbers = new LongArrayList();
-            newConditionClusterNumbers.add(singleCluster.clusterNumber);
+            newConditionClusterNumbers.add(singleCluster.cluster.get(0));
             intersectingCluster.put(partialUniqueClusterNumber, newConditionClusterNumbers);
           }
         }
@@ -185,7 +185,7 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
     List<ConditionEntry> clusters = new LinkedList<>();
     for (LongArrayList cluster : conditions) {
       clusters
-          .add(new ConditionEntry(conditionColumn, cluster, conditionHashMap.get(cluster.get(0))));
+          .add(new ConditionEntry(conditionColumn, cluster));
     }
 
     if (clusters.isEmpty()) {
@@ -243,13 +243,10 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
 
     public ColumnCombinationBitset condition;
     public LongArrayList cluster;
-    public long clusterNumber;
 
-    public ConditionEntry(ColumnCombinationBitset condition, LongArrayList cluster,
-                          long clusterNumber) {
+    public ConditionEntry(ColumnCombinationBitset condition, LongArrayList cluster) {
       this.condition = new ColumnCombinationBitset(condition);
       this.cluster = cluster.clone();
-      this.clusterNumber = clusterNumber;
     }
   }
 }
