@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,13 +57,13 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
     LongArrayList touchedCluster = new LongArrayList();
     Long2LongOpenHashMap partialUniqueHash = this.algorithm.getPLI(partialUnique).asHashMap();
     for (ColumnCombinationBitset condition : this.singleConditions.keySet()) {
-      List<LongArrayList> satisfiedCluster = new LinkedList();
+      List<ConditionEntry> satisfiedCluster = new ArrayList<>();
       Long2ObjectOpenHashMap<LongArrayList> intersectingCluster = new Long2ObjectOpenHashMap<>();
-      Long2ObjectOpenHashMap<ConditionEntry> clusterToEntryMap = new Long2ObjectOpenHashMap<>();
+//      Long2ObjectOpenHashMap<ConditionEntry> clusterToEntryMap = new Long2ObjectOpenHashMap<>();
       //build intersecting cluster
       for (ConditionEntry singleCluster : this.singleConditions.get(condition)) {
-        clusterToEntryMap.put(singleCluster.firstValue, singleCluster);
-        satisfiedCluster.add(singleCluster.cluster);
+//        clusterToEntryMap.put(singleCluster.cluster.get(0), singleCluster);
+        satisfiedCluster.add(singleCluster);
         touchedCluster.clear();
         for (long rowNumber : singleCluster.cluster) {
           if (partialUniqueHash.containsKey(rowNumber)) {
@@ -82,42 +83,43 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
       }
       intersectingCluster = purgeIntersectingClusterEntries(intersectingCluster);
 
-
-      List<LongArrayList>
+      List<List<ConditionEntry>>
           clustergroups =
-          this.combineClusters(this.algorithm.frequency, satisfiedCluster, intersectingCluster);
-      for (LongArrayList clusterNumbers : clustergroups) {
+          this.combineClustersAndOr(this.algorithm.frequency, satisfiedCluster,
+                                    intersectingCluster);
+
+      for (List<ConditionEntry> singleCondition : clustergroups) {
         Map<ColumnCombinationBitset, LongArrayList> conditionMap = new HashMap<>();
-        for (long clusterNumber : clusterNumbers) {
-          ConditionEntry entry = clusterToEntryMap.get(clusterNumber);
+        for (ConditionEntry entry : singleCondition) {
           if (conditionMap.containsKey(entry.condition)) {
             LongArrayList cluster = conditionMap.get(entry.condition);
             cluster.addAll(entry.cluster);
           } else {
             conditionMap.put(entry.condition, entry.cluster);
           }
-          //this.algorithm.addConditionToResult(partialUnique, );
         }
 
         Condition resultCondition = new Condition(partialUnique, conditionMap);
+        resultCondition.addToResultReceiver(this.algorithm.resultReceiver, this.algorithm.input,
+                                            this.algorithm.inputMap);
       }
     }
   }
 
-  @Override
-  protected List<LongArrayList> combineClusters(int frequency,
-                                                List<LongArrayList> satisfiedClusters,
+
+  protected List<List<ConditionEntry>> combineClustersAndOr(int frequency,
+                                                            List<ConditionEntry> satisfiedClusters,
                                                 Long2ObjectOpenHashMap<LongArrayList> intersectingClusters) {
-    List<LongArrayList> result = new LinkedList<>();
+    List<List<ConditionEntry>> result = new LinkedList<>();
     LinkedList<ConditionTask> queue = new LinkedList();
     LongArrayList satisfiedClusterNumbers = new LongArrayList();
     long totalSize = 0;
     int i = 0;
-    for (LongArrayList clusters : satisfiedClusters) {
+    for (ConditionEntry clusters : satisfiedClusters) {
       //satisfiedClusterNumbers.add(conditionMap.get(clusters.get(0)));
       satisfiedClusterNumbers.add(i);
       i++;
-      totalSize = totalSize + clusters.size();
+      totalSize = totalSize + clusters.cluster.size();
     }
     if (totalSize < frequency) {
       return result;
@@ -135,8 +137,11 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
       ConditionTask currentTask = queue.remove();
 
       if (currentTask.uniqueClusterNumber >= uniqueClusterNumbers.size()) {
-        LongArrayList validCondition = new LongArrayList();
-        validCondition.addAll(currentTask.conditionClusters);
+        List<ConditionEntry> validCondition = new LinkedList<>();
+        for (long conditionClusterNumber : currentTask.conditionClusters) {
+
+          validCondition.add(satisfiedClusters.get((int) conditionClusterNumber));
+        }
         result.add(validCondition);
         continue;
       }
@@ -144,7 +149,8 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
         if (intersectingClusters.get(uniqueClusterNumbers.get(currentTask.uniqueClusterNumber))
             .contains(conditionCluster)) {
           ConditionTask newTask = currentTask.generateNextTask();
-          if (newTask.remove(conditionCluster, satisfiedClusters.get((int) conditionCluster).size(),
+          if (newTask.remove(conditionCluster,
+                             satisfiedClusters.get((int) conditionCluster).cluster.size(),
                              frequency)) {
             queue.add(newTask);
           }
