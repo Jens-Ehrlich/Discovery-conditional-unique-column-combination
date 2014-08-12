@@ -3,7 +3,9 @@ package de.uni_potsdam.hpi.metanome.algorithms.dcucc;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
@@ -34,31 +36,39 @@ public class Condition {
                                   RelationalInput input, List<Map<Long, String>> valuesMap)
       throws AlgorithmExecutionException {
 
+    ColumnConditionOr columnCondition = new ColumnConditionOr();
     //build condition
     List<ColumnCondition> conditions = new LinkedList<>();
     for (ColumnCombinationBitset conditionColumn : this.conditions.keySet()) {
-      if (conditionColumn.size() != 1) {
-        throw new AlgorithmExecutionException(
-            "only a single column was expected for a conditional, but multiple were found");
-      }
+//      if (conditionColumn.size() != 1) {
+//        throw new AlgorithmExecutionException(
+//            "only a single column was expected for a conditional, but multiple were found");
+//      }
 
       TreeSet<String> conditionValues = new TreeSet<>();
       for (Long index : this.conditions.get(conditionColumn)) {
-        //TODO add correct strings
+
         conditionValues.add(valuesMap.get(conditionColumn.getSetBits().get(0)).get(index));
       }
-      ColumnCondition
-          condition =
-          new ColumnCondition(new ColumnIdentifier(input.relationName(), input.columnNames()
-              .get(conditionColumn.getSetBits().get(0))), conditionValues);
-      conditions.add(condition);
+      for (String conditionValue : conditionValues) {
+        columnCondition.add(new ConditionValue(new ColumnIdentifier(input.relationName(),
+                                                                    input.columnNames().get(
+                                                                        conditionColumn.getSetBits()
+                                                                            .get(0))),
+                                               conditionValue));
+      }
+//      ColumnCondition
+//          condition =
+//          new ColumnCondition(new ColumnIdentifier(input.relationName(), input.columnNames()
+//              .get(conditionColumn.getSetBits().get(0))), conditionValues);
+//      conditions.add(condition);
     }
 
     ConditionalUniqueColumnCombination
         conditionalUniqueColumnCombination =
         new ConditionalUniqueColumnCombination(
             this.partialUnique.createColumnCombination(input.relationName(), input.columnNames()),
-                                               conditions);
+            columnCondition);
 
     receiver.receiveResult(conditionalUniqueColumnCombination);
   }
