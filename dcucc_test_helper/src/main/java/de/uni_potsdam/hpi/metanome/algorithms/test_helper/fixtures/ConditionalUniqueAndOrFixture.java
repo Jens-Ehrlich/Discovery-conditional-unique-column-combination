@@ -136,18 +136,17 @@ public class ConditionalUniqueAndOrFixture {
         C = new ColumnIdentifier(this.relationName, this.columnNames.get(2));
 
     verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(A), new ColumnConditionOr(
-            new ColumnConditionAnd(
-                new ConditionValue(B, "1"),
-                new ConditionValue(C, "1"),
+        new ConditionalUniqueColumnCombination(new ColumnCombination(A),
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(C, "2"),
                 new ColumnConditionAnd(new ConditionValue(B, "1"),
-                                       new ConditionValue(C, "2"))))));
+                                       new ConditionValue(C, "1")))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(A, B),
                                                new ColumnConditionOr(C, "1", "2")));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(A, C),
-                                               new ConditionValue(B, "1")));
+                                               new ColumnConditionOr(new ConditionValue(B, "1"))));
     //verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }
 }

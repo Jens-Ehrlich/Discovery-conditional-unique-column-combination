@@ -42,12 +42,14 @@ public class Condition {
     List<ColumnCondition> conditions = new LinkedList<>();
     for (ColumnCombinationBitset conditionColumn : this.conditions.keySet()) {
       if (conditionColumn.size() == 1) {
-        addValuesToCondition(input, valuesMap, columnCondition, conditionColumn);
+        addValuesToCondition(input, valuesMap, columnCondition, conditionColumn,
+                             this.conditions.get(conditionColumn));
       } else {
         ColumnConditionAnd andCondition = new ColumnConditionAnd();
         for (ColumnCombinationBitset singleBitset : conditionColumn
             .getContainedOneColumnCombinations()) {
-          addValuesToCondition(input, valuesMap, andCondition, singleBitset);
+          addValuesToCondition(input, valuesMap, andCondition, singleBitset,
+                               this.conditions.get(conditionColumn));
         }
         columnCondition.add(andCondition);
       }
@@ -64,9 +66,10 @@ public class Condition {
 
   protected void addValuesToCondition(RelationalInput input, List<Map<Long, String>> valuesMap,
                                       ColumnCondition columnCondition,
-                                      ColumnCombinationBitset conditionColumn) {
+                                      ColumnCombinationBitset conditionColumn,
+                                      LongArrayList associatedCluster) {
     TreeSet<String> conditionValues = new TreeSet<>();
-    for (Long index : this.conditions.get(conditionColumn)) {
+    for (long index : associatedCluster) {
 
       conditionValues.add(valuesMap.get(conditionColumn.getSetBits().get(0)).get(index));
     }

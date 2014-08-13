@@ -282,9 +282,9 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
                                       LongArrayList conditionArray)
       throws AlgorithmExecutionException {
     Map<ColumnCombinationBitset, LongArrayList> conditionMap = new HashMap<>();
-    for (ColumnCombinationBitset oneColumn : conditionColumn.getContainedOneColumnCombinations()) {
-      conditionMap.put(oneColumn, conditionArray);
-    }
+//    for (ColumnCombinationBitset oneColumn : conditionColumn.getContainedOneColumnCombinations()) {
+    conditionMap.put(conditionColumn, conditionArray);
+//    }
     Condition condition = new Condition(partialUnique, conditionMap);
 
     for (ColumnCombinationBitset subset : this.conditionMinimalityGraph
