@@ -30,6 +30,7 @@ import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 /**
@@ -147,6 +148,6 @@ public class ConditionalUniqueAndOrFixture {
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(A, C),
                                                new ColumnConditionOr(new ConditionValue(B, "1"))));
-    //verifyNoMoreInteractions(conditionalUniqueResultReceiver);
+    verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }
 }
