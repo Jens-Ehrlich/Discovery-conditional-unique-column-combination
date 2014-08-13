@@ -6,8 +6,10 @@ import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombin
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PLIBuilder;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionAnd;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
@@ -134,15 +136,18 @@ public class ConditionalUniqueAndOrFixture {
         C = new ColumnIdentifier(this.relationName, this.columnNames.get(2));
 
     verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(A),
-                                               new ColumnCondition(B, "1"),
-                                               new ColumnCondition(C, "1", "2")));
+        new ConditionalUniqueColumnCombination(new ColumnCombination(A), new ColumnConditionOr(
+            new ColumnConditionAnd(
+                new ConditionValue(B, "1"),
+                new ConditionValue(C, "1"),
+                new ColumnConditionAnd(new ConditionValue(B, "1"),
+                                       new ConditionValue(C, "2"))))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(A, B),
-                                               new ColumnCondition(C, "1", "2")));
+                                               new ColumnConditionOr(C, "1", "2")));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(A, C),
-                                               new ColumnCondition(B, "1")));
+                                               new ConditionValue(B, "1")));
     //verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }
 }

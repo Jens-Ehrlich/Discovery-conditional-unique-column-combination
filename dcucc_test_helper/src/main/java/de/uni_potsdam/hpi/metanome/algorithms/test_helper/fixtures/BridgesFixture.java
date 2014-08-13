@@ -3,8 +3,10 @@ package de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures;
 import com.google.common.collect.ImmutableList;
 
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionAnd;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInputGenerator;
@@ -636,20 +638,25 @@ public class BridgesFixture {
         c13 = new ColumnIdentifier(this.relationName, this.columnNames.get(12));
 
     verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
-        new ColumnCombination(c3, c6, c13), new ColumnCondition(c10, "STEEL"),
-        new ColumnCondition(c8, "G")));
+        new ColumnCombination(c3, c6, c13),
+        new ColumnConditionOr(new ColumnConditionAnd(new ConditionValue(c10, "STEEL"),
+                                                     new ConditionValue(c8, "G")))));
     verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
-        new ColumnCombination(c3, c6), new ColumnCondition(c10, "STEEL"),
-        new ColumnCondition(c11, "MEDIUM")));
+        new ColumnCombination(c3, c6),
+        new ColumnConditionOr(new ColumnConditionAnd(new ConditionValue(c10, "STEEL"),
+                                                     new ConditionValue(c11, "MEDIUM")))));
     verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
-        new ColumnCombination(c3, c6), new ColumnCondition(c10, "STEEL"),
-        new ColumnCondition(c13, "SIMPLE-T")));
+        new ColumnCombination(c3, c6),
+        new ColumnConditionOr(new ColumnConditionAnd(new ConditionValue(c10, "STEEL"),
+                                                     new ConditionValue(c13, "SIMPLE-T")))));
     verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
-        new ColumnCombination(c3, c6), new ColumnCondition(c10, "STEEL"),
-        new ColumnCondition(c9, "THROUGH")));
+        new ColumnCombination(c3, c6),
+        new ColumnConditionOr(new ColumnConditionAnd(new ConditionValue(c10, "STEEL"),
+                                                     new ConditionValue(c9, "THROUGH")))));
     verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
-        new ColumnCombination(c11, c12, c4, c5, c7), new ColumnCondition(c2, "M"),
-        new ColumnCondition(c9, "THROUGH")));
+        new ColumnCombination(c11, c12, c4, c5, c7),
+        new ColumnConditionOr(new ColumnConditionAnd(new ConditionValue(c2, "M"),
+                                                     new ConditionValue(c9, "THROUGH")))));
   }
 
   public void verifyConditionalUniqueColumnCombinationOr90() throws CouldNotReceiveResultException {
@@ -682,7 +689,7 @@ public class BridgesFixture {
         c13 = new ColumnIdentifier(this.relationName, this.columnNames.get(12));
 
     verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
-        new ColumnCombination(c4, c6), new ColumnCondition(c2, "A", "M", "O")));
+        new ColumnCombination(c4, c6), new ColumnConditionOr(c2, "A", "M", "O")));
 
   }
 }

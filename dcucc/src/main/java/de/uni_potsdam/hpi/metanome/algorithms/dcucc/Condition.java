@@ -3,6 +3,7 @@ package de.uni_potsdam.hpi.metanome.algorithms.dcucc;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionAnd;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ConditionValue;
@@ -40,28 +41,16 @@ public class Condition {
     //build condition
     List<ColumnCondition> conditions = new LinkedList<>();
     for (ColumnCombinationBitset conditionColumn : this.conditions.keySet()) {
-//      if (conditionColumn.size() != 1) {
-//        throw new AlgorithmExecutionException(
-//            "only a single column was expected for a conditional, but multiple were found");
-//      }
-
-      TreeSet<String> conditionValues = new TreeSet<>();
-      for (Long index : this.conditions.get(conditionColumn)) {
-
-        conditionValues.add(valuesMap.get(conditionColumn.getSetBits().get(0)).get(index));
+      if (conditionColumn.size() == 1) {
+        addValuesToCondition(input, valuesMap, columnCondition, conditionColumn);
+      } else {
+        ColumnConditionAnd andCondition = new ColumnConditionAnd();
+        for (ColumnCombinationBitset singleBitset : conditionColumn
+            .getContainedOneColumnCombinations()) {
+          addValuesToCondition(input, valuesMap, andCondition, singleBitset);
+        }
+        columnCondition.add(andCondition);
       }
-      for (String conditionValue : conditionValues) {
-        columnCondition.add(new ConditionValue(new ColumnIdentifier(input.relationName(),
-                                                                    input.columnNames().get(
-                                                                        conditionColumn.getSetBits()
-                                                                            .get(0))),
-                                               conditionValue));
-      }
-//      ColumnCondition
-//          condition =
-//          new ColumnCondition(new ColumnIdentifier(input.relationName(), input.columnNames()
-//              .get(conditionColumn.getSetBits().get(0))), conditionValues);
-//      conditions.add(condition);
     }
 
     ConditionalUniqueColumnCombination
@@ -71,6 +60,23 @@ public class Condition {
             columnCondition);
 
     receiver.receiveResult(conditionalUniqueColumnCombination);
+  }
+
+  protected void addValuesToCondition(RelationalInput input, List<Map<Long, String>> valuesMap,
+                                      ColumnCondition columnCondition,
+                                      ColumnCombinationBitset conditionColumn) {
+    TreeSet<String> conditionValues = new TreeSet<>();
+    for (Long index : this.conditions.get(conditionColumn)) {
+
+      conditionValues.add(valuesMap.get(conditionColumn.getSetBits().get(0)).get(index));
+    }
+    for (String conditionValue : conditionValues) {
+      columnCondition.add(new ConditionValue(new ColumnIdentifier(input.relationName(),
+                                                                  input.columnNames().get(
+                                                                      conditionColumn.getSetBits()
+                                                                          .get(0))),
+                                             conditionValue));
+    }
   }
 
 

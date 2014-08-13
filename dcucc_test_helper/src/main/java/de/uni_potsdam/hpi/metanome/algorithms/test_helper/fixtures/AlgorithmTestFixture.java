@@ -6,8 +6,9 @@ import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombin
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PLIBuilder;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
@@ -411,10 +412,12 @@ public class AlgorithmTestFixture {
 
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
-                                               new ColumnCondition(begin, "09:00")));
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(begin, "09:00"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
-                                               new ColumnCondition(end, "14:00")));
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(end, "14:00"))));
 
     verifyNoMoreInteractions(conditionalUniqueResultReceiver);
 
@@ -440,28 +443,36 @@ public class AlgorithmTestFixture {
 
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(room),
-                                               new ColumnCondition(day, "Tuesday")));
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(day, "Tuesday"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(id),
-                                               new ColumnCondition(room, "I10")));
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(room, "I10"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, end),
-                                               new ColumnCondition(room, "I10")));
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(room, "I10"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(end, room),
-                                               new ColumnCondition(day, "Monday")));
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(day, "Monday"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(begin, cap, day),
-                                               new ColumnCondition(room, "I10")));
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(room, "I10"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
-                                               new ColumnCondition(begin, "09:00")));
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(begin, "09:00"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
-                                               new ColumnCondition(end, "14:00")));
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(end, "14:00"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(begin, cap, room),
-                                               new ColumnCondition(day, "Monday")));
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(day, "Monday"))));
 
     verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }
@@ -487,25 +498,35 @@ public class AlgorithmTestFixture {
 
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
-                                               new ColumnCondition(begin, "09:00")));
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(begin, "09:00"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(id),
-                                               new ColumnCondition(room, "A2", "I10")));
+                                               new ColumnConditionOr(new ConditionValue(room, "A2"),
+                                                                     new ConditionValue(room,
+                                                                                        "I10"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, end),
-                                               new ColumnCondition(room, "A2", "I10")));
+                                               new ColumnConditionOr(new ConditionValue(room, "A2"),
+                                                                     new ConditionValue(room,
+                                                                                        "I10"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
-                                               new ColumnCondition(end, "09:00", "14:00")));
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(end, "14:00"),
+                                                   new ConditionValue(end, "09:00"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
-                                               new ColumnCondition(begin, "09:00")));
-    verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
-                                               new ColumnCondition(id, "Wednesday", "Friday")));
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(id, "Friday"),
+                                                   new ConditionValue(id, "Wednesday"))));
+
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(begin, cap, day),
-                                               new ColumnCondition(room, "A2", "I10")));
+                                               new ColumnConditionOr(
+                                                   new ConditionValue(room, "A2")
+                                                   , new ConditionValue(room, "I10"))));
+
 
 //    verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }

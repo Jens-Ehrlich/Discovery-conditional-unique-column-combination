@@ -5,7 +5,9 @@ import com.google.common.collect.ImmutableList;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
@@ -51,18 +53,29 @@ public class ConditionTest {
         partialUniqueCombination =
         new ColumnCombination(new ColumnIdentifier(input.relationName(), input.columnNames().get(
             0)), new ColumnIdentifier(input.relationName(), input.columnNames().get(1)));
+    ColumnIdentifier
+        identifier4 =
+        new ColumnIdentifier(input.relationName(), input.columnNames().get(4));
+    ColumnIdentifier
+        identifier5 =
+        new ColumnIdentifier(input.relationName(), input.columnNames().get(5));
     ColumnCondition
         condition1 =
-        new ColumnCondition(new ColumnIdentifier(input.relationName(), input.columnNames().get(4)),
-                            "1", "2", "3", "4");
-    ColumnCondition
-        condition2 =
-        new ColumnCondition(new ColumnIdentifier(input.relationName(), input.columnNames().get(5)),
-                            "4", "5", "6", "7");
+        new ColumnConditionOr();
+    condition1.add(new ConditionValue(identifier4, "1"));
+    condition1.add(new ConditionValue(identifier4, "2"));
+    condition1.add(new ConditionValue(identifier4, "3"));
+    condition1.add(new ConditionValue(identifier4, "4"));
+
+    condition1.add(new ConditionValue(identifier5, "4"));
+    condition1.add(new ConditionValue(identifier5, "5"));
+    condition1.add(new ConditionValue(identifier5, "6"));
+    condition1.add(new ConditionValue(identifier5, "7"));
+
 
     ConditionalUniqueColumnCombination
         excpectedConditionalUnique =
-        new ConditionalUniqueColumnCombination(partialUniqueCombination, condition1, condition2);
+        new ConditionalUniqueColumnCombination(partialUniqueCombination, condition1);
 
     List<Map<Long, String>> inputMap = new ArrayList();
     HashMap<Long, String> mockMap = mock(HashMap.class);
