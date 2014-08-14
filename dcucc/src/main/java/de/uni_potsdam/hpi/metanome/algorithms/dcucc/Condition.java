@@ -5,8 +5,8 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionExcep
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionAnd;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
@@ -74,7 +74,7 @@ public class Condition {
       conditionValues.add(valuesMap.get(conditionColumn.getSetBits().get(0)).get(index));
     }
     for (String conditionValue : conditionValues) {
-      columnCondition.add(new ConditionValue(new ColumnIdentifier(input.relationName(),
+      columnCondition.add(new ColumnConditionValue(new ColumnIdentifier(input.relationName(),
                                                                   input.columnNames().get(
                                                                       conditionColumn.getSetBits()
                                                                           .get(0))),

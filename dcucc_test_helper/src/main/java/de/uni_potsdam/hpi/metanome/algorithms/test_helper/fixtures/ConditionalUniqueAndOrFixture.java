@@ -8,8 +8,8 @@ import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionList
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionAnd;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
@@ -139,15 +139,17 @@ public class ConditionalUniqueAndOrFixture {
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(A),
                                                new ColumnConditionOr(
-                                                   new ConditionValue(C, "2"),
-                new ColumnConditionAnd(new ConditionValue(B, "1"),
-                                       new ConditionValue(C, "1")))));
+                                                   new ColumnConditionValue(C, "2"),
+                                                   new ColumnConditionAnd(
+                                                       new ColumnConditionValue(B, "1"),
+                                                       new ColumnConditionValue(C, "1")))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(A, B),
                                                new ColumnConditionOr(C, "1", "2")));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(A, C),
-                                               new ColumnConditionOr(new ConditionValue(B, "1"))));
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(B, "1"))));
     verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }
 }

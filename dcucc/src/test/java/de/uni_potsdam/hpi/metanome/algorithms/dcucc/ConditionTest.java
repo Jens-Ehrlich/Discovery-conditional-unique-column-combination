@@ -6,8 +6,8 @@ import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombin
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
@@ -62,15 +62,15 @@ public class ConditionTest {
     ColumnCondition
         condition1 =
         new ColumnConditionOr();
-    condition1.add(new ConditionValue(identifier4, "1"));
-    condition1.add(new ConditionValue(identifier4, "2"));
-    condition1.add(new ConditionValue(identifier4, "3"));
-    condition1.add(new ConditionValue(identifier4, "4"));
+    condition1.add(new ColumnConditionValue(identifier4, "1"));
+    condition1.add(new ColumnConditionValue(identifier4, "2"));
+    condition1.add(new ColumnConditionValue(identifier4, "3"));
+    condition1.add(new ColumnConditionValue(identifier4, "4"));
 
-    condition1.add(new ConditionValue(identifier5, "4"));
-    condition1.add(new ConditionValue(identifier5, "5"));
-    condition1.add(new ConditionValue(identifier5, "6"));
-    condition1.add(new ConditionValue(identifier5, "7"));
+    condition1.add(new ColumnConditionValue(identifier5, "4"));
+    condition1.add(new ColumnConditionValue(identifier5, "5"));
+    condition1.add(new ColumnConditionValue(identifier5, "6"));
+    condition1.add(new ColumnConditionValue(identifier5, "7"));
 
 
     ConditionalUniqueColumnCombination

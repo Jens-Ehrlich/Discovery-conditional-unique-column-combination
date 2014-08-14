@@ -5,8 +5,8 @@ import com.google.common.collect.ImmutableList;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionAnd;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInputGenerator;
@@ -639,24 +639,24 @@ public class BridgesFixture {
 
     verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
         new ColumnCombination(c3, c6, c13),
-        new ColumnConditionOr(new ColumnConditionAnd(new ConditionValue(c10, "STEEL"),
-                                                     new ConditionValue(c8, "G")))));
+        new ColumnConditionOr(new ColumnConditionAnd(new ColumnConditionValue(c10, "STEEL"),
+                                                     new ColumnConditionValue(c8, "G")))));
     verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
         new ColumnCombination(c3, c6),
-        new ColumnConditionOr(new ColumnConditionAnd(new ConditionValue(c10, "STEEL"),
-                                                     new ConditionValue(c11, "MEDIUM")))));
+        new ColumnConditionOr(new ColumnConditionAnd(new ColumnConditionValue(c10, "STEEL"),
+                                                     new ColumnConditionValue(c11, "MEDIUM")))));
     verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
         new ColumnCombination(c3, c6),
-        new ColumnConditionOr(new ColumnConditionAnd(new ConditionValue(c10, "STEEL"),
-                                                     new ConditionValue(c13, "SIMPLE-T")))));
+        new ColumnConditionOr(new ColumnConditionAnd(new ColumnConditionValue(c10, "STEEL"),
+                                                     new ColumnConditionValue(c13, "SIMPLE-T")))));
     verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
         new ColumnCombination(c3, c6),
-        new ColumnConditionOr(new ColumnConditionAnd(new ConditionValue(c10, "STEEL"),
-                                                     new ConditionValue(c9, "THROUGH")))));
+        new ColumnConditionOr(new ColumnConditionAnd(new ColumnConditionValue(c10, "STEEL"),
+                                                     new ColumnConditionValue(c9, "THROUGH")))));
     verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
         new ColumnCombination(c11, c12, c4, c5, c7),
-        new ColumnConditionOr(new ColumnConditionAnd(new ConditionValue(c2, "M"),
-                                                     new ConditionValue(c9, "THROUGH")))));
+        new ColumnConditionOr(new ColumnConditionAnd(new ColumnConditionValue(c2, "M"),
+                                                     new ColumnConditionValue(c9, "THROUGH")))));
   }
 
   public void verifyConditionalUniqueColumnCombinationOr90() throws CouldNotReceiveResultException {

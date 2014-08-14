@@ -7,8 +7,8 @@ import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PLIBuilder;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionAnd;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
@@ -137,32 +137,32 @@ public class ConditionalUniqueNotFixture {
 
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(C), new ColumnConditionAnd(
-            new ConditionValue(A, "1"),
-            new ConditionValue(B, "2"))));
+            new ColumnConditionValue(A, "1"),
+            new ColumnConditionValue(B, "2"))));
 
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(A, C),
-                                               new ConditionValue(B, "2")));
+                                               new ColumnConditionValue(B, "2")));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(B, C),
-                                               new ConditionValue(A, "1")));
+                                               new ColumnConditionValue(A, "1")));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(A, B),
-                                               new ConditionValue(D, "2")));
+                                               new ColumnConditionValue(D, "2")));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(B, D),
-                                               new ConditionValue(A, "1")));
+                                               new ColumnConditionValue(A, "1")));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(A, D),
-                                               new ConditionValue(B, "2")));
+                                               new ColumnConditionValue(B, "2")));
 
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(C),
-                                               new ConditionValue(D, "2")));
+                                               new ColumnConditionValue(D, "2")));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(D), new ColumnConditionAnd(
-            new ConditionValue(A, "1"),
-            new ConditionValue(B, "2"))));
+            new ColumnConditionValue(A, "1"),
+            new ColumnConditionValue(B, "2"))));
 
 //    verify(conditionalUniqueResultReceiver).receiveResult(
 //        new ConditionalUniqueColumnCombination(new ColumnCombination(C),
