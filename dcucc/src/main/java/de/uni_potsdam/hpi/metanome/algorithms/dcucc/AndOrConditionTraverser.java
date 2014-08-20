@@ -57,6 +57,32 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
     LongArrayList touchedCluster = new LongArrayList();
     Long2LongOpenHashMap partialUniqueHash = this.algorithm.getPLI(partialUnique).asHashMap();
     for (ColumnCombinationBitset condition : this.singleConditions.keySet()) {
+
+      //check if current condition will result in minimal conditions
+      boolean minimal = false;
+      for (ConditionEntry entry : this.singleConditions.get(condition)) {
+        if (entry.condition.size() == 1) {
+          minimal = true;
+          break;
+        }
+      }
+      if (!minimal) {
+        for (ConditionEntry entry : this.singleConditions.get(condition)) {
+          checkNextCondition:
+          for (ColumnCombinationBitset associatedCondition : entry.condition.minus(condition)
+              .getContainedOneColumnCombinations()) {
+            for (ConditionEntry associatedEntry : this.singleConditions.get(associatedCondition)) {
+              if (associatedEntry.condition.size() == 1) {
+                continue checkNextCondition;
+              }
+            }
+            throw new AlgorithmExecutionException(
+                "Some valid conditions are skipped due to wrong minimality pruning");
+          }
+        }
+        continue;
+      }
+
       List<ConditionEntry> satisfiedCluster = new ArrayList<>();
       Long2ObjectOpenHashMap<LongArrayList> intersectingCluster = new Long2ObjectOpenHashMap<>();
 //      Long2ObjectOpenHashMap<ConditionEntry> clusterToEntryMap = new Long2ObjectOpenHashMap<>();
