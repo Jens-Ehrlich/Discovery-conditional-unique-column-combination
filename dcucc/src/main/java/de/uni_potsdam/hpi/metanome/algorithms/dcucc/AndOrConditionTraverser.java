@@ -132,14 +132,19 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
         firstTask =
         new ConditionTask(0, satisfiedClusterNumbers, new LongArrayList(), totalSize);
     queue.add(firstTask);
+    //if there are no intersecting clusters, output the top element of the lattice instead of recursive build
+//    if (uniqueClusterNumbers.size() == 0) {
+//      List<ConditionEntry> validCondition = new LinkedList<>();
+//      validCondition.addAll(satisfiedClusters);
+//      result.add(validCondition);
+//      return result;
+//    }
 
     while (!queue.isEmpty()) {
       ConditionTask currentTask = queue.remove();
-
       if (currentTask.uniqueClusterNumber >= uniqueClusterNumbers.size()) {
         List<ConditionEntry> validCondition = new LinkedList<>();
         for (long conditionClusterNumber : currentTask.conditionClusters) {
-
           validCondition.add(satisfiedClusters.get((int) conditionClusterNumber));
         }
         result.add(validCondition);
