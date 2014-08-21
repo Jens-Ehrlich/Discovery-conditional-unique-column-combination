@@ -7,7 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * @author Jens Hildebrandt
+ * @author Jens Ehrlich
  */
 public class DcuccAndNotTest {
 

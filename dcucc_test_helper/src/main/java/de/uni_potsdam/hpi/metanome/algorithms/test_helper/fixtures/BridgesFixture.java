@@ -36,7 +36,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
- * @author Jens Hildebrandt
+ * @author Jens Ehrlich
  */
 public class BridgesFixture {
 

@@ -29,7 +29,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 /**
- * @author Jens Hildebrandt
+ * @author Jens Ehrlich
  */
 public class BreastCancerFixture {
 

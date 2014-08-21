@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author Jens Hildebrandt
+ * @author Jens Ehrlich
  */
 public class DcuccAndOrTest {
 

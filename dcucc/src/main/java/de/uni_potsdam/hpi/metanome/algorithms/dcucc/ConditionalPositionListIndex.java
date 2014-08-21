@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import java.util.List;
 
 /**
- * @author Jens Hildebrandt
+ * @author Jens Ehrlich
  */
 public class ConditionalPositionListIndex extends PositionListIndex {
 

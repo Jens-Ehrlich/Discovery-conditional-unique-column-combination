@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.TreeSet;
 
 /**
- * @author Jens Hildebrandt
+ * @author Jens Ehrlich
  */
 public class Condition {
 

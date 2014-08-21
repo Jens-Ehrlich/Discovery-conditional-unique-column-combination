@@ -34,7 +34,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 /**
- * @author Jens Hildebrandt
+ * @author Jens Ehrlich
  */
 public class ConditionalUniqueAndOrFixture {
 

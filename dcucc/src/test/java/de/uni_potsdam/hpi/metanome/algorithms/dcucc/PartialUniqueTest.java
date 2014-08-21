@@ -12,7 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 
 /**
- * @author Jens Hildebrandt
+ * @author Jens Ehrlich
  */
 public class PartialUniqueTest {
 

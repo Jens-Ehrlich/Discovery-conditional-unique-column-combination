@@ -4,7 +4,7 @@ import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombin
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionException;
 
 /**
- * @author Jens Hildebrandt
+ * @author Jens Ehrlich
  */
 public interface ConditionLatticeTraverser {
 

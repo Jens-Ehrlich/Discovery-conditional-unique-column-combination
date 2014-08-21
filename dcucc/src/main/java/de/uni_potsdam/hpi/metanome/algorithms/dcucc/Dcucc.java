@@ -49,7 +49,7 @@ import java.util.Set;
 /**
  * Mockup comment
  *
- * @author Jens Hildebrandt
+ * @author Jens Ehrlich
  */
 
 

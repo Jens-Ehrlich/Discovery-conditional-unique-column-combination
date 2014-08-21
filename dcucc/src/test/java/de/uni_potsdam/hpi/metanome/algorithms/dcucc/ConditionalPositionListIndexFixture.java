@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author Jens Hildebrandt
+ * @author Jens Ehrlich
  */
 public class ConditionalPositionListIndexFixture {
 

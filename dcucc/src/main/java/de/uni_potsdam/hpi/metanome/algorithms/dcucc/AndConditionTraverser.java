@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Jens Hildebrandt
+ * @author Jens Ehrlich
  */
 public class AndConditionTraverser extends SimpleConditionTraverser {
 

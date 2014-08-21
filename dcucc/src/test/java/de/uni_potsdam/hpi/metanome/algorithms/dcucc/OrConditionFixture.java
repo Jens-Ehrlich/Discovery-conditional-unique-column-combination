@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Jens Hildebrandt
+ * @author Jens Ehrlich
  */
 public class OrConditionFixture {
 

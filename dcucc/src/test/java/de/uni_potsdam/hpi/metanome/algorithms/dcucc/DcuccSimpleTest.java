@@ -21,7 +21,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Jens Hildebrandt
+ * @author Jens Ehrlich
  */
 public class DcuccSimpleTest {
 
