@@ -115,13 +115,13 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
                                     intersectingCluster);
 
       for (List<ConditionEntry> singleCondition : clustergroups) {
-        Map<ColumnCombinationBitset, LongArrayList> conditionMap = new HashMap<>();
+        Map<ColumnCombinationBitset, SingleCondition> conditionMap = new HashMap<>();
         for (ConditionEntry entry : singleCondition) {
           if (conditionMap.containsKey(entry.condition)) {
-            LongArrayList cluster = conditionMap.get(entry.condition);
+            LongArrayList cluster = conditionMap.get(entry.condition).cluster;
             cluster.addAll(entry.cluster);
           } else {
-            conditionMap.put(entry.condition, entry.cluster);
+            conditionMap.put(entry.condition, new SingleCondition(entry.cluster));
           }
         }
 

@@ -34,11 +34,13 @@ public class ConditionTest {
   public void testAddToResultReceiver() throws Exception {
     //Setup
     ColumnCombinationBitset partialUnique = new ColumnCombinationBitset(0, 1);
-    Map<ColumnCombinationBitset, LongArrayList> conditions = new HashMap<>();
+    Map<ColumnCombinationBitset, SingleCondition> conditions = new HashMap<>();
     long[] cluster1 = {1, 2, 3, 4};
     long[] cluster2 = {4, 5, 6, 7};
-    conditions.put(new ColumnCombinationBitset(4), new LongArrayList(cluster1));
-    conditions.put(new ColumnCombinationBitset(5), new LongArrayList(cluster2));
+    conditions
+        .put(new ColumnCombinationBitset(4), new SingleCondition(new LongArrayList(cluster1)));
+    conditions
+        .put(new ColumnCombinationBitset(5), new SingleCondition(new LongArrayList(cluster2)));
     Condition actualCondition = new Condition(partialUnique, conditions);
 
     ConditionalUniqueColumnCombinationResultReceiver resultReceiver = mock(

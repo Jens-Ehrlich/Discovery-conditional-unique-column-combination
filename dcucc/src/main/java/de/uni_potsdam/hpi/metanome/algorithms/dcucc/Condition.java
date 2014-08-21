@@ -11,8 +11,6 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
 
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +22,10 @@ import java.util.TreeSet;
 public class Condition {
 
   protected ColumnCombinationBitset partialUnique;
-  protected Map<ColumnCombinationBitset, LongArrayList> conditions;
+  protected Map<ColumnCombinationBitset, SingleCondition> conditions;
 
   public Condition(ColumnCombinationBitset partialUnique,
-                   Map<ColumnCombinationBitset, LongArrayList> conditions) {
+                   Map<ColumnCombinationBitset, SingleCondition> conditions) {
     this.partialUnique = partialUnique;
     this.conditions = conditions;
   }
@@ -67,10 +65,9 @@ public class Condition {
   protected void addValuesToCondition(RelationalInput input, List<Map<Long, String>> valuesMap,
                                       ColumnCondition columnCondition,
                                       ColumnCombinationBitset conditionColumn,
-                                      LongArrayList associatedCluster) {
+                                      SingleCondition singleCondition) {
     TreeSet<String> conditionValues = new TreeSet<>();
-    for (long index : associatedCluster) {
-
+    for (long index : singleCondition.cluster) {
       conditionValues.add(valuesMap.get(conditionColumn.getSetBits().get(0)).get(index));
     }
     for (String conditionValue : conditionValues) {
@@ -78,7 +75,7 @@ public class Condition {
                                                                   input.columnNames().get(
                                                                       conditionColumn.getSetBits()
                                                                           .get(0))),
-                                             conditionValue));
+                                                   conditionValue, singleCondition.isNegated));
     }
   }
 
@@ -110,5 +107,5 @@ public class Condition {
     result = 31 * result + conditions.hashCode();
     return result;
   }
-
 }
+
