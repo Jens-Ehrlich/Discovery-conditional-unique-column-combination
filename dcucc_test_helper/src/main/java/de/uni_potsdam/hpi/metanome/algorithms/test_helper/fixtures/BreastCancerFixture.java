@@ -11,11 +11,7 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.CouldNo
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.FunctionalDependencyResultReceiver;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.InclusionDependencyResultReceiver;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.UniqueColumnCombinationResultReceiver;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
 import de.uni_potsdam.hpi.metanome.input.csv.CsvFileGenerator;
-
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,8 +20,6 @@ import java.net.URLDecoder;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -56,13 +50,13 @@ public class BreastCancerFixture {
 
   public BreastCancerFixture() throws CouldNotReceiveResultException {
 
-    doAnswer(new Answer() {
-      public Object answer(InvocationOnMock invocation) {
-        Object[] args = invocation.getArguments();
-        System.out.println(args[0]);
-        return null;
-      }
-    }).when(cuccResultReceiver).receiveResult(isA(ConditionalUniqueColumnCombination.class));
+//    doAnswer(new Answer() {
+//      public Object answer(InvocationOnMock invocation) {
+//        Object[] args = invocation.getArguments();
+//        System.out.println(args[0]);
+//        return null;
+//      }
+//    }).when(cuccResultReceiver).receiveResult(isA(ConditionalUniqueColumnCombination.class));
 
   }
 

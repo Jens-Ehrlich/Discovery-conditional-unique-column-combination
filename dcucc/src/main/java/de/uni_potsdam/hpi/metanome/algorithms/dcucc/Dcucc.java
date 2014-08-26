@@ -172,6 +172,8 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     List<ColumnCombinationBitset> currentLevel = this.calculateFirstLevel();
     while (!currentLevel.isEmpty()) {
       for (ColumnCombinationBitset partialUnique : currentLevel) {
+        SelfConditionFinder
+            .calculateSelfConditions(partialUnique, this.getPLI(partialUnique), this);
         this.conditionLatticeTraverser.iterateConditionLattice(partialUnique);
       }
       currentLevel = calculateNextLevel(currentLevel);
