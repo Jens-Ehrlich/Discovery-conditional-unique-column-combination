@@ -68,12 +68,15 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   public static final String FREQUENCY_TAG = "frequency";
   public static final String PERCENTAGE_TAG = "percentage";
   public static final String ALGORITHM_TAG = "algorithm_type";
+  public static final String SELFCONDITIONS_TAG = "calculate self conditions";
 
   protected String algorithmDescription = "";
   protected int frequency = -1;
   protected int numberOfTuples = -1;
   protected int numberOfColumns = -1;
   protected boolean percentage = false;
+  protected boolean calculateSelfConditions = false;
+
   protected List<PositionListIndex> basePLI;
   protected List<ColumnCombinationBitset> baseColumn;
   protected ConditionLatticeTraverser conditionLatticeTraverser;
@@ -172,7 +175,8 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     List<ColumnCombinationBitset> currentLevel = this.calculateFirstLevel();
     while (!currentLevel.isEmpty()) {
       for (ColumnCombinationBitset partialUnique : currentLevel) {
-        SelfConditionFinder
+        if (calculateSelfConditions)
+          SelfConditionFinder
             .calculateSelfConditions(partialUnique, this.getPLI(partialUnique), this);
         this.conditionLatticeTraverser.iterateConditionLattice(partialUnique);
       }
@@ -372,6 +376,8 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
       throws AlgorithmConfigurationException {
     if (identifier.equals(PERCENTAGE_TAG)) {
       this.percentage = values[0];
+    } else if (identifier.equals(SELFCONDITIONS_TAG)) {
+      this.calculateSelfConditions = values[0];
     } else {
       throw new AlgorithmConfigurationException("Operation should not be called");
     }
@@ -428,14 +434,21 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
         csvFile =
         new ConfigurationSpecificationCsvFile(INPUT_FILE_TAG);
     spec.add(csvFile);
+
     ConfigurationSpecificationInteger
         frequency =
         new ConfigurationSpecificationInteger(FREQUENCY_TAG);
     spec.add(frequency);
+
     ConfigurationSpecificationBoolean
         percentage =
         new ConfigurationSpecificationBoolean(PERCENTAGE_TAG);
     spec.add(percentage);
+
+    ConfigurationSpecificationBoolean
+        selfCondition =
+        new ConfigurationSpecificationBoolean(SELFCONDITIONS_TAG);
+    spec.add(selfCondition);
 
     ArrayList<String> algorithmOptions = new ArrayList<>();
     algorithmOptions.addAll(this.algorithmDescriptionMap.keySet());
@@ -443,6 +456,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
         listBox =
         new ConfigurationSpecificationListBox(ALGORITHM_TAG, algorithmOptions);
     spec.add(listBox);
+
     return spec;
   }
 
