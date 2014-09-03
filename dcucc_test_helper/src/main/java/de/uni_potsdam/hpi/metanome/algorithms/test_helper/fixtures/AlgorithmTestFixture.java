@@ -6,6 +6,7 @@ import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombin
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PLIBuilder;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionAnd;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
@@ -418,6 +419,11 @@ public class AlgorithmTestFixture {
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
                                                new ColumnConditionOr(
                                                    new ColumnConditionValue(end, "14:00"))));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
+                                               new ColumnConditionAnd(new ColumnConditionAnd()
+    new ColumnConditionValue(end, "14:00"))));
+
 
     verifyNoMoreInteractions(conditionalUniqueResultReceiver);
 
