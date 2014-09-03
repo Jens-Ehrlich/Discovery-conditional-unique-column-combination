@@ -419,10 +419,16 @@ public class AlgorithmTestFixture {
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
                                                new ColumnConditionOr(
                                                    new ColumnConditionValue(end, "14:00"))));
+
+
+    ColumnConditionAnd innerCondition2 = new ColumnConditionAnd();
+    innerCondition2.setIsNegated(true);
+    innerCondition2.add(new ColumnConditionValue(day, "Monday"));
+    innerCondition2.add(new ColumnConditionValue(room, "I10"));
+
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
-                                               new ColumnConditionAnd(new ColumnConditionAnd()
-    new ColumnConditionValue(end, "14:00"))));
+                                               new ColumnConditionAnd(innerCondition2)));
 
 
     verifyNoMoreInteractions(conditionalUniqueResultReceiver);

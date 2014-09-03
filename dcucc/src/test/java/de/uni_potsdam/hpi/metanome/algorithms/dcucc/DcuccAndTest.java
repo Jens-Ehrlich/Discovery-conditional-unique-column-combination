@@ -33,6 +33,7 @@ public class DcuccAndTest {
   public void testAlgorithmFixtureExecute4() throws Exception {
     //Setup
     AlgorithmTestFixture fixture = new AlgorithmTestFixture();
+    algorithm.calculateSelfConditions = true;
     algorithm
         .setRelationalInputConfigurationValue(Dcucc.INPUT_FILE_TAG, fixture.getInputGenerator());
     algorithm.setResultReceiver(fixture.getConditionalUniqueResultReceiver());

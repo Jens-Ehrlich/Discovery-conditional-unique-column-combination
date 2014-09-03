@@ -23,6 +23,9 @@ public class SelfConditionFinder {
                                              PositionListIndex partialUniquePLI, Dcucc algorithm)
       throws CouldNotReceiveResultException {
 
+    if ((partialUniquePLI.getRawKeyError() + partialUniquePLI.getClusters().size()) >= algorithm.frequency) {
+      return;
+    }
     ColumnCondition outerCondition = new ColumnConditionAnd();
     for (LongArrayList cluster : partialUniquePLI.getClusters()) {
 
