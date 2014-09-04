@@ -200,6 +200,10 @@ public class OrConditionTraverser extends AndConditionTraverser {
         }
 
         Condition resultCondition = new Condition(partialUnique, conditionMap);
+        if (algorithm.checkConditionMinimality(partialUnique, resultCondition)) {
+          continue;
+        }
+        algorithm.foundConditions.add(resultCondition);
         resultCondition.addToResultReceiver(this.algorithm.resultReceiver, this.algorithm.input,
                                             this.algorithm.inputMap);
       }
