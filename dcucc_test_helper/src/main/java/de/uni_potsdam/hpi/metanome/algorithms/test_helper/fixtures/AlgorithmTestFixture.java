@@ -544,4 +544,112 @@ public class AlgorithmTestFixture {
 
 //    verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }
+
+  public void verifyConditionalUniqueColumnCombinationFor4AndOrConditions()
+      throws CouldNotReceiveResultException {
+    ColumnIdentifier
+        prof = new ColumnIdentifier(this.relationName, this.columnNames.get(0));
+    ColumnIdentifier
+        cse = new ColumnIdentifier(this.relationName, this.columnNames.get(1));
+    ColumnIdentifier
+        day = new ColumnIdentifier(this.relationName, this.columnNames.get(2));
+    ColumnIdentifier
+        begin = new ColumnIdentifier(this.relationName, this.columnNames.get(3));
+    ColumnIdentifier
+        end = new ColumnIdentifier(this.relationName, this.columnNames.get(4));
+    ColumnIdentifier
+        room = new ColumnIdentifier(this.relationName, this.columnNames.get(5));
+    ColumnIdentifier
+        cap = new ColumnIdentifier(this.relationName, this.columnNames.get(6));
+    ColumnIdentifier
+        id = new ColumnIdentifier(this.relationName, this.columnNames.get(7));
+
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(begin, "09:00"))));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(id),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(room, "A2"),
+                                                   new ColumnConditionValue(room,
+                                                                            "I10"))));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(day, end),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(room, "A2"),
+                                                   new ColumnConditionValue(room,
+                                                                            "I10"))));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(end, "14:00"),
+                                                   new ColumnConditionValue(end, "09:00"))));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(id, "Friday"),
+                                                   new ColumnConditionValue(id, "Wednesday"))));
+
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(begin, cap, day),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(room, "A2")
+                                                   , new ColumnConditionValue(room, "I10"))));
+
+  }
+
+  public void verifyConditionalUniqueColumnCombinationFor3AndOrConditions()
+      throws CouldNotReceiveResultException {
+    ColumnIdentifier
+        prof = new ColumnIdentifier(this.relationName, this.columnNames.get(0));
+    ColumnIdentifier
+        cse = new ColumnIdentifier(this.relationName, this.columnNames.get(1));
+    ColumnIdentifier
+        day = new ColumnIdentifier(this.relationName, this.columnNames.get(2));
+    ColumnIdentifier
+        begin = new ColumnIdentifier(this.relationName, this.columnNames.get(3));
+    ColumnIdentifier
+        end = new ColumnIdentifier(this.relationName, this.columnNames.get(4));
+    ColumnIdentifier
+        room = new ColumnIdentifier(this.relationName, this.columnNames.get(5));
+    ColumnIdentifier
+        cap = new ColumnIdentifier(this.relationName, this.columnNames.get(6));
+    ColumnIdentifier
+        id = new ColumnIdentifier(this.relationName, this.columnNames.get(7));
+
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(begin, "09:00"))));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(id),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(room, "A2"),
+                                                   new ColumnConditionValue(room,
+                                                                            "I10"))));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(day, end),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(room, "A2"),
+                                                   new ColumnConditionValue(room,
+                                                                            "I10"))));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(end, "14:00"),
+                                                   new ColumnConditionValue(end, "09:00"))));
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(id, "Friday"),
+                                                   new ColumnConditionValue(id, "Wednesday"))));
+
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(begin, cap, day),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(room, "A2")
+                                                   , new ColumnConditionValue(room, "I10"))));
+
+  }
 }

@@ -205,6 +205,7 @@ public class OrConditionTraverser extends AndConditionTraverser {
       }
     }
   }
+
   protected List<List<ConditionEntry>> combineClusters(int frequency,
                                                        List<ConditionEntry> satisfiedClusters,
                                                        Long2ObjectOpenHashMap<LongArrayList> intersectingClusters) {
