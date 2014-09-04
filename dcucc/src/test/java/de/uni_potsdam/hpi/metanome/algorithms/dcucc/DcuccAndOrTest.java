@@ -38,7 +38,6 @@ public class DcuccAndOrTest {
 
     //verify result
     fixture.verifyConditionalUniqueColumnCombinationFor4AndOrConditions();
-    fail();
   }
 
   @Test
@@ -49,13 +48,12 @@ public class DcuccAndOrTest {
         .setRelationalInputConfigurationValue(Dcucc.INPUT_FILE_TAG, fixture.getInputGenerator());
     algorithm.setResultReceiver(fixture.getConditionalUniqueResultReceiver());
     algorithm.setBooleanConfigurationValue(Dcucc.PERCENTAGE_TAG, false);
-    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 4);
+    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 3);
     //Execute
     algorithm.execute();
 
     //verify result
     fixture.verifyConditionalUniqueColumnCombinationFor3AndOrConditions();
-    fail();
   }
 
   @Test

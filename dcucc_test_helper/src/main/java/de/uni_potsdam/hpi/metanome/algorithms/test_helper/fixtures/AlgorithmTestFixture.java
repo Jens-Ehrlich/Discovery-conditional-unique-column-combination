@@ -597,6 +597,7 @@ public class AlgorithmTestFixture {
                                                    new ColumnConditionValue(room, "A2")
                                                    , new ColumnConditionValue(room, "I10"))));
 
+    verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }
 
   public void verifyConditionalUniqueColumnCombinationFor3AndOrConditions()
@@ -651,5 +652,10 @@ public class AlgorithmTestFixture {
                                                    new ColumnConditionValue(room, "A2")
                                                    , new ColumnConditionValue(room, "I10"))));
 
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(room),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(day, "Tuesday"))));
+    verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }
 }
