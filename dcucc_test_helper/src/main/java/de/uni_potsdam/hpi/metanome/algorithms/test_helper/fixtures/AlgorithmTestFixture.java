@@ -542,7 +542,7 @@ public class AlgorithmTestFixture {
                                                    , new ColumnConditionValue(room, "I10"))));
 
 
-//    verifyNoMoreInteractions(conditionalUniqueResultReceiver);
+    verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }
 
   public void verifyConditionalUniqueColumnCombinationFor4AndOrConditions()

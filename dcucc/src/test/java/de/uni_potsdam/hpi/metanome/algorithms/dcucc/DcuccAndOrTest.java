@@ -9,6 +9,8 @@ import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.ConditionalUn
 import org.junit.Before;
 import org.junit.Test;
 
+import static junit.framework.Assert.fail;
+
 /**
  * @author Jens Ehrlich
  */
@@ -36,6 +38,7 @@ public class DcuccAndOrTest {
 
     //verify result
     fixture.verifyConditionalUniqueColumnCombinationFor4AndOrConditions();
+    fail();
   }
 
   @Test
@@ -52,6 +55,7 @@ public class DcuccAndOrTest {
 
     //verify result
     fixture.verifyConditionalUniqueColumnCombinationFor3AndOrConditions();
+    fail();
   }
 
   @Test
