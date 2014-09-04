@@ -80,7 +80,6 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   protected List<PositionListIndex> basePLI;
   protected List<ColumnCombinationBitset> baseColumn;
   protected ConditionLatticeTraverser conditionLatticeTraverser;
-  protected ImmutableList<ColumnCombinationBitset> uccs;
   protected ImmutableList<ColumnCombinationBitset> partialUccs;
   protected Map<ColumnCombinationBitset, PositionListIndex> pliMap;
   protected Set<Condition> foundConditions;
@@ -95,8 +94,6 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
   public Dcucc() {
     this.foundConditions = new HashSet<>();
-//    this.conditionLatticeTraverser = new AndConditionTraverser(this);
-    //this.conditionLatticeTraverser = new OrConditionTraverser(this);
     algorithmDescriptionMap = new HashMap<>();
     algorithmDescriptionMap.put("SingleValueSingleCondition", new SimpleConditionTraverser(this));
     algorithmDescriptionMap.put("MultipleValueSingleCondition", new OrConditionTraverser(this));
@@ -119,10 +116,6 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
     start = System.nanoTime();
     UniqueColumnCombinationResultReceiver dummyReceiver = createDummyResultReceiver();
-
-//        DuccAlgorithm UCCAlgorithm = new DuccAlgorithm(input.relationName(), input.columnNames(), dummyReceiver);
-//        UCCAlgorithm.run(this.basePLI);
-//        this.uccs = UCCAlgorithm.getMinimalUniqueColumnCombinations();
 
     DuccAlgorithm
         partialUCCalgorithm =
@@ -293,16 +286,24 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 //    }
     Condition condition = new Condition(partialUnique, conditionMap);
 
-    for (ColumnCombinationBitset subset : this.conditionMinimalityGraph
-        .getExistingSubsets(partialUnique)) {
-      condition.partialUnique = subset;
-      if (this.foundConditions.contains(condition)) {
-        return;
-      }
+    if (checkConditionMinimality(partialUnique, condition)) {
+      return;
     }
     condition.partialUnique = partialUnique;
     this.foundConditions.add(condition);
     condition.addToResultReceiver(this.resultReceiver, input, inputMap);
+  }
+
+  protected boolean checkConditionMinimality(ColumnCombinationBitset partialUnique,
+                                             Condition condition) {
+    for (ColumnCombinationBitset subset : this.conditionMinimalityGraph
+        .getExistingSubsets(partialUnique)) {
+      condition.partialUnique = subset;
+      if (this.foundConditions.contains(condition)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   protected List<ColumnCombinationBitset> calculateFirstLevel() {
