@@ -85,12 +85,12 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   protected Set<Condition> foundConditions;
   protected SuperSetGraph lowerPruningGraph;
   protected SubSetGraph upperPruningGraph;
-  protected SubSetGraph conditionMinimalityGraph;
   protected RelationalInput input;
   protected RelationalInputGenerator inputGenerator;
   protected ConditionalUniqueColumnCombinationResultReceiver resultReceiver;
-  Map<String, ConditionLatticeTraverser> algorithmDescriptionMap;
-  List<Map<Long, String>> inputMap;
+  protected Map<String, ConditionLatticeTraverser> algorithmDescriptionMap;
+  protected ResultSingleton resultSingleton;
+
 
   public Dcucc() {
     this.foundConditions = new HashSet<>();
@@ -125,7 +125,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     this.partialUccs = partialUCCalgorithm.getMinimalUniqueColumnCombinations();
     this.pliMap = partialUCCalgorithm.getCalculatedPlis();
     System.out.println("Calculate partial uniques: " + ((System.nanoTime() - start) / 1000000));
-    prepareOutput();
+
 
     start = System.nanoTime();
     this.preparePruningGraphs();
@@ -139,29 +139,12 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     System.out.println("return results: " + ((System.nanoTime() - start) / 1000000));
   }
 
-  protected void prepareOutput() throws InputGenerationException, InputIterationException {
-    this.input = this.inputGenerator.generateNewCopy();
-    this.inputMap = new ArrayList<>(input.numberOfColumns());
-    for (int i = 0; i < input.numberOfColumns(); i++) {
-      inputMap.add(new HashMap<Long, String>());
-    }
-    long row = 0;
-    while (input.hasNext()) {
-      ImmutableList<String> values = input.next();
-      for (int i = 0; i < input.numberOfColumns(); i++) {
-        inputMap.get(i).put(row, values.get(i));
-      }
-      row++;
-    }
-  }
 
   protected void preparePruningGraphs() {
     this.lowerPruningGraph = new SuperSetGraph(this.numberOfColumns);
     this.upperPruningGraph = new SubSetGraph();
-    this.conditionMinimalityGraph = new SubSetGraph();
 
     this.lowerPruningGraph.addAll(this.partialUccs);
-    this.conditionMinimalityGraph.addAll(this.partialUccs);
   }
 
   protected void iteratePartialUniqueLattice() throws AlgorithmExecutionException {
@@ -199,7 +182,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
             nextLevel.add(nextLevelBitset);
           }
           this.lowerPruningGraph.add(nextLevelBitset);
-          this.conditionMinimalityGraph.add(nextLevelBitset);
+          resultSingleton.conditionMinimalityGraph.add(nextLevelBitset);
         }
       }
     }
