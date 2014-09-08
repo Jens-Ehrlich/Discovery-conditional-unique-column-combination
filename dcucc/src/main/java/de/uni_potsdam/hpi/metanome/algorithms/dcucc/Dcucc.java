@@ -36,8 +36,6 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.results.InclusionDepend
 import de.uni_potsdam.hpi.metanome.algorithm_integration.results.UniqueColumnCombination;
 import de.uni_potsdam.hpi.metanome.algorithms.ducc.DuccAlgorithm;
 
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -127,7 +125,10 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
     start = System.nanoTime();
     this.preparePruningGraphs();
-    ResultSingleton.createResultSingleton(this.inputGenerator.generateNewCopy(), this.partialUccs, this.resultReceiver);
+    this.resultSingleton =
+        ResultSingleton
+            .createResultSingleton(this.inputGenerator.generateNewCopy(), this.partialUccs,
+                                   this.resultReceiver);
     System.out.println("Prepare pruning graphs: " + ((System.nanoTime() - start) / 1000000));
     start = System.nanoTime();
     this.iteratePartialUniqueLattice();

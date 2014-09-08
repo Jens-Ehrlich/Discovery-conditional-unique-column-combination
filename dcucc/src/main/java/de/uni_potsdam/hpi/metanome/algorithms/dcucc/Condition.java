@@ -71,11 +71,12 @@ public class Condition {
       conditionValues.add(valuesMap.get(conditionColumn.getSetBits().get(0)).get(index));
     }
     for (String conditionValue : conditionValues) {
-      columnCondition.add(new ColumnConditionValue(new ColumnIdentifier(input.relationName(),
-                                                                  input.columnNames().get(
-                                                                      conditionColumn.getSetBits()
-                                                                          .get(0))),
-                                                   conditionValue, singleCondition.isNegated));
+      ColumnIdentifier
+          identifier =
+          new ColumnIdentifier(input.relationName(),
+                               input.columnNames().get(conditionColumn.getSetBits().get(0)));
+      columnCondition
+          .add(new ColumnConditionValue(identifier, conditionValue, singleCondition.isNegated));
     }
   }
 

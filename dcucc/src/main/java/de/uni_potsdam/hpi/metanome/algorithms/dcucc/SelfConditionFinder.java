@@ -43,8 +43,8 @@ public class SelfConditionFinder {
         for (String value : values) {
           ColumnCondition
               conditionValue =
-              new ColumnConditionValue(new ColumnIdentifier(algorithm.input.relationName(),
-                                                            algorithm.input.columnNames().get(
+              new ColumnConditionValue(new ColumnIdentifier(singleton.input.relationName(),
+                                                            singleton.input.columnNames().get(
                                                                 singleColumn.getSetBits().get(0))),
                                        value);
           innerCondition.add(conditionValue);
@@ -55,7 +55,7 @@ public class SelfConditionFinder {
     ConditionalUniqueColumnCombination
         result =
         new ConditionalUniqueColumnCombination(partialUnique.createColumnCombination(
-            algorithm.input.relationName(), algorithm.input.columnNames()), outerCondition);
-    algorithm.resultReceiver.receiveResult(result);
+            singleton.input.relationName(), singleton.input.columnNames()), outerCondition);
+    singleton.resultReceiver.receiveResult(result);
   }
 }
