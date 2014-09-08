@@ -8,7 +8,6 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
 
 import java.util.LinkedList;
@@ -31,8 +30,7 @@ public class Condition {
   }
 
 
-  public void addToResultReceiver(ConditionalUniqueColumnCombinationResultReceiver receiver,
-                                  RelationalInput input, List<Map<Long, String>> valuesMap)
+  public void addToResultReceiver(RelationalInput input, List<Map<Long, String>> valuesMap)
       throws AlgorithmExecutionException {
 
     ColumnConditionOr columnCondition = new ColumnConditionOr();
@@ -59,7 +57,7 @@ public class Condition {
             this.partialUnique.createColumnCombination(input.relationName(), input.columnNames()),
             columnCondition);
 
-    receiver.receiveResult(conditionalUniqueColumnCombination);
+    ResultSingleton.getInstance().receiveResult(conditionalUniqueColumnCombination);
   }
 
   protected void addValuesToCondition(RelationalInput input, List<Map<Long, String>> valuesMap,

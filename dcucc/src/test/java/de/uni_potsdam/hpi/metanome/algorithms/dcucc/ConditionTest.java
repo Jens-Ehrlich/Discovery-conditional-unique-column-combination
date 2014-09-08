@@ -9,7 +9,6 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionValue;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -43,8 +42,8 @@ public class ConditionTest {
         .put(new ColumnCombinationBitset(5), new SingleCondition(new LongArrayList(cluster2)));
     Condition actualCondition = new Condition(partialUnique, conditions);
 
-    ConditionalUniqueColumnCombinationResultReceiver resultReceiver = mock(
-        ConditionalUniqueColumnCombinationResultReceiver.class);
+    ResultSingleton.singleton = mock(
+        ResultSingleton.class);
     RelationalInput input = mock(RelationalInput.class);
 
     when(input.relationName()).thenReturn("table");
@@ -93,8 +92,8 @@ public class ConditionTest {
 
 
     //Execute functionality
-    actualCondition.addToResultReceiver(resultReceiver, input, inputMap);
+    actualCondition.addToResultReceiver(input, inputMap);
     //Check result
-    verify(resultReceiver).receiveResult(excpectedConditionalUnique);
+    verify(ResultSingleton.getInstance()).receiveResult(excpectedConditionalUnique);
   }
 }

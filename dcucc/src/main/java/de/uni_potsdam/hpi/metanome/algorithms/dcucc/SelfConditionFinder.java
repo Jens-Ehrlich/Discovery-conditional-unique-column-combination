@@ -56,6 +56,6 @@ public class SelfConditionFinder {
         result =
         new ConditionalUniqueColumnCombination(partialUnique.createColumnCombination(
             singleton.input.relationName(), singleton.input.columnNames()), outerCondition);
-    singleton.resultReceiver.receiveResult(result);
+    singleton.receiveResult(result);
   }
 }

@@ -9,6 +9,8 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationEx
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 
@@ -24,25 +26,15 @@ import java.util.Set;
  */
 public class ResultSingleton {
   protected static ResultSingleton singleton;
-
-  public static ResultSingleton getInstance() {
-    return singleton;
-  }
-
-  public static ResultSingleton createResultSingleton(RelationalInput input, ImmutableList<ColumnCombinationBitset> partialUccs, ConditionalUniqueColumnCombinationResultReceiver receiver)
-      throws InputGenerationException, InputIterationException {
-    singleton = new ResultSingleton(input, partialUccs, receiver);
-    return singleton;
-  }
-
-
   protected SubSetGraph conditionMinimalityGraph;
   protected List<Map<Long, String>> inputMap;
   protected Set<Condition> foundConditions;
   protected RelationalInput input;
-  protected ConditionalUniqueColumnCombinationResultReceiver resultReceiver;
+  private ConditionalUniqueColumnCombinationResultReceiver resultReceiver;
 
-  protected ResultSingleton(RelationalInput input, ImmutableList<ColumnCombinationBitset> partialUccs, ConditionalUniqueColumnCombinationResultReceiver receiver)
+  protected ResultSingleton(RelationalInput input,
+                            ImmutableList<ColumnCombinationBitset> partialUccs,
+                            ConditionalUniqueColumnCombinationResultReceiver receiver)
       throws InputGenerationException, InputIterationException {
     prepareOutput(input);
     this.resultReceiver = receiver;
@@ -50,6 +42,18 @@ public class ResultSingleton {
     this.conditionMinimalityGraph = new SubSetGraph();
     this.foundConditions = new HashSet<>();
     this.conditionMinimalityGraph.addAll(partialUccs);
+  }
+
+  public static ResultSingleton getInstance() {
+    return singleton;
+  }
+
+  public static ResultSingleton createResultSingleton(RelationalInput input,
+                                                      ImmutableList<ColumnCombinationBitset> partialUccs,
+                                                      ConditionalUniqueColumnCombinationResultReceiver receiver)
+      throws InputGenerationException, InputIterationException {
+    singleton = new ResultSingleton(input, partialUccs, receiver);
+    return singleton;
   }
 
   protected void prepareOutput(RelationalInput input) throws InputGenerationException, InputIterationException {
@@ -82,7 +86,7 @@ public class ResultSingleton {
     }
     condition.partialUnique = partialUnique;
     this.foundConditions.add(condition);
-    condition.addToResultReceiver(this.resultReceiver, input, inputMap);
+    condition.addToResultReceiver(input, inputMap);
   }
 
   protected boolean checkConditionMinimality(ColumnCombinationBitset partialUnique,
@@ -95,6 +99,11 @@ public class ResultSingleton {
       }
     }
     return false;
+  }
+
+  public void receiveResult(ConditionalUniqueColumnCombination result)
+      throws CouldNotReceiveResultException {
+    this.resultReceiver.receiveResult(result);
   }
 
 }

@@ -204,8 +204,7 @@ public class OrConditionTraverser extends AndConditionTraverser {
           continue;
         }
         result.foundConditions.add(resultCondition);
-        resultCondition.addToResultReceiver(result.resultReceiver, result.input,
-                                            result.inputMap);
+        resultCondition.addToResultReceiver(result.input, result.inputMap);
       }
     }
   }
