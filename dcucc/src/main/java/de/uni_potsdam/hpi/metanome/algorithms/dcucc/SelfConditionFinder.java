@@ -26,6 +26,7 @@ public class SelfConditionFinder {
     if ((partialUniquePLI.getRawKeyError() + partialUniquePLI.getClusters().size()) >= algorithm.frequency) {
       return;
     }
+    ResultSingleton singleton = ResultSingleton.getInstance();
     ColumnCondition outerCondition = new ColumnConditionAnd();
     for (LongArrayList cluster : partialUniquePLI.getClusters()) {
 
@@ -36,7 +37,7 @@ public class SelfConditionFinder {
           .getContainedOneColumnCombinations()) {
         Set<String> values = new HashSet<>();
         for (long row : cluster) {
-          values.add(algorithm.inputMap.get(singleColumn.getSetBits().get(0)).get(row));
+          values.add(singleton.inputMap.get(singleColumn.getSetBits().get(0)).get(row));
         }
 
         for (String value : values) {

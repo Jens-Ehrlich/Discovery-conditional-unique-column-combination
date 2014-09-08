@@ -56,8 +56,9 @@ public class SimpleConditionTraverser implements ConditionLatticeTraverser {
     if (!unsatisfiedClusters.isEmpty()) {
       currentLevel.put(conditionColumn, new PositionListIndex(unsatisfiedClusters));
     }
+    ResultSingleton resultSingleton = ResultSingleton.getInstance();
     for (LongArrayList condition : conditions) {
-      this.algorithm.addConditionToResult(partialUnique, conditionColumn, condition);
+      resultSingleton.addConditionToResult(partialUnique, conditionColumn, condition);
     }
   }
 

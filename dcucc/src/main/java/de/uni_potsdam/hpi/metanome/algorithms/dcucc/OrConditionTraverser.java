@@ -198,14 +198,14 @@ public class OrConditionTraverser extends AndConditionTraverser {
             conditionMap.put(entry.condition, new SingleCondition(entry.cluster));
           }
         }
-
+        ResultSingleton result = ResultSingleton.getInstance();
         Condition resultCondition = new Condition(partialUnique, conditionMap);
-        if (algorithm.checkConditionMinimality(partialUnique, resultCondition)) {
+        if (result.checkConditionMinimality(partialUnique, resultCondition)) {
           continue;
         }
-        algorithm.foundConditions.add(resultCondition);
+        result.foundConditions.add(resultCondition);
         resultCondition.addToResultReceiver(this.algorithm.resultReceiver, this.algorithm.input,
-                                            this.algorithm.inputMap);
+                                            result.inputMap);
       }
     }
   }
