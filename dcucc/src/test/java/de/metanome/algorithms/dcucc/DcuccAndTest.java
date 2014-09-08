@@ -1,14 +1,14 @@
 package de.metanome.algorithms.dcucc;
 
+import de.metanome.algorithms.test_helper.fixtures.AbaloneFixture;
+import de.metanome.algorithms.test_helper.fixtures.AlgorithmTestFixture;
+import de.metanome.algorithms.test_helper.fixtures.BridgesFixture;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmConfigurationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInputGenerator;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
-import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.AbaloneFixture;
-import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.AlgorithmTestFixture;
-import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.BridgesFixture;
 
 import org.junit.Before;
 import org.junit.Test;

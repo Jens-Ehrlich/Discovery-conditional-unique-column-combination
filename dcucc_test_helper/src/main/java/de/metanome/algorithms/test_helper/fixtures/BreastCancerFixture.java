@@ -1,4 +1,4 @@
-package de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures;
+package de.metanome.algorithms.test_helper.fixtures;
 
 import com.google.common.collect.ImmutableList;
 

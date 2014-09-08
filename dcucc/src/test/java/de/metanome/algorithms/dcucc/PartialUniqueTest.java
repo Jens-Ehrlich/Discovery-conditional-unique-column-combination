@@ -1,10 +1,10 @@
 package de.metanome.algorithms.dcucc;
 
+import de.metanome.algorithms.test_helper.fixtures.HepatitisFixture;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PLIBuilder;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
 import de.uni_potsdam.hpi.metanome.algorithms.ducc.DuccAlgorithm;
-import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.HepatitisFixture;
 
 import org.junit.Test;
 

@@ -1,8 +1,8 @@
 package de.metanome.algorithms.dcucc;
 
-import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.AbaloneFixture;
-import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.AlgorithmTestFixture;
-import de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures.BridgesFixture;
+import de.metanome.algorithms.test_helper.fixtures.AbaloneFixture;
+import de.metanome.algorithms.test_helper.fixtures.AlgorithmTestFixture;
+import de.metanome.algorithms.test_helper.fixtures.BridgesFixture;
 
 import org.junit.Before;
 import org.junit.Test;

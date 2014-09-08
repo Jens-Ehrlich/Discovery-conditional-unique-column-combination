@@ -1,4 +1,4 @@
-package de.uni_potsdam.hpi.metanome.algorithms.test_helper.fixtures;
+package de.metanome.algorithms.test_helper.fixtures;
 
 import com.google.common.collect.ImmutableList;
 
@@ -420,7 +420,6 @@ public class AlgorithmTestFixture {
                                                new ColumnConditionOr(
                                                    new ColumnConditionValue(end, "14:00"))));
 
-
     ColumnConditionAnd innerCondition2 = new ColumnConditionAnd();
     innerCondition2.setIsNegated(true);
     innerCondition2.add(new ColumnConditionValue(day, "Monday"));
@@ -429,7 +428,6 @@ public class AlgorithmTestFixture {
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
                                                new ColumnConditionAnd(innerCondition2)));
-
 
     verifyNoMoreInteractions(conditionalUniqueResultReceiver);
 
@@ -517,13 +515,13 @@ public class AlgorithmTestFixture {
                                                new ColumnConditionOr(
                                                    new ColumnConditionValue(room, "A2"),
                                                    new ColumnConditionValue(room,
-                                                                                        "I10"))));
+                                                                            "I10"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, end),
                                                new ColumnConditionOr(
                                                    new ColumnConditionValue(room, "A2"),
                                                    new ColumnConditionValue(room,
-                                                                                        "I10"))));
+                                                                            "I10"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(day, room),
                                                new ColumnConditionOr(
@@ -540,7 +538,6 @@ public class AlgorithmTestFixture {
                                                new ColumnConditionOr(
                                                    new ColumnConditionValue(room, "A2")
                                                    , new ColumnConditionValue(room, "I10"))));
-
 
     verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }
