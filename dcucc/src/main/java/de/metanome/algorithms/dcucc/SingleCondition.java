@@ -8,7 +8,9 @@ public class SingleCondition {
   protected LongArrayList cluster;
 
   public SingleCondition(LongArrayList cluster) {
-    this.cluster = cluster;
+    //TODO make this nicer
+    this.cluster = new LongArrayList();
+    this.cluster.add(cluster.get(0));
   }
 
   public SingleCondition(LongArrayList cluster, boolean isNegated) {
