@@ -106,4 +106,12 @@ public class ResultSingleton {
     this.resultReceiver.receiveResult(result);
   }
 
+  public void receiveResult(Condition resultCondition) throws AlgorithmExecutionException {
+    if (this.checkConditionMinimality(resultCondition.partialUnique, resultCondition)) {
+      return;
+    }
+    this.foundConditions.add(resultCondition);
+    resultCondition.addToResultReceiver(this.input, this.inputMap);
+  }
+
 }

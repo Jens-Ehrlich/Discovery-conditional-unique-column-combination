@@ -200,11 +200,7 @@ public class OrConditionTraverser extends AndConditionTraverser {
         }
         ResultSingleton result = ResultSingleton.getInstance();
         Condition resultCondition = new Condition(partialUnique, conditionMap);
-        if (result.checkConditionMinimality(partialUnique, resultCondition)) {
-          continue;
-        }
-        result.foundConditions.add(resultCondition);
-        resultCondition.addToResultReceiver(result.input, result.inputMap);
+        result.receiveResult(resultCondition);
       }
     }
   }
