@@ -1,10 +1,15 @@
-package de.uni_potsdam.hpi.metanome.algorithms.dcucc;
+package de.metanome.algorithms.dcucc;
 
 import com.google.common.collect.ImmutableList;
 
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.SubSetGraph;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionException;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionAnd;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionValue;
+import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
@@ -17,9 +22,11 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Jens Ehrlich
@@ -103,7 +110,55 @@ public class ResultSingleton {
       return;
     }
     this.foundConditions.add(resultCondition);
-    resultCondition.addToResultReceiver(this.input, this.inputMap);
+    this.addToResultReceiver(resultCondition);
+  }
+
+  public void addToResultReceiver(Condition condition)
+      throws AlgorithmExecutionException {
+
+    ColumnConditionOr columnCondition = new ColumnConditionOr();
+    //build condition
+    List<ColumnCondition> conditions = new LinkedList<>();
+    for (ColumnCombinationBitset conditionColumn : condition.conditions.keySet()) {
+      if (conditionColumn.size() == 1) {
+        addValuesToCondition(columnCondition, conditionColumn,
+                             condition.conditions.get(conditionColumn));
+      } else {
+        ColumnConditionAnd andCondition = new ColumnConditionAnd();
+        for (ColumnCombinationBitset singleBitset : conditionColumn
+            .getContainedOneColumnCombinations()) {
+          addValuesToCondition(andCondition, singleBitset,
+                               condition.conditions.get(conditionColumn));
+        }
+        columnCondition.add(andCondition);
+      }
+    }
+
+    ConditionalUniqueColumnCombination
+        conditionalUniqueColumnCombination =
+        new ConditionalUniqueColumnCombination(
+            condition.partialUnique
+                .createColumnCombination(input.relationName(), input.columnNames()),
+            columnCondition);
+
+    ResultSingleton.getInstance().receiveResult(conditionalUniqueColumnCombination);
+  }
+
+  protected void addValuesToCondition(ColumnCondition columnCondition,
+                                      ColumnCombinationBitset conditionColumn,
+                                      SingleCondition singleCondition) {
+    TreeSet<String> conditionValues = new TreeSet<>();
+    for (long index : singleCondition.cluster) {
+      conditionValues.add(inputMap.get(conditionColumn.getSetBits().get(0)).get(index));
+    }
+    for (String conditionValue : conditionValues) {
+      ColumnIdentifier
+          identifier =
+          new ColumnIdentifier(input.relationName(),
+                               input.columnNames().get(conditionColumn.getSetBits().get(0)));
+      columnCondition
+          .add(new ColumnConditionValue(identifier, conditionValue, singleCondition.isNegated));
+    }
   }
 
 }

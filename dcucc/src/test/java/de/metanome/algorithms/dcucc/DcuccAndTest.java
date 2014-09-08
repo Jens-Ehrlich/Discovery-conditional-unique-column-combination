@@ -1,4 +1,4 @@
-package de.uni_potsdam.hpi.metanome.algorithms.dcucc;
+package de.metanome.algorithms.dcucc;
 
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmConfigurationException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
@@ -62,8 +62,6 @@ public class DcuccAndTest {
     //verify result
     fixture.verifyConditionalUniqueColumnCombinationFor3();
   }
-
-
 
 
   @Test

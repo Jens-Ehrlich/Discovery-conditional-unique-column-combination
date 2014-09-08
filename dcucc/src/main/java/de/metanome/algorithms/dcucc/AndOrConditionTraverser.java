@@ -1,17 +1,10 @@
-package de.uni_potsdam.hpi.metanome.algorithms.dcucc;
+package de.metanome.algorithms.dcucc;
 
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
 import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionException;
 
-import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
