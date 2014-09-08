@@ -76,17 +76,9 @@ public class ResultSingleton {
                                       LongArrayList conditionArray)
       throws AlgorithmExecutionException {
     Map<ColumnCombinationBitset, SingleCondition> conditionMap = new HashMap<>();
-//    for (ColumnCombinationBitset oneColumn : conditionColumn.getContainedOneColumnCombinations()) {
     conditionMap.put(conditionColumn, new SingleCondition(conditionArray));
-//    }
     Condition condition = new Condition(partialUnique, conditionMap);
-
-    if (checkConditionMinimality(partialUnique, condition)) {
-      return;
-    }
-    condition.partialUnique = partialUnique;
-    this.foundConditions.add(condition);
-    condition.addToResultReceiver(input, inputMap);
+    this.receiveResult(condition);
   }
 
   protected boolean checkConditionMinimality(ColumnCombinationBitset partialUnique,
