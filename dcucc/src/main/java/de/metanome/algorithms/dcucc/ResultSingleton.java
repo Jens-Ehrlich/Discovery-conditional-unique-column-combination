@@ -83,10 +83,10 @@ public class ResultSingleton {
     Map<ColumnCombinationBitset, SingleCondition> conditionMap = new HashMap<>();
     for (ConditionEntry entry : singleCondition) {
       if (conditionMap.containsKey(entry.condition)) {
-        conditionMap.get(entry.condition).addCluster(entry.cluster.get(0), 0);
+        conditionMap.get(entry.condition).addCluster(entry.cluster.get(0), entry.coverage);
       } else {
         SingleCondition resultCondition = new SingleCondition();
-        resultCondition.addCluster(entry.cluster.get(0), 0);
+        resultCondition.addCluster(entry.cluster.get(0), entry.coverage);
         conditionMap.put(entry.condition, resultCondition);
       }
     }
@@ -118,10 +118,10 @@ public class ResultSingleton {
       return;
     }
     this.foundConditions.add(resultCondition);
-    this.addToResultReceiver(resultCondition);
+    this.addOrResultToResultReceiver(resultCondition);
   }
 
-  public void addToResultReceiver(Condition condition)
+  public void addOrResultToResultReceiver(Condition condition)
       throws AlgorithmExecutionException {
 
     ColumnConditionOr columnCondition = new ColumnConditionOr();
@@ -164,10 +164,11 @@ public class ResultSingleton {
           identifier =
           new ColumnIdentifier(input.relationName(),
                                input.columnNames().get(conditionColumn.getSetBits().get(0)));
-      columnCondition
-          .add(new ColumnConditionValue(identifier, conditionValue, singleCondition.isNegated));
-      System.out.println(singleCondition.cluster.size());
-
+      ColumnConditionValue
+          leaf =
+          new ColumnConditionValue(identifier, conditionValue, singleCondition.isNegated);
+      //FIXME add coverage here
+      columnCondition.add(leaf);
     }
   }
 
