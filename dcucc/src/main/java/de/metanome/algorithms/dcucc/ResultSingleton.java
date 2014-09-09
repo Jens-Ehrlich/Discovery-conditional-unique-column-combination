@@ -32,6 +32,7 @@ import java.util.TreeSet;
  */
 public class ResultSingleton {
   protected static ResultSingleton singleton;
+
   protected SubSetGraph conditionMinimalityGraph;
   protected List<Map<Long, String>> inputMap;
   protected Set<Condition> foundConditions;
@@ -48,6 +49,7 @@ public class ResultSingleton {
     this.conditionMinimalityGraph = new SubSetGraph();
     this.foundConditions = new HashSet<>();
     this.conditionMinimalityGraph.addAll(partialUccs);
+
   }
 
   public static ResultSingleton getInstance() {
@@ -88,6 +90,25 @@ public class ResultSingleton {
     Condition condition = new Condition(partialUnique, conditionMap);
     this.receiveResult(condition);
   }
+
+  protected void addConditionToResultComplex(ColumnCombinationBitset partialUnique,
+                                             List<OrConditionTraverser.ConditionEntry> singleCondition)
+      throws AlgorithmExecutionException {
+    Map<ColumnCombinationBitset, SingleCondition> conditionMap = new HashMap<>();
+    for (OrConditionTraverser.ConditionEntry entry : singleCondition) {
+      if (conditionMap.containsKey(entry.condition)) {
+        conditionMap.get(entry.condition).addCluster(entry.cluster.get(0), 0);
+      } else {
+        SingleCondition resultCondition = new SingleCondition();
+        resultCondition.addCluster(entry.cluster.get(0), 0);
+        conditionMap.put(entry.condition, resultCondition);
+      }
+    }
+    ResultSingleton result = ResultSingleton.getInstance();
+    Condition resultCondition = new Condition(partialUnique, conditionMap);
+    result.receiveResult(resultCondition);
+  }
+
 
   protected boolean checkConditionMinimality(ColumnCombinationBitset partialUnique,
                                              Condition condition) {

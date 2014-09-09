@@ -189,19 +189,7 @@ public class OrConditionTraverser extends AndConditionTraverser {
                                intersectingCluster);
 
       for (List<ConditionEntry> singleCondition : clustergroups) {
-        Map<ColumnCombinationBitset, SingleCondition> conditionMap = new HashMap<>();
-        for (ConditionEntry entry : singleCondition) {
-          if (conditionMap.containsKey(entry.condition)) {
-            conditionMap.get(entry.condition).addCluster(entry.cluster.get(0), 0);
-          } else {
-            SingleCondition resultCondition = new SingleCondition();
-            resultCondition.addCluster(entry.cluster.get(0), 0);
-            conditionMap.put(entry.condition, resultCondition);
-          }
-        }
-        ResultSingleton result = ResultSingleton.getInstance();
-        Condition resultCondition = new Condition(partialUnique, conditionMap);
-        result.receiveResult(resultCondition);
+        ResultSingleton.getInstance().addConditionToResultComplex(partialUnique, singleCondition);
       }
     }
   }
