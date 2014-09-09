@@ -22,7 +22,6 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -83,7 +82,9 @@ public class ResultSingleton {
                                       LongArrayList conditionArray)
       throws AlgorithmExecutionException {
     Map<ColumnCombinationBitset, SingleCondition> conditionMap = new HashMap<>();
-    conditionMap.put(conditionColumn, new SingleCondition(conditionArray));
+    SingleCondition singleCondition = new SingleCondition();
+    singleCondition.addCluster(conditionArray.get(0), 0);
+    conditionMap.put(conditionColumn, singleCondition);
     Condition condition = new Condition(partialUnique, conditionMap);
     this.receiveResult(condition);
   }
@@ -118,7 +119,6 @@ public class ResultSingleton {
 
     ColumnConditionOr columnCondition = new ColumnConditionOr();
     //build condition
-    List<ColumnCondition> conditions = new LinkedList<>();
     for (ColumnCombinationBitset conditionColumn : condition.conditions.keySet()) {
       if (conditionColumn.size() == 1) {
         addValuesToCondition(columnCondition, conditionColumn,
@@ -147,8 +147,9 @@ public class ResultSingleton {
   protected void addValuesToCondition(ColumnCondition columnCondition,
                                       ColumnCombinationBitset conditionColumn,
                                       SingleCondition singleCondition) {
+
     TreeSet<String> conditionValues = new TreeSet<>();
-    for (long index : singleCondition.cluster) {
+    for (long index : singleCondition.getCluster()) {
       conditionValues.add(inputMap.get(conditionColumn.getSetBits().get(0)).get(index));
     }
     for (String conditionValue : conditionValues) {
@@ -158,6 +159,8 @@ public class ResultSingleton {
                                input.columnNames().get(conditionColumn.getSetBits().get(0)));
       columnCondition
           .add(new ColumnConditionValue(identifier, conditionValue, singleCondition.isNegated));
+      System.out.println(singleCondition.cluster.size());
+
     }
   }
 

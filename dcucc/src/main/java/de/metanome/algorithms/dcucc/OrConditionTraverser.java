@@ -192,10 +192,11 @@ public class OrConditionTraverser extends AndConditionTraverser {
         Map<ColumnCombinationBitset, SingleCondition> conditionMap = new HashMap<>();
         for (ConditionEntry entry : singleCondition) {
           if (conditionMap.containsKey(entry.condition)) {
-            LongArrayList cluster = conditionMap.get(entry.condition).cluster;
-            cluster.addAll(entry.cluster);
+            conditionMap.get(entry.condition).addCluster(entry.cluster.get(0), 0);
           } else {
-            conditionMap.put(entry.condition, new SingleCondition(entry.cluster));
+            SingleCondition resultCondition = new SingleCondition();
+            resultCondition.addCluster(entry.cluster.get(0), 0);
+            conditionMap.put(entry.condition, resultCondition);
           }
         }
         ResultSingleton result = ResultSingleton.getInstance();
