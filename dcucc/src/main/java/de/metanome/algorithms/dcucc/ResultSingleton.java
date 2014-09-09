@@ -17,8 +17,6 @@ import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.Conditi
 import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
 import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
 
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -80,22 +78,10 @@ public class ResultSingleton {
   }
 
   protected void addConditionToResult(ColumnCombinationBitset partialUnique,
-                                      ColumnCombinationBitset conditionColumn,
-                                      LongArrayList conditionArray)
+                                      List<ConditionEntry> singleCondition)
       throws AlgorithmExecutionException {
     Map<ColumnCombinationBitset, SingleCondition> conditionMap = new HashMap<>();
-    SingleCondition singleCondition = new SingleCondition();
-    singleCondition.addCluster(conditionArray.get(0), 0);
-    conditionMap.put(conditionColumn, singleCondition);
-    Condition condition = new Condition(partialUnique, conditionMap);
-    this.receiveResult(condition);
-  }
-
-  protected void addConditionToResultComplex(ColumnCombinationBitset partialUnique,
-                                             List<OrConditionTraverser.ConditionEntry> singleCondition)
-      throws AlgorithmExecutionException {
-    Map<ColumnCombinationBitset, SingleCondition> conditionMap = new HashMap<>();
-    for (OrConditionTraverser.ConditionEntry entry : singleCondition) {
+    for (ConditionEntry entry : singleCondition) {
       if (conditionMap.containsKey(entry.condition)) {
         conditionMap.get(entry.condition).addCluster(entry.cluster.get(0), 0);
       } else {

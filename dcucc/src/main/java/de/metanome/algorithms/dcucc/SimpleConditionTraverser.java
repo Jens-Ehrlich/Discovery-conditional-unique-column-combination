@@ -58,7 +58,9 @@ public class SimpleConditionTraverser implements ConditionLatticeTraverser {
     }
     ResultSingleton resultSingleton = ResultSingleton.getInstance();
     for (LongArrayList condition : conditions) {
-      resultSingleton.addConditionToResult(partialUnique, conditionColumn, condition);
+      List<ConditionEntry> conditionEntries = new LinkedList<>();
+      conditionEntries.add(new ConditionEntry(conditionColumn, condition));
+      resultSingleton.addConditionToResult(partialUnique, conditionEntries);
     }
   }
 

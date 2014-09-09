@@ -189,7 +189,7 @@ public class OrConditionTraverser extends AndConditionTraverser {
                                intersectingCluster);
 
       for (List<ConditionEntry> singleCondition : clustergroups) {
-        ResultSingleton.getInstance().addConditionToResultComplex(partialUnique, singleCondition);
+        ResultSingleton.getInstance().addConditionToResult(partialUnique, singleCondition);
       }
     }
   }
@@ -251,17 +251,6 @@ public class OrConditionTraverser extends AndConditionTraverser {
       }
     }
     return result;
-  }
-
-  protected class ConditionEntry {
-
-    public ColumnCombinationBitset condition;
-    public LongArrayList cluster;
-
-    public ConditionEntry(ColumnCombinationBitset condition, LongArrayList cluster) {
-      this.condition = new ColumnCombinationBitset(condition);
-      this.cluster = cluster.clone();
-    }
   }
 
   protected class ConditionTask {
