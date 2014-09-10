@@ -67,10 +67,9 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   public static final String PERCENTAGE_TAG = "percentage";
   public static final String ALGORITHM_TAG = "algorithm_type";
   public static final String SELFCONDITIONS_TAG = "calculate self conditions";
-
+  public static int numberOfTuples = -1;
   protected String algorithmDescription = "";
   protected int frequency = -1;
-  protected int numberOfTuples = -1;
   protected int numberOfColumns = -1;
   protected boolean percentage = false;
   protected boolean calculateSelfConditions = false;

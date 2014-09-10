@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
 /**
  * @author Jens Ehrlich
@@ -157,11 +157,12 @@ public class ResultSingleton {
                                       ColumnCombinationBitset conditionColumn,
                                       SingleCondition singleCondition) {
 
-    TreeSet<String> conditionValues = new TreeSet<>();
+    Map<String, Float> conditionValues = new TreeMap<>();
     for (long index : singleCondition.getCluster()) {
-      conditionValues.add(inputMap.get(conditionColumn.getSetBits().get(0)).get(index));
+      conditionValues.put(inputMap.get(conditionColumn.getSetBits().get(0)).get(index),
+                          singleCondition.cluster.get(index));
     }
-    for (String conditionValue : conditionValues) {
+    for (String conditionValue : conditionValues.keySet()) {
       ColumnIdentifier
           identifier =
           new ColumnIdentifier(input.relationName(),
@@ -169,7 +170,7 @@ public class ResultSingleton {
       ColumnConditionValue
           leaf =
           new ColumnConditionValue(identifier, conditionValue, singleCondition.isNegated);
-      //FIXME add coverage here
+      leaf.setCoverage(conditionValues.get(conditionValue));
       columnCondition.add(leaf);
     }
   }

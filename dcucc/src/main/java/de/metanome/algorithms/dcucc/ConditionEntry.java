@@ -16,10 +16,6 @@ public class ConditionEntry {
   public ConditionEntry(ColumnCombinationBitset condition, LongArrayList cluster) {
     this.condition = new ColumnCombinationBitset(condition);
     this.cluster = cluster.clone();
-  }
-
-  public ConditionEntry(ColumnCombinationBitset condition, LongArrayList cluster, float coverage) {
-    this(condition, cluster);
-    this.coverage = coverage;
+    this.coverage = (float) ((cluster.size() * 100.0) / Dcucc.numberOfTuples);
   }
 }
