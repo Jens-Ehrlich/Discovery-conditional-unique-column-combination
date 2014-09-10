@@ -12,7 +12,7 @@ public class ConditionalPositionListIndexTest {
   }
 
   /**
-   * Test method for {@link de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex::calculateConditions}
+   * Test method for {@link de.metanome.algorithm_helper.data_structures.PositionListIndex::calculateConditions}
    */
  /* @Test
   public void testCalculateConditions() {

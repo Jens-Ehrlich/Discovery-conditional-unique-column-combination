@@ -1,13 +1,13 @@
 package de.metanome.algorithms.dcucc;
 
-import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
-import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionAnd;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionValue;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
+import de.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
+import de.metanome.algorithm_helper.data_structures.PositionListIndex;
+import de.metanome.algorithm_integration.ColumnCondition;
+import de.metanome.algorithm_integration.ColumnConditionAnd;
+import de.metanome.algorithm_integration.ColumnConditionValue;
+import de.metanome.algorithm_integration.ColumnIdentifier;
+import de.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
+import de.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 
@@ -23,7 +23,8 @@ public class SelfConditionFinder {
                                              PositionListIndex partialUniquePLI, Dcucc algorithm)
       throws CouldNotReceiveResultException {
 
-    if ((partialUniquePLI.getRawKeyError() + partialUniquePLI.getClusters().size()) >= algorithm.frequency) {
+    if ((partialUniquePLI.getRawKeyError() + partialUniquePLI.getClusters().size())
+        >= algorithm.frequency) {
       return;
     }
     ResultSingleton singleton = ResultSingleton.getInstance();

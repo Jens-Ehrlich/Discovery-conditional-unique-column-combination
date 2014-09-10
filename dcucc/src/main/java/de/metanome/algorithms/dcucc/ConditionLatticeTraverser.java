@@ -1,7 +1,7 @@
 package de.metanome.algorithms.dcucc;
 
-import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionException;
+import de.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
+import de.metanome.algorithm_integration.AlgorithmExecutionException;
 
 /**
  * @author Jens Ehrlich

@@ -1,6 +1,6 @@
 package de.metanome.algorithms.dcucc;
 
-import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
+import de.metanome.algorithm_helper.data_structures.PositionListIndex;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 
@@ -16,12 +16,12 @@ public class ConditionalPositionListIndex extends PositionListIndex {
   }
 
   /**
-   * TODO update Calculates the condition for a {@link de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination}.
-   * this is the {@link de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex}
-   * of the partial unique and PLICondition is the {@link de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex}
+   * TODO update Calculates the condition for a {@link de.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination}.
+   * this is the {@link de.metanome.algorithm_helper.data_structures.PositionListIndex}
+   * of the partial unique and PLICondition is the {@link de.metanome.algorithm_helper.data_structures.PositionListIndex}
    * of the columns that may form the condition.
    *
-   * @param PLICondition a {@link de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex}
+   * @param PLICondition a {@link de.metanome.algorithm_helper.data_structures.PositionListIndex}
    *                     that forms the condition
    * @return a list of conditions that hold. Each condition is maximal e.g. there exists no superset
    * for the condition. Only on of the condition holds at a time (xor).

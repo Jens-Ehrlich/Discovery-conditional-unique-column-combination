@@ -1,6 +1,6 @@
 package de.metanome.algorithms.dcucc;
 
-import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
+import de.metanome.algorithm_helper.data_structures.PositionListIndex;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 

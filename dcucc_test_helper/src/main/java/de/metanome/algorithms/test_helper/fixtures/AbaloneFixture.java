@@ -6,17 +6,17 @@ package de.metanome.algorithms.test_helper.fixtures;
 
 import com.google.common.collect.ImmutableList;
 
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInputGenerator;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.FunctionalDependencyResultReceiver;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.InclusionDependencyResultReceiver;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.UniqueColumnCombinationResultReceiver;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.results.FunctionalDependency;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.results.UniqueColumnCombination;
-import de.uni_potsdam.hpi.metanome.input.csv.CsvFileGenerator;
+import de.metanome.algorithm_integration.ColumnCombination;
+import de.metanome.algorithm_integration.ColumnIdentifier;
+import de.metanome.algorithm_integration.input.RelationalInputGenerator;
+import de.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
+import de.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
+import de.metanome.algorithm_integration.result_receiver.FunctionalDependencyResultReceiver;
+import de.metanome.algorithm_integration.result_receiver.InclusionDependencyResultReceiver;
+import de.metanome.algorithm_integration.result_receiver.UniqueColumnCombinationResultReceiver;
+import de.metanome.algorithm_integration.results.FunctionalDependency;
+import de.metanome.algorithm_integration.results.UniqueColumnCombination;
+import de.metanome.backend.input.csv.CsvFileGenerator;
 
 import java.io.File;
 import java.io.FileNotFoundException;

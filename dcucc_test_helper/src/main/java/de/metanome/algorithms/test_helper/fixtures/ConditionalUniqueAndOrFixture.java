@@ -2,21 +2,21 @@ package de.metanome.algorithms.test_helper.fixtures;
 
 import com.google.common.collect.ImmutableList;
 
-import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
-import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PLIBuilder;
-import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCombination;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionAnd;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionValue;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInputGenerator;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
+import de.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
+import de.metanome.algorithm_helper.data_structures.PLIBuilder;
+import de.metanome.algorithm_helper.data_structures.PositionListIndex;
+import de.metanome.algorithm_integration.ColumnCombination;
+import de.metanome.algorithm_integration.ColumnConditionAnd;
+import de.metanome.algorithm_integration.ColumnConditionOr;
+import de.metanome.algorithm_integration.ColumnConditionValue;
+import de.metanome.algorithm_integration.ColumnIdentifier;
+import de.metanome.algorithm_integration.input.InputGenerationException;
+import de.metanome.algorithm_integration.input.InputIterationException;
+import de.metanome.algorithm_integration.input.RelationalInput;
+import de.metanome.algorithm_integration.input.RelationalInputGenerator;
+import de.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
+import de.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
+import de.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;

@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.uni-potsdam.hpi.metanome.algorithms</groupId>
+    <groupId>de.metanome.algorithms</groupId>
     <artifactId>dcucc_test_helper</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -30,19 +30,19 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>de.uni-potsdam.hpi.metanome</groupId>
+            <groupId>de.metanome</groupId>
             <artifactId>algorithm_integration</artifactId>
             <version>0.0.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>de.uni-potsdam.hpi.metanome</groupId>
+            <groupId>de.metanome</groupId>
             <artifactId>algorithm_helper</artifactId>
             <version>0.0.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>de.uni-potsdam.hpi.metanome</groupId>
+            <groupId>de.metanome</groupId>
             <artifactId>backend</artifactId>
             <version>0.0.2-SNAPSHOT</version>
             <scope>compile</scope>

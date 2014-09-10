@@ -1,12 +1,12 @@
 package de.metanome.algorithms.dcucc;
 
+import de.metanome.algorithm_helper.data_structures.PLIBuilder;
+import de.metanome.algorithm_helper.data_structures.PositionListIndex;
+import de.metanome.algorithm_integration.input.InputGenerationException;
+import de.metanome.algorithm_integration.input.InputIterationException;
+import de.metanome.algorithm_integration.input.RelationalInput;
+import de.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
 import de.metanome.algorithms.test_helper.fixtures.AbaloneFixture;
-import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PLIBuilder;
-import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.PositionListIndex;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
 
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 

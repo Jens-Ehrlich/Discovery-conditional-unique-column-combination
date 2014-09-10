@@ -2,20 +2,20 @@ package de.metanome.algorithms.dcucc;
 
 import com.google.common.collect.ImmutableList;
 
-import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
-import de.uni_potsdam.hpi.metanome.algorithm_helper.data_structures.SubSetGraph;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.AlgorithmExecutionException;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnCondition;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionAnd;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionOr;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnConditionValue;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.ColumnIdentifier;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputGenerationException;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.input.InputIterationException;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.input.RelationalInput;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
-import de.uni_potsdam.hpi.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
+import de.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
+import de.metanome.algorithm_helper.data_structures.SubSetGraph;
+import de.metanome.algorithm_integration.AlgorithmExecutionException;
+import de.metanome.algorithm_integration.ColumnCondition;
+import de.metanome.algorithm_integration.ColumnConditionAnd;
+import de.metanome.algorithm_integration.ColumnConditionOr;
+import de.metanome.algorithm_integration.ColumnConditionValue;
+import de.metanome.algorithm_integration.ColumnIdentifier;
+import de.metanome.algorithm_integration.input.InputGenerationException;
+import de.metanome.algorithm_integration.input.InputIterationException;
+import de.metanome.algorithm_integration.input.RelationalInput;
+import de.metanome.algorithm_integration.result_receiver.ConditionalUniqueColumnCombinationResultReceiver;
+import de.metanome.algorithm_integration.result_receiver.CouldNotReceiveResultException;
+import de.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +29,7 @@ import java.util.TreeSet;
  * @author Jens Ehrlich
  */
 public class ResultSingleton {
+
   protected static ResultSingleton singleton;
 
   protected SubSetGraph conditionMinimalityGraph;
@@ -62,7 +63,8 @@ public class ResultSingleton {
     return singleton;
   }
 
-  protected void prepareOutput(RelationalInput input) throws InputGenerationException, InputIterationException {
+  protected void prepareOutput(RelationalInput input)
+      throws InputGenerationException, InputIterationException {
     this.inputMap = new ArrayList<>(input.numberOfColumns());
     for (int i = 0; i < input.numberOfColumns(); i++) {
       inputMap.add(new HashMap<Long, String>());
