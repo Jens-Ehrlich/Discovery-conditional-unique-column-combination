@@ -97,4 +97,55 @@ public class SimpleConditionTraverser implements ConditionLatticeTraverser {
     }
     return result;
   }
+
+  protected Map<ColumnCombinationBitset, PositionListIndex> apprioriGenerate(
+      Map<ColumnCombinationBitset, PositionListIndex> previousLevel) {
+    Map<ColumnCombinationBitset, PositionListIndex> nextLevel = new HashMap<>();
+    int nextLevelCount = -1;
+    ColumnCombinationBitset union = new ColumnCombinationBitset();
+    for (ColumnCombinationBitset bitset : previousLevel.keySet()) {
+      if (nextLevelCount == -1) {
+        nextLevelCount = bitset.size() + 1;
+      }
+      union = bitset.union(union);
+    }
+
+    List<ColumnCombinationBitset> nextLevelCandidates;
+    Map<ColumnCombinationBitset, Integer> candidateGenerationCount = new HashMap<>();
+    for (ColumnCombinationBitset subset : previousLevel.keySet()) {
+      nextLevelCandidates = union.getNSubsetColumnCombinationsSupersetOf(subset, nextLevelCount);
+      for (ColumnCombinationBitset nextLevelCandidateBitset : nextLevelCandidates) {
+        if (candidateGenerationCount.containsKey(nextLevelCandidateBitset)) {
+          int count = candidateGenerationCount.get(nextLevelCandidateBitset);
+          count++;
+          candidateGenerationCount.put(nextLevelCandidateBitset, count);
+        } else {
+          candidateGenerationCount.put(nextLevelCandidateBitset, 1);
+        }
+      }
+    }
+
+    for (ColumnCombinationBitset candidate : candidateGenerationCount.keySet()) {
+      if (candidateGenerationCount.get(candidate) == nextLevelCount) {
+        nextLevel.put(candidate, getConditionPLI(candidate, previousLevel));
+      }
+    }
+    return nextLevel;
+  }
+
+  protected PositionListIndex getConditionPLI(ColumnCombinationBitset candidate,
+                                              Map<ColumnCombinationBitset, PositionListIndex> pliMap) {
+    PositionListIndex firstChild = null;
+    for (ColumnCombinationBitset subset : candidate.getDirectSubsets()) {
+      if (pliMap.containsKey(subset)) {
+        if (firstChild == null) {
+          firstChild = pliMap.get(subset);
+        } else {
+          return pliMap.get(subset).intersect(firstChild);
+        }
+      }
+    }
+    //should never arrive here
+    return null;
+  }
 }

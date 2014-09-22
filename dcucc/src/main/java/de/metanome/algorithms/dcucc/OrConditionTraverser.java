@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * @author Jens Ehrlich
  */
-public class OrConditionTraverser extends AndConditionTraverser {
+public class OrConditionTraverser extends SimpleConditionTraverser {
 
   Map<ColumnCombinationBitset, List<ConditionEntry>> singleConditions;
 
