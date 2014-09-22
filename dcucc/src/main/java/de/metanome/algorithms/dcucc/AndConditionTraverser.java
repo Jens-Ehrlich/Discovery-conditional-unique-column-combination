@@ -4,7 +4,11 @@ import de.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
 import de.metanome.algorithm_helper.data_structures.PositionListIndex;
 import de.metanome.algorithm_integration.AlgorithmExecutionException;
 
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,8 +16,12 @@ import java.util.Map;
  */
 public class AndConditionTraverser extends SimpleConditionTraverser {
 
+  //partial unique -> basic column -> cluster
+  protected Map<ColumnCombinationBitset, Map<ColumnCombinationBitset, PositionListIndex>>
+      clusterPruningMap;
   public AndConditionTraverser(Dcucc algorithm) {
     super(algorithm);
+    this.clusterPruningMap = new HashMap<>();
   }
 
   @Override
@@ -45,5 +53,28 @@ public class AndConditionTraverser extends SimpleConditionTraverser {
     }
   }
 
-
+  @Override
+  protected void calculateCondition(ColumnCombinationBitset partialUnique,
+                                    Map<ColumnCombinationBitset, PositionListIndex> currentLevel,
+                                    ColumnCombinationBitset conditionColumn,
+                                    PositionListIndex conditionPLI)
+      throws AlgorithmExecutionException {
+    List<LongArrayList> unsatisfiedClusters = new LinkedList<>();
+    //check which conditions hold
+    List<LongArrayList>
+        conditions =
+        this.calculateConditions(this.algorithm.getPLI(partialUnique),
+                                 conditionPLI,
+                                 this.algorithm.frequency,
+                                 unsatisfiedClusters);
+    if (!unsatisfiedClusters.isEmpty()) {
+      currentLevel.put(conditionColumn, new PositionListIndex(unsatisfiedClusters));
+    }
+    ResultSingleton resultSingleton = ResultSingleton.getInstance();
+    for (LongArrayList condition : conditions) {
+      List<ConditionEntry> conditionEntries = new LinkedList<>();
+      conditionEntries.add(new ConditionEntry(conditionColumn, condition));
+      resultSingleton.addMinimalConditionToResult(partialUnique, conditionEntries);
+    }
+  }
 }
