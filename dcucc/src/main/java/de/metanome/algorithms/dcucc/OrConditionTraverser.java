@@ -108,9 +108,9 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
       if (unsatisfactionCount == 0) {
         result.add(cluster);
       } else {
-        if ((cluster.size() - unsatisfactionCount) >= frequency) {
+        //if ((cluster.size() - unsatisfactionCount) >= frequency) {
           unsatisfiedClusters.add(cluster);
-        }
+        //}
       }
     }
     return result;

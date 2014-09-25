@@ -7,6 +7,7 @@ import de.metanome.algorithms.test_helper.fixtures.BridgesFixture;
 import de.metanome.algorithms.test_helper.fixtures.ConditionalUniqueAndOrFixture;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -103,6 +104,7 @@ public class DcuccAndOrTest {
   }
 
   @Test
+  @Ignore //to long for execution
   public void testBreastCancerFixtureExecute() throws Exception {
     //Setup
     BreastCancerFixture fixture = new BreastCancerFixture();

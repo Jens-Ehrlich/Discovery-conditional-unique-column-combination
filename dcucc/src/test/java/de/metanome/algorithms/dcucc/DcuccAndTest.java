@@ -11,6 +11,7 @@ import de.metanome.algorithms.test_helper.fixtures.AlgorithmTestFixture;
 import de.metanome.algorithms.test_helper.fixtures.BridgesFixture;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -48,6 +49,7 @@ public class DcuccAndTest {
 
 
   @Test
+  @Ignore
   public void testAlgorithmFixtureExecute3() throws Exception {
     //Setup
     AlgorithmTestFixture fixture = new AlgorithmTestFixture();
