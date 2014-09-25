@@ -67,12 +67,14 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   public static final String PERCENTAGE_TAG = "percentage";
   public static final String ALGORITHM_TAG = "algorithm_type";
   public static final String SELFCONDITIONS_TAG = "calculate self conditions";
+  public static final String ORCONDITIONLENGHT_TAG = "maximal lenght of or condition";
   public static int numberOfTuples = -1;
   protected String algorithmDescription = "";
   protected int frequency = -1;
   protected int numberOfColumns = -1;
   protected boolean percentage = false;
   protected boolean calculateSelfConditions = false;
+  protected int maxOrConditionLength = 0;
 
   protected List<PositionListIndex> basePLI;
   protected List<ColumnCombinationBitset> baseColumn;
@@ -342,6 +344,8 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
       throws AlgorithmConfigurationException {
     if (identifier.equals(FREQUENCY_TAG)) {
       this.frequency = values[0];
+    } else if (identifier.equals(ORCONDITIONLENGHT_TAG)) {
+      this.maxOrConditionLength = values[0];
     } else {
       throw new AlgorithmConfigurationException("Operation should not be called");
     }
@@ -398,6 +402,11 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
         percentage =
         new ConfigurationSpecificationBoolean(PERCENTAGE_TAG);
     spec.add(percentage);
+
+    ConfigurationSpecificationInteger
+        conditionLength =
+        new ConfigurationSpecificationInteger(ORCONDITIONLENGHT_TAG);
+    spec.add(conditionLength);
 
     ConfigurationSpecificationBoolean
         selfCondition =
