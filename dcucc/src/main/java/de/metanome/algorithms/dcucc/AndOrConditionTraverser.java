@@ -5,7 +5,9 @@ import de.metanome.algorithm_helper.data_structures.PositionListIndex;
 import de.metanome.algorithm_integration.AlgorithmExecutionException;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Jens Ehrlich
@@ -46,5 +48,19 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
       currentLevel = apprioriGenerate(nextLevel);
     }
     combineClusterIntoResult(partialUnique);
+  }
+
+  @Override
+  protected Set<ColumnCombinationBitset> getConditionStartPoints() {
+    Set<ColumnCombinationBitset> nextLevel = new HashSet<>();
+    Set<ColumnCombinationBitset> result = new HashSet<>();
+    for (ColumnCombinationBitset firstLevel : this.singleConditions.keySet()) {
+      if (!this.singleConditions.get(firstLevel).isEmpty()) {
+        result.add(firstLevel);
+      } else {
+        nextLevel.add(firstLevel);
+      }
+    }
+    return result;
   }
 }
