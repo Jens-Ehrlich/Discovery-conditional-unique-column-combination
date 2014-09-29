@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Jens Ehrlich
@@ -129,24 +130,28 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
     return purgedResult;
   }
 
+  protected Set<ColumnCombinationBitset> getConditionStartPoints() {
+    return this.singleConditions.keySet();
+  }
+
   protected void combineClusterIntoResult(ColumnCombinationBitset partialUnique)
       throws AlgorithmExecutionException {
     LongArrayList touchedCluster = new LongArrayList();
     Long2LongOpenHashMap partialUniqueHash = this.algorithm.getPLI(partialUnique).asHashMap();
-    for (ColumnCombinationBitset condition : this.singleConditions.keySet()) {
+    for (ColumnCombinationBitset minimalConditionStartPoint : this.getConditionStartPoints()) {
 
-      //check if current condition will result in minimal conditions
+ /*     //check if current condition will result in minimal conditions
       boolean minimal = false;
-      for (ConditionEntry entry : this.singleConditions.get(condition)) {
+      for (ConditionEntry entry : this.singleConditions.get(minimalConditionStartPoint)) {
         if (entry.condition.size() == 1) {
           minimal = true;
           break;
         }
       }
       if (!minimal) {
-        for (ConditionEntry entry : this.singleConditions.get(condition)) {
+        for (ConditionEntry entry : this.singleConditions.get(minimalConditionStartPoint)) {
           checkNextCondition:
-          for (ColumnCombinationBitset associatedCondition : entry.condition.minus(condition)
+          for (ColumnCombinationBitset associatedCondition : entry.condition.minus(minimalConditionStartPoint)
               .getContainedOneColumnCombinations()) {
             for (ConditionEntry associatedEntry : this.singleConditions.get(associatedCondition)) {
               if (associatedEntry.condition.size() == 1) {
@@ -158,12 +163,12 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
           }
         }
         continue;
-      }
+      }*/
 
       List<ConditionEntry> satisfiedCluster = new ArrayList<>();
       Long2ObjectOpenHashMap<LongArrayList> intersectingCluster = new Long2ObjectOpenHashMap<>();
       //build intersecting cluster
-      for (ConditionEntry singleCluster : this.singleConditions.get(condition)) {
+      for (ConditionEntry singleCluster : this.singleConditions.get(minimalConditionStartPoint)) {
         satisfiedCluster.add(singleCluster);
         touchedCluster.clear();
         for (long rowNumber : singleCluster.cluster) {
