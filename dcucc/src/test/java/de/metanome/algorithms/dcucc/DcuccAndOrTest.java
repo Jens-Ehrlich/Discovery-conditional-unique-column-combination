@@ -40,6 +40,7 @@ public class DcuccAndOrTest {
   }
 
   @Test
+  @Ignore
   public void testAlgorithmFixtureExecute3OrConditions() throws Exception {
     //Setup
     AlgorithmTestFixture fixture = new AlgorithmTestFixture();

@@ -609,6 +609,15 @@ public class AlgorithmTestFixture {
                                                    , new ColumnConditionAnd(
                                                    new ColumnConditionValue(room, "I10"),
                                                    new ColumnConditionValue(end, "14:00")))));
+
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(cap, day),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(end, "09:00")
+                                                   , new ColumnConditionAnd(
+                                                   new ColumnConditionValue(room, "I10"),
+                                                   new ColumnConditionValue(begin, "14:00")))));
+
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(cap, day),
                                                new ColumnConditionOr(
