@@ -15,11 +15,11 @@ import de.metanome.algorithm_integration.algorithm_types.FileInputParameterAlgor
 import de.metanome.algorithm_integration.algorithm_types.IntegerParameterAlgorithm;
 import de.metanome.algorithm_integration.algorithm_types.ListBoxParameterAlgorithm;
 import de.metanome.algorithm_integration.algorithm_types.RelationalInputParameterAlgorithm;
-import de.metanome.algorithm_integration.configuration.ConfigurationSpecification;
-import de.metanome.algorithm_integration.configuration.ConfigurationSpecificationBoolean;
-import de.metanome.algorithm_integration.configuration.ConfigurationSpecificationCsvFile;
-import de.metanome.algorithm_integration.configuration.ConfigurationSpecificationInteger;
-import de.metanome.algorithm_integration.configuration.ConfigurationSpecificationListBox;
+import de.metanome.algorithm_integration.configuration.ConfigurationRequirement;
+import de.metanome.algorithm_integration.configuration.ConfigurationRequirementBoolean;
+import de.metanome.algorithm_integration.configuration.ConfigurationRequirementFileInput;
+import de.metanome.algorithm_integration.configuration.ConfigurationRequirementInteger;
+import de.metanome.algorithm_integration.configuration.ConfigurationRequirementListBox;
 import de.metanome.algorithm_integration.input.FileInputGenerator;
 import de.metanome.algorithm_integration.input.InputGenerationException;
 import de.metanome.algorithm_integration.input.InputIterationException;
@@ -386,38 +386,39 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   }
 
   @Override
-  public List<ConfigurationSpecification> getConfigurationRequirements() {
-    LinkedList<ConfigurationSpecification> spec = new LinkedList<>();
-    ConfigurationSpecificationCsvFile
+  public List<ConfigurationRequirement> getConfigurationRequirements() {
+    LinkedList<ConfigurationRequirement> spec = new LinkedList<>();
+    ConfigurationRequirementFileInput
         csvFile =
-        new ConfigurationSpecificationCsvFile(INPUT_FILE_TAG);
+        new ConfigurationRequirementFileInput(INPUT_FILE_TAG) {
+        };
     spec.add(csvFile);
 
-    ConfigurationSpecificationInteger
+    ConfigurationRequirementInteger
         frequency =
-        new ConfigurationSpecificationInteger(FREQUENCY_TAG);
+        new ConfigurationRequirementInteger(FREQUENCY_TAG);
     spec.add(frequency);
 
-    ConfigurationSpecificationBoolean
+    ConfigurationRequirementBoolean
         percentage =
-        new ConfigurationSpecificationBoolean(PERCENTAGE_TAG);
+        new ConfigurationRequirementBoolean(PERCENTAGE_TAG);
     spec.add(percentage);
 
-    ConfigurationSpecificationInteger
+    ConfigurationRequirementInteger
         conditionLength =
-        new ConfigurationSpecificationInteger(ORCONDITIONLENGHT_TAG);
+        new ConfigurationRequirementInteger(ORCONDITIONLENGHT_TAG);
     spec.add(conditionLength);
 
-    ConfigurationSpecificationBoolean
+    ConfigurationRequirementBoolean
         selfCondition =
-        new ConfigurationSpecificationBoolean(SELFCONDITIONS_TAG);
+        new ConfigurationRequirementBoolean(SELFCONDITIONS_TAG);
     spec.add(selfCondition);
 
     ArrayList<String> algorithmOptions = new ArrayList<>();
     algorithmOptions.addAll(this.algorithmDescriptionMap.keySet());
-    ConfigurationSpecificationListBox
+    ConfigurationRequirementListBox
         listBox =
-        new ConfigurationSpecificationListBox(ALGORITHM_TAG, algorithmOptions);
+        new ConfigurationRequirementListBox(ALGORITHM_TAG, algorithmOptions);
     spec.add(listBox);
 
     return spec;

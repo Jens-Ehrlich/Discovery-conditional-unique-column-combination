@@ -12,7 +12,7 @@ import de.metanome.algorithm_integration.result_receiver.FunctionalDependencyRes
 import de.metanome.algorithm_integration.result_receiver.InclusionDependencyResultReceiver;
 import de.metanome.algorithm_integration.result_receiver.UniqueColumnCombinationResultReceiver;
 import de.metanome.algorithm_integration.results.UniqueColumnCombination;
-import de.metanome.backend.input.csv.CsvFileGenerator;
+import de.metanome.backend.input.csv.DefaultFileInputGenerator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -75,7 +75,9 @@ public class HepatitisFixture {
         URLDecoder.decode(
             Thread.currentThread().getContextClassLoader().getResource(relationName).getPath(),
             "utf-8");
-    RelationalInputGenerator inputGenerator = new CsvFileGenerator(new File(pathToInputFile));
+    RelationalInputGenerator
+        inputGenerator =
+        new DefaultFileInputGenerator(new File(pathToInputFile));
     return inputGenerator;
   }
 
