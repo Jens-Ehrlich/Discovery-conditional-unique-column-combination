@@ -610,13 +610,13 @@ public class AlgorithmTestFixture {
                                                    new ColumnConditionValue(room, "I10"),
                                                    new ColumnConditionValue(end, "14:00")))));
 
-    verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(cap, day),
-                                               new ColumnConditionOr(
-                                                   new ColumnConditionValue(end, "09:00")
-                                                   , new ColumnConditionAnd(
-                                                   new ColumnConditionValue(room, "I10"),
-                                                   new ColumnConditionValue(begin, "14:00")))));
+//    verify(conditionalUniqueResultReceiver).receiveResult(
+//        new ConditionalUniqueColumnCombination(new ColumnCombination(cap, day),
+//                                               new ColumnConditionOr(
+//                                                   new ColumnConditionValue(end, "09:00")
+//                                                   , new ColumnConditionAnd(
+//                                                   new ColumnConditionValue(room, "I10"),
+//                                                   new ColumnConditionValue(begin, "14:00")))));
 
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(cap, day),
@@ -626,31 +626,31 @@ public class AlgorithmTestFixture {
                                                    new ColumnConditionValue(room, "I10"),
                                                    new ColumnConditionValue(end, "14:00")))));
 
-    verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(room),
-                                               new ColumnConditionOr(
-                                                   new ColumnConditionAnd(
-                                                       new ColumnConditionValue(begin, "09:00"),
-                                                       new ColumnConditionValue(day, "Monday"))
-                                                   , new ColumnConditionAnd(
-                                                   new ColumnConditionValue(day, "Monday"),
-                                                   new ColumnConditionValue(end, "14:00")))));
+//    verify(conditionalUniqueResultReceiver).receiveResult(
+//        new ConditionalUniqueColumnCombination(new ColumnCombination(room),
+//                                               new ColumnConditionOr(
+//                                                   new ColumnConditionAnd(
+//                                                       new ColumnConditionValue(begin, "09:00"),
+//                                                       new ColumnConditionValue(day, "Monday"))
+//                                                   , new ColumnConditionAnd(
+//                                                   new ColumnConditionValue(day, "Monday"),
+//                                                   new ColumnConditionValue(end, "14:00")))));
 
-    verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(room),
-                                               new ColumnConditionOr(
-                                                   new ColumnConditionValue(day, "Tuesday")
-                                                   , new ColumnConditionAnd(
-                                                   new ColumnConditionValue(begin, "09:00"),
-                                                   new ColumnConditionValue(day, "Monday")))));
+//    verify(conditionalUniqueResultReceiver).receiveResult(
+//        new ConditionalUniqueColumnCombination(new ColumnCombination(room),
+//                                               new ColumnConditionOr(
+//                                                   new ColumnConditionValue(day, "Tuesday")
+//                                                   , new ColumnConditionAnd(
+//                                                   new ColumnConditionValue(begin, "09:00"),
+//                                                   new ColumnConditionValue(day, "Monday")))));
 
-    verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(room),
-                                               new ColumnConditionOr(
-                                                   new ColumnConditionValue(day, "Tuesday")
-                                                   , new ColumnConditionAnd(
-                                                   new ColumnConditionValue(end, "14:00"),
-                                                   new ColumnConditionValue(day, "Monday")))));
+//    verify(conditionalUniqueResultReceiver).receiveResult(
+//        new ConditionalUniqueColumnCombination(new ColumnCombination(room),
+//                                               new ColumnConditionOr(
+//                                                   new ColumnConditionValue(day, "Tuesday")
+//                                                   , new ColumnConditionAnd(
+//                                                   new ColumnConditionValue(end, "14:00"),
+//                                                   new ColumnConditionValue(day, "Monday")))));
 
     verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }
@@ -723,31 +723,44 @@ public class AlgorithmTestFixture {
                                                    new ColumnConditionValue(end, "14:00")))));
 
     verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(room),
+        new ConditionalUniqueColumnCombination(new ColumnCombination(cap, day),
                                                new ColumnConditionOr(
-                                                   new ColumnConditionAnd(
-                                                       new ColumnConditionValue(begin, "09:00"),
-                                                       new ColumnConditionValue(day, "Monday"))
+                                                   new ColumnConditionValue(room, "A2")
                                                    , new ColumnConditionAnd(
-                                                   new ColumnConditionValue(day, "Monday"),
+                                                   new ColumnConditionValue(room, "I10"),
                                                    new ColumnConditionValue(end, "14:00")))));
 
+//    verify(conditionalUniqueResultReceiver).receiveResult(
+//        new ConditionalUniqueColumnCombination(new ColumnCombination(room),
+//                                               new ColumnConditionOr(
+//                                                   new ColumnConditionAnd(
+//                                                       new ColumnConditionValue(begin, "09:00"),
+//                                                       new ColumnConditionValue(day, "Monday"))
+//                                                   , new ColumnConditionAnd(
+//                                                   new ColumnConditionValue(day, "Monday"),
+//                                                   new ColumnConditionValue(end, "14:00")))));
+//
+//    verify(conditionalUniqueResultReceiver).receiveResult(
+//        new ConditionalUniqueColumnCombination(new ColumnCombination(room),
+//                                               new ColumnConditionOr(
+//                                                   new ColumnConditionValue(day, "Tuesday")
+//                                                   , new ColumnConditionAnd(
+//                                                   new ColumnConditionValue(begin, "09:00"),
+//                                                   new ColumnConditionValue(day, "Monday")))));
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(room),
                                                new ColumnConditionOr(
-                                                   new ColumnConditionValue(day, "Tuesday")
-                                                   , new ColumnConditionAnd(
-                                                   new ColumnConditionValue(begin, "09:00"),
-                                                   new ColumnConditionValue(day, "Monday")))));
+                                                   new ColumnConditionValue(day, "Tuesday"))));
+
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(begin, room),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(day, "Monday"))));
+
     verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(end, room),
                                                new ColumnConditionOr(
-                                                   new ColumnConditionValue(day, "Tuesday"))));
-
-    verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(begin, cap, room),
-                                               new ColumnConditionOr(
-                                                   new ColumnConditionValue(day, "Tuesday"))));
+                                                   new ColumnConditionValue(day, "Monday"))));
 
     verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }

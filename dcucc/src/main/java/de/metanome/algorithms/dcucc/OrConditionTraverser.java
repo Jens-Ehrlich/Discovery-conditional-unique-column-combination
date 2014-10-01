@@ -245,11 +245,28 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
         long intersectingClusterNumber = uniqueClusterNumbers.get(currentTask.uniqueClusterNumber);
         if (intersectingClusters.get(intersectingClusterNumber).contains(conditionCluster)) {
           ConditionTask newTask = currentTask.generateNextTask();
-          if (newTask.remove(conditionCluster,
-                             satisfiedClusters.get((int) conditionCluster).cluster.size(),
-                             frequency)) {
+          boolean fullfillsFrequency = true;
+          for (long clusterItem : intersectingClusters.get(intersectingClusterNumber)) {
+            if (clusterItem == conditionCluster) {
+              continue;
+            }
+            if (!newTask
+                .remove(clusterItem, satisfiedClusters.get((int) clusterItem).cluster.size(),
+                        frequency)) {
+              fullfillsFrequency = false;
+              break;
+            }
+          }
+          if (fullfillsFrequency) {
             queue.add(newTask);
           }
+
+//          ConditionTask newTask = currentTask.generateNextTask();
+//          if (newTask.remove(conditionCluster,
+//                             satisfiedClusters.get((int) conditionCluster).cluster.size(),
+//                             frequency)) {
+//            queue.add(newTask);
+//          }
         }
       }
       //no cluster is removed... because all relevant cluster where removed before -> generate the same task
