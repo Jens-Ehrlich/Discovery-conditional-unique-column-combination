@@ -38,11 +38,11 @@ import de.metanome.algorithms.ducc.DuccAlgorithm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Mockup comment
@@ -165,15 +165,19 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   protected List<ColumnCombinationBitset> calculateNextLevel(
       List<ColumnCombinationBitset> previousLevel) throws AlgorithmExecutionException {
     List<ColumnCombinationBitset> nextLevel = new LinkedList<>();
-    Set<ColumnCombinationBitset> unprunedNexLevel = new HashSet<>();
+    Set<ColumnCombinationBitset> unprunedNextLevel = new TreeSet<>();
     for (ColumnCombinationBitset currentColumnCombination : previousLevel) {
-      calculateAllParents(currentColumnCombination, unprunedNexLevel);
+      calculateAllParents(currentColumnCombination, unprunedNextLevel);
     }
 
-    for (ColumnCombinationBitset nextLevelBitset : unprunedNexLevel) {
-      if ((this.lowerPruningGraph.containsSuperset(nextLevelBitset)) || (this.upperPruningGraph
-                                                                             .containsSubset(
-                                                                                 nextLevelBitset))) {
+    for (ColumnCombinationBitset nextLevelBitset : unprunedNextLevel) {
+      boolean isTooSmall = this.lowerPruningGraph.containsSuperset(nextLevelBitset);
+      boolean isTooBig = this.upperPruningGraph.containsSubset(nextLevelBitset);
+
+//      if ((this.lowerPruningGraph.containsSuperset(nextLevelBitset)) || (this.upperPruningGraph
+//                                                                             .containsSubset(
+//                                                                                 nextLevelBitset))) {
+      if (isTooSmall || isTooBig) {
         continue;
       } else {
         PositionListIndex nextLevelPLI = this.getPLI(nextLevelBitset);

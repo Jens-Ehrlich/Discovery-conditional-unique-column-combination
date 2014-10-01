@@ -711,6 +711,11 @@ public class AlgorithmTestFixture {
                                                new ColumnConditionOr(
                                                    new ColumnConditionValue(day, "Monday"))));
 
+    verify(conditionalUniqueResultReceiver).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(begin, day),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(room, "I10"))));
+
     verifyNoMoreInteractions(conditionalUniqueResultReceiver);
   }
 }
