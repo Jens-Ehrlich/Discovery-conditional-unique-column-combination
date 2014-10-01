@@ -140,30 +140,30 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
     Long2LongOpenHashMap partialUniqueHash = this.algorithm.getPLI(partialUnique).asHashMap();
     for (ColumnCombinationBitset minimalConditionStartPoint : this.getConditionStartPoints()) {
 
- /*     //check if current condition will result in minimal conditions
-      boolean minimal = false;
-      for (ConditionEntry entry : this.singleConditions.get(minimalConditionStartPoint)) {
-        if (entry.condition.size() == 1) {
-          minimal = true;
-          break;
-        }
-      }
-      if (!minimal) {
-        for (ConditionEntry entry : this.singleConditions.get(minimalConditionStartPoint)) {
-          checkNextCondition:
-          for (ColumnCombinationBitset associatedCondition : entry.condition.minus(minimalConditionStartPoint)
-              .getContainedOneColumnCombinations()) {
-            for (ConditionEntry associatedEntry : this.singleConditions.get(associatedCondition)) {
-              if (associatedEntry.condition.size() == 1) {
-                continue checkNextCondition;
-              }
-            }
-            throw new AlgorithmExecutionException(
-                "Some valid conditions are skipped due to wrong minimality pruning");
-          }
-        }
-        continue;
-      }*/
+//      //check if current condition will result in minimal conditions
+//      boolean minimal = false;
+//      for (ConditionEntry entry : this.singleConditions.get(minimalConditionStartPoint)) {
+//        if (entry.condition.size() == 1) {
+//          minimal = true;
+//          break;
+//        }
+//      }
+//      if (!minimal) {
+//        for (ConditionEntry entry : this.singleConditions.get(minimalConditionStartPoint)) {
+//          checkNextCondition:
+//          for (ColumnCombinationBitset associatedCondition : entry.condition.minus(minimalConditionStartPoint)
+//              .getContainedOneColumnCombinations()) {
+//            for (ConditionEntry associatedEntry : this.singleConditions.get(associatedCondition)) {
+//              if (associatedEntry.condition.size() == 1) {
+//                continue checkNextCondition;
+//              }
+//            }
+//            throw new AlgorithmExecutionException(
+//                "Some valid conditions are skipped due to wrong minimality pruning");
+//          }
+//        }
+//        continue;
+//      }
 
       List<ConditionEntry> satisfiedCluster = new ArrayList<>();
       Long2ObjectOpenHashMap<LongArrayList> intersectingCluster = new Long2ObjectOpenHashMap<>();
