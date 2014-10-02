@@ -2,10 +2,12 @@ package de.metanome.algorithms.dcucc;
 
 import de.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
 import de.metanome.algorithm_helper.data_structures.PositionListIndex;
+import de.metanome.algorithm_helper.data_structures.SubSetGraph;
 import de.metanome.algorithm_integration.AlgorithmExecutionException;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,6 +16,7 @@ import java.util.Set;
  */
 public class AndOrConditionTraverser extends OrConditionTraverser {
 
+  protected SubSetGraph foundConditions;
 
   public AndOrConditionTraverser(Dcucc algorithm) {
     super(algorithm);
@@ -23,6 +26,7 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
   public void iterateConditionLattice(ColumnCombinationBitset partialUnique)
       throws AlgorithmExecutionException {
     singleConditions = new HashMap<>();
+    foundConditions = new SubSetGraph();
     Map<ColumnCombinationBitset, PositionListIndex> currentLevel = new HashMap<>();
 
     //calculate first level - initialisation
@@ -51,16 +55,24 @@ public class AndOrConditionTraverser extends OrConditionTraverser {
   }
 
   @Override
-  protected Set<ColumnCombinationBitset> getConditionStartPoints() {
-    Set<ColumnCombinationBitset> nextLevel = new HashSet<>();
-    Set<ColumnCombinationBitset> result = new HashSet<>();
-    for (ColumnCombinationBitset firstLevel : this.singleConditions.keySet()) {
-      if (!this.singleConditions.get(firstLevel).isEmpty()) {
-        result.add(firstLevel);
-      } else {
-        nextLevel.add(firstLevel);
-      }
+  protected void setConditionEntry(ColumnCombinationBitset singleConditionColumn,
+                                   List<ConditionEntry> conditions) {
+    for (ConditionEntry entry : conditions) {
+      this.foundConditions.add(entry.condition);
     }
-    return result;
+
+    List<ConditionEntry> existingCluster;
+    if (singleConditions.containsKey(singleConditionColumn)) {
+      existingCluster = singleConditions.get(singleConditionColumn);
+    } else {
+      existingCluster = new LinkedList<>();
+      singleConditions.put(singleConditionColumn, existingCluster);
+    }
+    existingCluster.addAll(conditions);
+  }
+
+  @Override
+  protected Set<ColumnCombinationBitset> getConditionStartPoints() {
+    return foundConditions.getMinimalSubsets();
   }
 }

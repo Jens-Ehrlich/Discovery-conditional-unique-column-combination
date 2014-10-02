@@ -29,7 +29,6 @@ import java.util.Map;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -146,15 +145,10 @@ public class ConditionalUniqueAndOrFixture {
                                                        new ColumnConditionValue(C, "1")))));
 
     verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(A),
-                                               new ColumnConditionOr(new ColumnConditionAnd(
-                                                   new ColumnConditionValue(C, "1"),
-                                                   new ColumnConditionValue(B, "1")))));
-    verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(A, B),
                                                new ColumnConditionOr(C, "1", "2")));
 
-    verify(conditionalUniqueResultReceiver, times(0)).receiveResult(
+    verify(conditionalUniqueResultReceiver).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(A, C),
                                                new ColumnConditionOr(
                                                    new ColumnConditionValue(B, "1"))));

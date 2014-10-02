@@ -75,14 +75,7 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
     }
     for (ColumnCombinationBitset singeConditionColumn : conditionColumn
         .getContainedOneColumnCombinations()) {
-      List<ConditionEntry> existingCluster;
-      if (singleConditions.containsKey(singeConditionColumn)) {
-        existingCluster = singleConditions.get(singeConditionColumn);
-      } else {
-        existingCluster = new LinkedList<>();
-        singleConditions.put(singeConditionColumn, existingCluster);
-      }
-      existingCluster.addAll(clusters);
+      setConditionEntry(singeConditionColumn, clusters);
     }
   }
 
@@ -138,7 +131,8 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
       throws AlgorithmExecutionException {
     LongArrayList touchedCluster = new LongArrayList();
     Long2LongOpenHashMap partialUniqueHash = this.algorithm.getPLI(partialUnique).asHashMap();
-    for (ColumnCombinationBitset minimalConditionStartPoint : this.getConditionStartPoints()) {
+    Set<ColumnCombinationBitset> startPoints = this.getConditionStartPoints();
+    for (ColumnCombinationBitset minimalConditionStartPoint : startPoints) {
 
 //      //check if current condition will result in minimal conditions
 //      boolean minimal = false;
@@ -164,6 +158,11 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
 //        }
 //        continue;
 //      }
+
+      if (minimalConditionStartPoint.getSetBits().size() != 1) {
+        minimalConditionStartPoint =
+            minimalConditionStartPoint.getContainedOneColumnCombinations().get(0);
+      }
 
       List<ConditionEntry> satisfiedCluster = new ArrayList<>();
       Long2ObjectOpenHashMap<LongArrayList> intersectingCluster = new Long2ObjectOpenHashMap<>();
@@ -280,6 +279,19 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
       }
     }
     return result;
+  }
+
+  protected void setConditionEntry(ColumnCombinationBitset singleConditionColumn,
+                                   List<ConditionEntry> conditions) {
+    List<ConditionEntry> existingCluster;
+    if (singleConditions.containsKey(singleConditionColumn)) {
+      existingCluster = singleConditions.get(singleConditionColumn);
+    } else {
+      existingCluster = new LinkedList<>();
+      singleConditions.put(singleConditionColumn, existingCluster);
+    }
+    existingCluster.addAll(conditions);
+
   }
 
   protected class ConditionTask {
