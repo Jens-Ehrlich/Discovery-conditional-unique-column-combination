@@ -103,7 +103,7 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
         result.add(cluster);
       } else {
         //if ((cluster.size() - unsatisfactionCount) >= frequency) {
-          unsatisfiedClusters.add(cluster);
+        unsatisfiedClusters.add(cluster);
         //}
       }
     }
@@ -133,32 +133,6 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
     Long2LongOpenHashMap partialUniqueHash = this.algorithm.getPLI(partialUnique).asHashMap();
     Set<ColumnCombinationBitset> startPoints = this.getConditionStartPoints();
     for (ColumnCombinationBitset minimalConditionStartPoint : startPoints) {
-
-//      //check if current condition will result in minimal conditions
-//      boolean minimal = false;
-//      for (ConditionEntry entry : this.singleConditions.get(minimalConditionStartPoint)) {
-//        if (entry.condition.size() == 1) {
-//          minimal = true;
-//          break;
-//        }
-//      }
-//      if (!minimal) {
-//        for (ConditionEntry entry : this.singleConditions.get(minimalConditionStartPoint)) {
-//          checkNextCondition:
-//          for (ColumnCombinationBitset associatedCondition : entry.condition.minus(minimalConditionStartPoint)
-//              .getContainedOneColumnCombinations()) {
-//            for (ConditionEntry associatedEntry : this.singleConditions.get(associatedCondition)) {
-//              if (associatedEntry.condition.size() == 1) {
-//                continue checkNextCondition;
-//              }
-//            }
-//            throw new AlgorithmExecutionException(
-//                "Some valid conditions are skipped due to wrong minimality pruning");
-//          }
-//        }
-//        continue;
-//      }
-
       if (minimalConditionStartPoint.getSetBits().size() != 1) {
         minimalConditionStartPoint =
             minimalConditionStartPoint.getContainedOneColumnCombinations().get(0);
@@ -259,13 +233,6 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
           if (fullfillsFrequency) {
             queue.add(newTask);
           }
-
-//          ConditionTask newTask = currentTask.generateNextTask();
-//          if (newTask.remove(conditionCluster,
-//                             satisfiedClusters.get((int) conditionCluster).cluster.size(),
-//                             frequency)) {
-//            queue.add(newTask);
-//          }
         }
       }
       //no cluster is removed... because all relevant cluster where removed before -> generate the same task
