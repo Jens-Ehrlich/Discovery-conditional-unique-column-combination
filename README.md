@@ -12,3 +12,5 @@ Copy the algorithm jar into the algorithm folder and start metanome. The algorit
 The algorithm is a maven project and can, therefore, be created with:
 
 ```mvn package```
+
+I develope the DoCU algorithm as part of my master's thesis.
