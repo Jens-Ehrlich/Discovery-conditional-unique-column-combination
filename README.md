@@ -9,5 +9,6 @@ The algorithm is compatible to the metanome framework which can be found under h
 To execute the algorithm, download the deployment-0.0.2 snapshot from https://www.hpi.uni-potsdam.de/naumann/sites/metanome/files/.
 Copy the algorithm jar into the algorithm folder and start metanome. The algorithm should be shown in the GUI.
 
-The algorithm is a maven project and the algorithm jar can be created with
-```mvn package´´´
+The algorithm is a maven project and can, therefore, be created with:
+
+```mvn package```
