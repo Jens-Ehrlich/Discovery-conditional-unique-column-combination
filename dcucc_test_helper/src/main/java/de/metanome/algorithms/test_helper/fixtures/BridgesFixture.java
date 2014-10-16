@@ -635,10 +635,6 @@ public class BridgesFixture {
         c13 = new ColumnIdentifier(this.relationName, this.columnNames.get(12));
 
     verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
-        new ColumnCombination(c3, c6, c13),
-        new ColumnConditionOr(new ColumnConditionAnd(new ColumnConditionValue(c10, "STEEL"),
-                                                     new ColumnConditionValue(c8, "G")))));
-    verify(cuccResultReceiver).receiveResult(new ConditionalUniqueColumnCombination(
         new ColumnCombination(c3, c6),
         new ColumnConditionOr(new ColumnConditionAnd(new ColumnConditionValue(c10, "STEEL"),
                                                      new ColumnConditionValue(c11, "MEDIUM")))));

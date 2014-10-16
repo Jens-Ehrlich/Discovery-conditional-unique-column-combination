@@ -49,7 +49,6 @@ public class DcuccAndTest {
 
 
   @Test
-  @Ignore
   public void testAlgorithmFixtureExecute3() throws Exception {
     //Setup
     AlgorithmTestFixture fixture = new AlgorithmTestFixture();

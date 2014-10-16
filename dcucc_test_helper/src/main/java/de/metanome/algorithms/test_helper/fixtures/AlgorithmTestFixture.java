@@ -468,7 +468,7 @@ public class AlgorithmTestFixture {
                                                new ColumnConditionOr(
                                                    new ColumnConditionValue(day, "Monday"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(begin, cap, day),
+        new ConditionalUniqueColumnCombination(new ColumnCombination(begin, day),
                                                new ColumnConditionOr(
                                                    new ColumnConditionValue(room, "I10"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
@@ -480,7 +480,7 @@ public class AlgorithmTestFixture {
                                                new ColumnConditionOr(
                                                    new ColumnConditionValue(end, "14:00"))));
     verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(begin, cap, room),
+        new ConditionalUniqueColumnCombination(new ColumnCombination(begin, room),
                                                new ColumnConditionOr(
                                                    new ColumnConditionValue(day, "Monday"))));
 
