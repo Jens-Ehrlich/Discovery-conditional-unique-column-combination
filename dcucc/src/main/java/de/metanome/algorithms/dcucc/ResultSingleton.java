@@ -71,7 +71,7 @@ public class ResultSingleton {
     }
     long row = 0;
     while (input.hasNext()) {
-      ImmutableList<String> values = input.next();
+      List<String> values = input.next();
       for (int i = 0; i < input.numberOfColumns(); i++) {
         inputMap.get(i).put(row, values.get(i));
       }

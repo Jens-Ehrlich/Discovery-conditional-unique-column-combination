@@ -1,26 +1,19 @@
 package de.metanome.algorithms.mocks;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import de.metanome.algorithm_integration.AlgorithmExecutionException;
-import de.metanome.algorithm_integration.ColumnIdentifier;
-import de.metanome.algorithm_integration.input.DatabaseConnectionGenerator;
 import de.metanome.algorithm_integration.input.FileInputGenerator;
 import de.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
-import de.metanome.algorithm_integration.results.InclusionDependency;
 import de.metanome.algorithm_integration.results.Result;
 import de.metanome.algorithms.dcucc.Dcucc;
 import de.metanome.backend.input.csv.DefaultFileInputGenerator;
 import de.metanome.backend.result_receiver.ResultsCache;
-import de.metanome.algorithms.config.Config;
 import de.uni_potsdam.hpi.utils.FileUtils;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.List;
 
 public class MetanomeMock {
 
@@ -70,7 +63,9 @@ public class MetanomeMock {
 
     StringBuilder builder = new StringBuilder();
     for (Result result : results) {
-      ConditionalUniqueColumnCombination conditionalUniqueColumnCombination = (ConditionalUniqueColumnCombination) result;
+      ConditionalUniqueColumnCombination
+          conditionalUniqueColumnCombination =
+          (ConditionalUniqueColumnCombination) result;
 
 //      StringBuilder refBuilder = new StringBuilder("(");
 //      Iterator<ColumnIdentifier>
@@ -121,6 +116,7 @@ public class MetanomeMock {
 //        builder.append("\r\n");
 //      }
 //    }
+    }
     return builder.toString();
   }
 }

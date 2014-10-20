@@ -7,7 +7,6 @@ import de.metanome.algorithm_integration.AlgorithmExecutionException;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -43,7 +42,7 @@ public class AndConditionTraverser extends SimpleConditionTraverser {
       PositionListIndex currentConditionPLI = this.algorithm.getPLI(conditionColumn);
 
       List<ColumnCombinationBitset> traversedSubsets = subetSetGraph.getExistingSubsets(partialUnique);
-      List<LongArrayList> clusters = currentConditionPLI.copy().getClusters();
+      List<LongArrayList> clusters = currentConditionPLI.clone().getClusters();
       Iterator<LongArrayList> iterator = clusters.iterator();
       outer:
       while (iterator.hasNext()) {

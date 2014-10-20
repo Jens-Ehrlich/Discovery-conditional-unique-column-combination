@@ -21,7 +21,6 @@ import de.metanome.algorithm_integration.result_receiver.InclusionDependencyResu
 import de.metanome.algorithm_integration.result_receiver.UniqueColumnCombinationResultReceiver;
 import de.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
 import de.metanome.algorithm_integration.results.FunctionalDependency;
-import de.metanome.algorithm_integration.results.InclusionDependency;
 import de.metanome.algorithm_integration.results.UniqueColumnCombination;
 
 import org.mockito.invocation.InvocationOnMock;
@@ -363,34 +362,6 @@ public class AlgorithmTestFixture {
                                     expectedIdentifierROOM));
 
     verifyNoMoreInteractions(uniqueColumnCombinationResultReceiver);
-  }
-
-  public void verifyInclusionDependencyResultReceiver() throws CouldNotReceiveResultException {
-    //ColumnIdentifier expectedIdentifierPROF = new ColumnIdentifier(this.relationName, this.columnNames.get(0));
-    //ColumnIdentifier expectedIdentifierCSE = new ColumnIdentifier(this.relationName, this.columnNames.get(1));
-    ColumnIdentifier
-        expectedIdentifierDAY =
-        new ColumnIdentifier(this.relationName, this.columnNames.get(2));
-    ColumnIdentifier
-        expectedIdentifierBEGIN =
-        new ColumnIdentifier(this.relationName, this.columnNames.get(3));
-    ColumnIdentifier
-        expectedIdentifierEND =
-        new ColumnIdentifier(this.relationName, this.columnNames.get(4));
-    //ColumnIdentifier expectedIdentifierROOM = new ColumnIdentifier(this.relationName, this.columnNames.get(5));
-    //ColumnIdentifier expectedIdentifierCAP = new ColumnIdentifier(this.relationName, this.columnNames.get(6));
-    ColumnIdentifier
-        expectedIdentifierID =
-        new ColumnIdentifier(this.relationName, this.columnNames.get(7));
-
-    verify(inclusionDependencyResultReceiver).receiveResult(
-        new InclusionDependency(new ColumnCombination(expectedIdentifierBEGIN),
-                                new ColumnCombination(expectedIdentifierEND)));
-    verify(inclusionDependencyResultReceiver).receiveResult(
-        new InclusionDependency(new ColumnCombination(expectedIdentifierDAY),
-                                new ColumnCombination(expectedIdentifierID)));
-
-    verifyNoMoreInteractions(inclusionDependencyResultReceiver);
   }
 
   public void verifyConditionalUniqueColumnCombinationFor4() throws CouldNotReceiveResultException {
