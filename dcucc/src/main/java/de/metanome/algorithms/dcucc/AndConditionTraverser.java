@@ -74,6 +74,7 @@ public class AndConditionTraverser extends SimpleConditionTraverser {
 
     if (prunePartialUnique) {
       this.algorithm.upperPruningGraph.add(partialUnique);
+      System.out.println("########## Pruned a node because all clusters are empty");
     }
 
     currentLevel = apprioriGenerate(currentLevel);

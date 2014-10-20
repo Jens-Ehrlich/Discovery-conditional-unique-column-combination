@@ -18,5 +18,7 @@
     <modules>
         <module>dcucc_test_helper</module>
         <module>dcucc</module>
+        <module>testrunner</module>
+        <module>utils</module>
     </modules>
 </project>

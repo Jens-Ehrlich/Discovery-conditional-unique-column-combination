@@ -1,6 +1,7 @@
 package de.metanome.algorithms.dcucc;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 import de.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
 import de.metanome.algorithm_helper.data_structures.PLIBuilder;
@@ -67,7 +68,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   public static final String PERCENTAGE_TAG = "percentage";
   public static final String ALGORITHM_TAG = "algorithm_type";
   public static final String SELFCONDITIONS_TAG = "calculate self conditions";
-  public static final String ORCONDITIONLENGHT_TAG = "maximal lenght of or condition";
+  public static final String ORCONDITIONLENGHT_TAG = "maximal length of or condition";
   public static int numberOfTuples = -1;
   protected String algorithmDescription = "";
   protected int frequency = -1;
@@ -86,7 +87,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   protected RelationalInput input;
   protected RelationalInputGenerator inputGenerator;
   protected ConditionalUniqueColumnCombinationResultReceiver resultReceiver;
-  protected Map<String, ConditionLatticeTraverser> algorithmDescriptionMap;
+  public Map<String, ConditionLatticeTraverser> algorithmDescriptionMap;
   protected ResultSingleton resultSingleton;
 
 
@@ -390,8 +391,8 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   }
 
   @Override
-  public List<ConfigurationRequirement> getConfigurationRequirements() {
-    LinkedList<ConfigurationRequirement> spec = new LinkedList<>();
+  public ArrayList<ConfigurationRequirement> getConfigurationRequirements() {
+    ArrayList<ConfigurationRequirement> spec = new ArrayList<>();
     ConfigurationRequirementFileInput
         csvFile =
         new ConfigurationRequirementFileInput(INPUT_FILE_TAG) {

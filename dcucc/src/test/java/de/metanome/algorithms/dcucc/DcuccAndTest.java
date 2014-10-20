@@ -73,7 +73,7 @@ public class DcuccAndTest {
         .setRelationalInputConfigurationValue(Dcucc.INPUT_FILE_TAG, fixture.getInputGenerator());
     algorithm.setResultReceiver(fixture.getCUCCResultReceiver());
     algorithm.setBooleanConfigurationValue(Dcucc.PERCENTAGE_TAG, true);
-    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 30);
+    algorithm.setIntegerConfigurationValue(Dcucc.FREQUENCY_TAG, 1);
     //Execute
     algorithm.execute();
 
