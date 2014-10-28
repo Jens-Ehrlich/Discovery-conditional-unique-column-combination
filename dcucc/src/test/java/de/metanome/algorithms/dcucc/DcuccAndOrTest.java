@@ -101,7 +101,7 @@ public class DcuccAndOrTest {
     algorithm.execute();
 
     //verify result
-    //fixture.verifyConditionalUniqueColumnCombination();
+    fixture.verifyConditionalUniqueColumnCombinationAndOr90();
   }
 
   @Test
