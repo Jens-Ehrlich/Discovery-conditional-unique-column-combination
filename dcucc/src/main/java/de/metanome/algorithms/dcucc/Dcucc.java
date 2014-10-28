@@ -400,8 +400,7 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
     ArrayList<ConfigurationRequirement> spec = new ArrayList<>();
     ConfigurationRequirementFileInput
         csvFile =
-        new ConfigurationRequirementFileInput(INPUT_FILE_TAG) {
-        };
+        new ConfigurationRequirementFileInput(INPUT_FILE_TAG);
     spec.add(csvFile);
 
     ConfigurationRequirementInteger
@@ -414,10 +413,10 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
         new ConfigurationRequirementBoolean(PERCENTAGE_TAG);
     spec.add(percentage);
 
-    ConfigurationRequirementInteger
-        conditionLength =
-        new ConfigurationRequirementInteger(ORCONDITIONLENGHT_TAG);
-    spec.add(conditionLength);
+//    ConfigurationRequirementInteger
+//        conditionLength =
+//        new ConfigurationRequirementInteger(ORCONDITIONLENGHT_TAG);
+//    spec.add(conditionLength);
 
     ConfigurationRequirementBoolean
         selfCondition =
