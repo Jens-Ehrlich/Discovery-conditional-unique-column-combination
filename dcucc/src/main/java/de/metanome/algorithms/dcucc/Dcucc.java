@@ -1,7 +1,6 @@
 package de.metanome.algorithms.dcucc;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 import de.metanome.algorithm_helper.data_structures.ColumnCombinationBitset;
 import de.metanome.algorithm_helper.data_structures.PLIBuilder;
@@ -34,6 +33,7 @@ import de.metanome.algorithm_integration.results.BasicStatistic;
 import de.metanome.algorithm_integration.results.ConditionalUniqueColumnCombination;
 import de.metanome.algorithm_integration.results.FunctionalDependency;
 import de.metanome.algorithm_integration.results.InclusionDependency;
+import de.metanome.algorithm_integration.results.OrderDependency;
 import de.metanome.algorithm_integration.results.UniqueColumnCombination;
 import de.metanome.algorithms.ducc.DuccAlgorithm;
 
@@ -70,13 +70,13 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   public static final String SELFCONDITIONS_TAG = "calculate self conditions";
   public static final String ORCONDITIONLENGHT_TAG = "maximal length of or condition";
   public static int numberOfTuples = -1;
+  public Map<String, ConditionLatticeTraverser> algorithmDescriptionMap;
   protected String algorithmDescription = "";
   protected int frequency = -1;
   protected int numberOfColumns = -1;
   protected boolean percentage = false;
   protected boolean calculateSelfConditions = false;
   protected int maxOrConditionLength = 0;
-
   protected List<PositionListIndex> basePLI;
   protected List<ColumnCombinationBitset> baseColumn;
   protected ConditionLatticeTraverser conditionLatticeTraverser;
@@ -87,7 +87,6 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
   protected RelationalInput input;
   protected RelationalInputGenerator inputGenerator;
   protected ConditionalUniqueColumnCombinationResultReceiver resultReceiver;
-  public Map<String, ConditionLatticeTraverser> algorithmDescriptionMap;
   protected ResultSingleton resultSingleton;
 
 
@@ -384,6 +383,12 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
 
       @Override
       public void receiveResult(UniqueColumnCombination uniqueColumnCombination)
+          throws CouldNotReceiveResultException {
+
+      }
+
+      @Override
+      public void receiveResult(OrderDependency orderDependency)
           throws CouldNotReceiveResultException {
 
       }
