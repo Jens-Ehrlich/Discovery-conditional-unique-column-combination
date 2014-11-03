@@ -101,18 +101,11 @@ public class ResultSingleton {
   protected void addConditionToResult(ColumnCombinationBitset partialUnique,
                                       List<ConditionEntry> singleCondition)
       throws AlgorithmExecutionException {
-    Map<ColumnCombinationBitset, SingleCondition> conditionMap = new HashMap<>();
-    for (ConditionEntry entry : singleCondition) {
-      if (conditionMap.containsKey(entry.condition)) {
-        conditionMap.get(entry.condition).addCluster(entry.cluster.get(0), entry.coverage);
-      } else {
-        SingleCondition resultCondition = new SingleCondition();
-        resultCondition.addCluster(entry.cluster.get(0), entry.coverage);
-        conditionMap.put(entry.condition, resultCondition);
-      }
-    }
+    List<Condition.ConditionElement> conditionMap = new ArrayList<>();
+
+    Condition resultCondition = new Condition(partialUnique, singleCondition);
+
     ResultSingleton result = ResultSingleton.getInstance();
-    Condition resultCondition = new Condition(partialUnique, conditionMap);
     result.receiveResult(resultCondition);
   }
 
@@ -147,16 +140,17 @@ public class ResultSingleton {
 
     ColumnConditionOr columnCondition = new ColumnConditionOr();
     //build condition
-    for (ColumnCombinationBitset conditionColumn : condition.conditions.keySet()) {
+    for (Condition.ConditionElement conditionElement : condition.conditions) {
+      ColumnCombinationBitset conditionColumn = conditionElement.condition;
       if (conditionColumn.size() == 1) {
         addValuesToCondition(columnCondition, conditionColumn,
-                             condition.conditions.get(conditionColumn));
+                             conditionElement.value);
       } else {
         ColumnConditionAnd andCondition = new ColumnConditionAnd();
         for (ColumnCombinationBitset singleBitset : conditionColumn
             .getContainedOneColumnCombinations()) {
           addValuesToCondition(andCondition, singleBitset,
-                               condition.conditions.get(conditionColumn));
+                               conditionElement.value);
         }
         columnCondition.add(andCondition);
       }

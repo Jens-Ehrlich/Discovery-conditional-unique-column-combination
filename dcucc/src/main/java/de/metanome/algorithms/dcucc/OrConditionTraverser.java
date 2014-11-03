@@ -146,7 +146,7 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
       int clusterNumber = 0;
       //build intersecting cluster
       for (ConditionEntry singleCluster : this.singleConditions.get(minimalConditionStartPoint)) {
-        satisfiedCluster.add(singleCluster);
+        satisfiedCluster.add(singleCluster.setClusterNumber(clusterNumber));
         touchedCluster.clear();
         for (long rowNumber : singleCluster.cluster) {
           if (partialUniqueHash.containsKey(rowNumber)) {
@@ -173,7 +173,7 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
       for (long partialUniqueCluster : intersectingCluster.keySet()) {
         intersectingClusterList.add(intersectingCluster.get(partialUniqueCluster));
       }
-
+//      intersectingClusterList.addAll(extendIntersectingClusterByAndCluster(satisfiedCluster));
       List<List<ConditionEntry>>
           clustergroups =
           this.combineClusters(this.algorithm.frequency, satisfiedCluster,
@@ -185,18 +185,19 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
     }
   }
 
-  protected void extendIntersectingClusterByAndCluster(List<ConditionEntry> satisfiedCluster,
-                                                       Long2LongOpenHashMap partialUniqueHash) {
-    List<List<ConditionEntry>> result = new ArrayList<>();
+  protected List<LongArrayList> extendIntersectingClusterByAndCluster(
+      List<ConditionEntry> satisfiedCluster) {
+    List<LongArrayList> result = new ArrayList<>();
     for (int i = 0; i < satisfiedCluster.size(); i++) {
       ConditionEntry currentCluster = satisfiedCluster.get(i);
       for (int j = i; j < satisfiedCluster.size(); j++) {
         if ((currentCluster.cluster.containsAll(satisfiedCluster.get(j).cluster))
             || (satisfiedCluster.get(j).cluster.containsAll(currentCluster.cluster))) {
-
+//          result.add()
         }
       }
     }
+    return result;
   }
 
   protected List<List<ConditionEntry>> combineClusters(int frequency,
