@@ -18,7 +18,12 @@ public class MetanomeTestRunner {
 
     try (DirectoryStream<Path> fileIterator = Files.newDirectoryStream(dir) ) {
       for (Path file : fileIterator) {
-        run(file, dir);
+        String[] split = file.getFileName().getFileName().toString().split("\\.");
+        if ((2 == split.length)) {
+          if (0 == split[1].toString().compareTo("csv")) {
+            run(file, dir);
+          }
+        }
       }
     } catch (IOException e) {
       e.printStackTrace();

@@ -18,7 +18,7 @@ public class MetanomeMock {
 
   public static void executeDCUCC(Path file, Path result) {
     Dcucc dcucc;
-    int frequency = 80;
+    int frequency = 50;
     FileInputGenerator fileInputGenerators = null;
     try {
       fileInputGenerators = new DefaultFileInputGenerator(file.toFile());
@@ -44,10 +44,10 @@ public class MetanomeMock {
 
 
       FileUtils.writeToFile(
-          dcucc.toString() + "\r\n\r\n" + "Runtime: " + time + "\r\n\r\n",
-          result.toString());
+          "Runtime: " + time + "\r\n\r\n",
+          result.toString(), false);
       FileUtils.writeToFile(format(resultReceiver.getNewResults()),
-                            result.toString());
+                            result.toString(), true);
 
     } catch (AlgorithmExecutionException e) {
       System.out.println("Algorithm failed on file " + file.getFileName());
@@ -65,56 +65,8 @@ public class MetanomeMock {
       ConditionalUniqueColumnCombination
           conditionalUniqueColumnCombination =
           (ConditionalUniqueColumnCombination) result;
-      builder.append(conditionalUniqueColumnCombination.buildPatternTableau());
-//      StringBuilder refBuilder = new StringBuilder("(");
-//      Iterator<ColumnIdentifier>
-//          refIterator =
-//          ind.getReferenced().getColumnIdentifiers().iterator();
-//      while (refIterator.hasNext()) {
-//        refBuilder.append(refIterator.next().toString());
-//        if (refIterator.hasNext()) {
-//          refBuilder.append(",");
-//        } else {
-//          refBuilder.append(")");
-//        }
-//      }
-//      String ref = refBuilder.toString();
-//
-//      StringBuilder depBuilder = new StringBuilder("(");
-//      Iterator<ColumnIdentifier> depIterator = ind.getDependant().getColumnIdentifiers().iterator();
-//      while (depIterator.hasNext()) {
-//        depBuilder.append(depIterator.next().toString());
-//        if (depIterator.hasNext()) {
-//          depBuilder.append(",");
-//        } else {
-//          depBuilder.append(")");
-//        }
-//      }
-//      String dep = depBuilder.toString();
-//
-//      if (!ref2Deps.containsKey(ref)) {
-//        ref2Deps.put(ref, new ArrayList<String>());
-//      }
-//      ref2Deps.get(ref).add(dep);
-//    }
-//
-//    StringBuilder builder = new StringBuilder();
-//    ArrayList<String> referenced = new ArrayList<String>(ref2Deps.keySet());
-//    Collections.sort(referenced);
-//    for (String ref : referenced) {
-//      List<String> dependants = ref2Deps.get(ref);
-//      Collections.sort(dependants);
-//
-//      if (!dependants.isEmpty()) {
-//        builder.append(ref + " > ");
-//      }
-//      for (String dependant : dependants) {
-//        builder.append(dependant + "  ");
-//      }
-//      if (!dependants.isEmpty()) {
-//        builder.append("\r\n");
-//      }
-//    }
+      builder.append(conditionalUniqueColumnCombination.toString());
+      builder.append(System.lineSeparator());
     }
     return builder.toString();
   }

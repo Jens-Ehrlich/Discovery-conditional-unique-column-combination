@@ -1,5 +1,8 @@
 package de.uni_potsdam.hpi.utils;
 
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -12,9 +15,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
-
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.CSVWriter;
 
 public class FileUtils {
 
@@ -94,11 +94,12 @@ public class FileUtils {
 		return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(filePath), append), Charset.forName(FileUtils.CHARSET_NAME)));
 	}
 
-	public static void writeToFile(String content, String filePath) throws IOException {
-		Writer writer = null;
+  public static void writeToFile(String content, String filePath, boolean append)
+      throws IOException {
+    Writer writer = null;
 		try {
-			writer = FileUtils.buildFileWriter(filePath, false);
-			writer.write(content);
+                  writer = FileUtils.buildFileWriter(filePath, append);
+                  writer.write(content);
 		}
 		finally {
 			if (writer != null)
