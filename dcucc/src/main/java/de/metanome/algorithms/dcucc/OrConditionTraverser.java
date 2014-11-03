@@ -129,6 +129,9 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
 
   protected void combineClusterIntoResult(ColumnCombinationBitset partialUnique)
       throws AlgorithmExecutionException {
+    if (partialUnique.containsColumn(2, 6, 8, 10, 11, 12)) {
+      System.out.println("start debugging");
+    }
     LongArrayList touchedCluster = new LongArrayList();
     Long2LongOpenHashMap partialUniqueHash = this.algorithm.getPLI(partialUnique).asHashMap();
     Set<ColumnCombinationBitset> startPoints = this.getConditionStartPoints();
@@ -163,12 +166,18 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
         }
         clusterNumber++;
       }
+      //intersectingCluster.putAll(extendIntersectingClusterByAndCluster(satisfiedCluster, partialUniqueHash));
       intersectingCluster = purgeIntersectingClusterEntries(intersectingCluster);
+      //convert into list
+      List<LongArrayList> intersectingClusterList = new ArrayList<>();
+      for (long partialUniqueCluster : intersectingCluster.keySet()) {
+        intersectingClusterList.add(intersectingCluster.get(partialUniqueCluster));
+      }
 
       List<List<ConditionEntry>>
           clustergroups =
           this.combineClusters(this.algorithm.frequency, satisfiedCluster,
-                               intersectingCluster);
+                               intersectingClusterList);
 
       for (List<ConditionEntry> singleCondition : clustergroups) {
         ResultSingleton.getInstance().addConditionToResult(partialUnique, singleCondition);
@@ -176,9 +185,23 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
     }
   }
 
+  protected void extendIntersectingClusterByAndCluster(List<ConditionEntry> satisfiedCluster,
+                                                       Long2LongOpenHashMap partialUniqueHash) {
+    List<List<ConditionEntry>> result = new ArrayList<>();
+    for (int i = 0; i < satisfiedCluster.size(); i++) {
+      ConditionEntry currentCluster = satisfiedCluster.get(i);
+      for (int j = i; j < satisfiedCluster.size(); j++) {
+        if ((currentCluster.cluster.containsAll(satisfiedCluster.get(j).cluster))
+            || (satisfiedCluster.get(j).cluster.containsAll(currentCluster.cluster))) {
+
+        }
+      }
+    }
+  }
+
   protected List<List<ConditionEntry>> combineClusters(int frequency,
                                                        List<ConditionEntry> satisfiedClusters,
-                                                       Long2ObjectOpenHashMap<LongArrayList> intersectingClusters) {
+                                                       List<LongArrayList> intersectingClusters) {
     List<List<ConditionEntry>> result = new LinkedList<>();
     LinkedList<ConditionTask> queue = new LinkedList();
     LongArrayList satisfiedClusterNumbers = new LongArrayList();
@@ -194,9 +217,9 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
       return result;
     }
 
-    LongArrayList
-        uniqueClusterNumbers =
-        new LongArrayList(intersectingClusters.keySet().toLongArray());
+//    LongArrayList
+//        uniqueClusterNumbers =
+//        new LongArrayList(intersectingClusters.keySet().toLongArray());
     ConditionTask
         firstTask =
         new ConditionTask(0, satisfiedClusterNumbers, new LongArrayList(), totalSize);
@@ -205,7 +228,7 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
     while (!queue.isEmpty()) {
       ConditionTask currentTask = queue.remove();
       //finished cluster iterate -> return result
-      if (currentTask.uniqueClusterNumber >= uniqueClusterNumbers.size()) {
+      if (currentTask.uniqueClusterNumber >= intersectingClusters.size()) {
         List<ConditionEntry> validCondition = new LinkedList<>();
         for (long conditionClusterNumber : currentTask.conditionClusters) {
           validCondition.add(satisfiedClusters.get((int) conditionClusterNumber));
@@ -215,7 +238,7 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
       }
       //remove at least one cluster for the current intersecting (unique cluster number) cluster
       for (long conditionCluster : currentTask.conditionClusters) {
-        long intersectingClusterNumber = uniqueClusterNumbers.get(currentTask.uniqueClusterNumber);
+        int intersectingClusterNumber = currentTask.uniqueClusterNumber;
         if (intersectingClusters.get(intersectingClusterNumber).contains(conditionCluster)) {
           ConditionTask newTask = currentTask.generateNextTask();
           boolean fullfillsFrequency = true;
@@ -237,7 +260,7 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
       }
       //no cluster is removed... because all relevant cluster where removed before -> generate the same task
       for (long removedConditionCluster : currentTask.removedConditionClusters) {
-        if (intersectingClusters.get((uniqueClusterNumbers.get(currentTask.uniqueClusterNumber)))
+        if (intersectingClusters.get((currentTask.uniqueClusterNumber))
             .contains(removedConditionCluster)) {
           ConditionTask newTask = currentTask.generateNextTask();
           queue.add(newTask);
