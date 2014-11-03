@@ -12,7 +12,6 @@ import de.uni_potsdam.hpi.utils.FileUtils;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 
 public class MetanomeMock {
@@ -51,22 +50,22 @@ public class MetanomeMock {
                             result.toString());
 
     } catch (AlgorithmExecutionException e) {
+      System.out.println("Algorithm failed on file " + file.getFileName());
       e.printStackTrace();
     } catch (IOException e) {
+      System.out.println("Could not write to file " + file.getFileName());
       e.printStackTrace();
     }
   }
 
 
   private static String format(List<Result> results) {
-    HashMap<String, List<String>> ref2Deps = new HashMap<String, List<String>>();
-
     StringBuilder builder = new StringBuilder();
     for (Result result : results) {
       ConditionalUniqueColumnCombination
           conditionalUniqueColumnCombination =
           (ConditionalUniqueColumnCombination) result;
-
+      builder.append(conditionalUniqueColumnCombination.buildPatternTableau());
 //      StringBuilder refBuilder = new StringBuilder("(");
 //      Iterator<ColumnIdentifier>
 //          refIterator =

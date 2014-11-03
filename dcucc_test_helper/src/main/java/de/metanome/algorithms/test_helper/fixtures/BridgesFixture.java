@@ -721,23 +721,6 @@ public class BridgesFixture {
     ColumnIdentifier
         c13 = new ColumnIdentifier(this.relationName, this.columnNames.get(12));
 
-//    ConditionalUniqueColumnCombination column1 = new ConditionalUniqueColumnCombination(new ColumnCombination(c11, c12, c13, c3, c7, c9),
-//                                                                                        new ColumnConditionOr(
-//                                                                                            new ColumnConditionValue(c5, "AQUEDUCT"),
-//                                                                                            new ColumnConditionAnd(new ColumnConditionValue(c5, "HIGHWAY"), new ColumnConditionValue(c2, "O")),
-//                                                                                            new ColumnConditionAnd(new ColumnConditionValue(c5, "RR"), new ColumnConditionValue(c10, "WOOD")),
-//                                                                                            new ColumnConditionAnd(new ColumnConditionValue(c5, "RR"), new ColumnConditionValue(c8, "N"))
-//                                                                                        ));
-//
-//    ConditionalUniqueColumnCombination column2 = new ConditionalUniqueColumnCombination(new ColumnCombination(c11, c12, c13, c3, c7, c9),
-//                                                                                        new ColumnConditionOr(
-//                                                                                            new ColumnConditionValue(c5, "AQUEDUCT"),
-//                                                                                            new ColumnConditionAnd(new ColumnConditionValue(c5, "HIGHWAY"), new ColumnConditionValue(c2, "O")),
-//                                                                                            new ColumnConditionAnd(new ColumnConditionValue(c5, "RR"), new ColumnConditionValue(c10, "WOOD")),
-//                                                                                            new ColumnConditionAnd(new ColumnConditionValue(c5, "RR"), new ColumnConditionValue(c8, "N"))
-//                                                                                        ));
-//
-
     verify(cuccResultReceiver, times(0)).receiveResult(
         new ConditionalUniqueColumnCombination(new ColumnCombination(c11, c12, c13, c3, c7, c9),
                                                new ColumnConditionOr(

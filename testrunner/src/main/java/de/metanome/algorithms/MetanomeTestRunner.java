@@ -1,16 +1,12 @@
 package de.metanome.algorithms;
 
-import java.io.File;
+import de.metanome.algorithms.mocks.MetanomeMock;
+
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
-
-import de.metanome.algorithms.config.Config;
-import de.metanome.algorithms.mocks.MetanomeMock;
-import de.uni_potsdam.hpi.utils.CollectionUtils;
 
 public class MetanomeTestRunner {
   public static void run(String[] args) {
@@ -18,25 +14,20 @@ public class MetanomeTestRunner {
       return;
     }
     Path dir = Paths.get(args[0]);
-    Path result = Paths.get(args[0], "result");
-    System.out.println("Executing algorithm on files in path" + dir);
-    try {
-      Files.createDirectories(result);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    System.out.println("Executing algorithm on files in path " + dir);
+
     try (DirectoryStream<Path> fileIterator = Files.newDirectoryStream(dir) ) {
       for (Path file : fileIterator) {
-        run(file, result);
+        run(file, dir);
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
-  public static void run(Path file, Path result) {
+  public static void run(Path file, Path dir) {
     long time = System.currentTimeMillis();
-
+    Path result = Paths.get(dir.toString(), "result", file.getFileName().toString());
     MetanomeMock.executeDCUCC(file, result);
 
 //    System.out.println(
