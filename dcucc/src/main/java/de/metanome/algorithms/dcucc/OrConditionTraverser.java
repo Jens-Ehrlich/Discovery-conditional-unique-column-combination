@@ -155,25 +155,22 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
         }
         for (long partialUniqueClusterNumber : touchedCluster) {
           if (intersectingCluster.containsKey(partialUniqueClusterNumber)) {
-//            intersectingCluster.get(partialUniqueClusterNumber).add(singleCluster.cluster.get(0));
             intersectingCluster.get(partialUniqueClusterNumber).add(clusterNumber);
           } else {
             LongArrayList newConditionClusterNumbers = new LongArrayList();
-//            newConditionClusterNumbers.add(singleCluster.cluster.get(0));
             newConditionClusterNumbers.add(clusterNumber);
             intersectingCluster.put(partialUniqueClusterNumber, newConditionClusterNumbers);
           }
         }
         clusterNumber++;
       }
-      //intersectingCluster.putAll(extendIntersectingClusterByAndCluster(satisfiedCluster, partialUniqueHash));
       intersectingCluster = purgeIntersectingClusterEntries(intersectingCluster);
       //convert into list
       List<LongArrayList> intersectingClusterList = new ArrayList<>();
       for (long partialUniqueCluster : intersectingCluster.keySet()) {
         intersectingClusterList.add(intersectingCluster.get(partialUniqueCluster));
       }
-//      intersectingClusterList.addAll(extendIntersectingClusterByAndCluster(satisfiedCluster));
+
       List<List<ConditionEntry>>
           clustergroups =
           this.combineClusters(this.algorithm.frequency, satisfiedCluster,
@@ -185,20 +182,6 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
     }
   }
 
-  protected List<LongArrayList> extendIntersectingClusterByAndCluster(
-      List<ConditionEntry> satisfiedCluster) {
-    List<LongArrayList> result = new ArrayList<>();
-    for (int i = 0; i < satisfiedCluster.size(); i++) {
-      ConditionEntry currentCluster = satisfiedCluster.get(i);
-      for (int j = i; j < satisfiedCluster.size(); j++) {
-        if ((currentCluster.cluster.containsAll(satisfiedCluster.get(j).cluster))
-            || (satisfiedCluster.get(j).cluster.containsAll(currentCluster.cluster))) {
-//          result.add()
-        }
-      }
-    }
-    return result;
-  }
 
   protected List<List<ConditionEntry>> combineClusters(int frequency,
                                                        List<ConditionEntry> satisfiedClusters,
@@ -218,9 +201,6 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
       return result;
     }
 
-//    LongArrayList
-//        uniqueClusterNumbers =
-//        new LongArrayList(intersectingClusters.keySet().toLongArray());
     ConditionTask
         firstTask =
         new ConditionTask(0, satisfiedClusterNumbers, new LongArrayList(), totalSize);
