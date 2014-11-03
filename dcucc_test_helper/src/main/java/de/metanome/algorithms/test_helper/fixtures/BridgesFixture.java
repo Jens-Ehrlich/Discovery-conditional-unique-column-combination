@@ -19,6 +19,9 @@ import de.metanome.algorithm_integration.results.ConditionalUniqueColumnCombinat
 import de.metanome.algorithm_integration.results.FunctionalDependency;
 import de.metanome.backend.input.csv.DefaultFileInputGenerator;
 
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -26,7 +29,10 @@ import java.net.URLDecoder;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -81,13 +87,13 @@ public class BridgesFixture {
 //            }
 //        }).when(uccResultReceiver).receiveResult(isA(UniqueColumnCombination.class));
 
-//    doAnswer(new Answer() {
-//      public Object answer(InvocationOnMock invocation) {
-//        Object[] args = invocation.getArguments();
-//        System.out.println(args[0]);
-//        return null;
-//      }
-//    }).when(cuccResultReceiver).receiveResult(isA(ConditionalUniqueColumnCombination.class));
+    doAnswer(new Answer() {
+      public Object answer(InvocationOnMock invocation) {
+        Object[] args = invocation.getArguments();
+        System.out.println(args[0]);
+        return null;
+      }
+    }).when(cuccResultReceiver).receiveResult(isA(ConditionalUniqueColumnCombination.class));
 
   }
 
@@ -686,7 +692,8 @@ public class BridgesFixture {
 
   }
 
-  public void verifyConditionalUniqueColumnCombinationAndOr90() {
+  public void verifyConditionalUniqueColumnCombinationAndOr90()
+      throws CouldNotReceiveResultException {
     ColumnIdentifier
         c1 = new ColumnIdentifier(this.relationName, this.columnNames.get(0));
     ColumnIdentifier
@@ -714,6 +721,41 @@ public class BridgesFixture {
     ColumnIdentifier
         c13 = new ColumnIdentifier(this.relationName, this.columnNames.get(12));
 
+//    ConditionalUniqueColumnCombination column1 = new ConditionalUniqueColumnCombination(new ColumnCombination(c11, c12, c13, c3, c7, c9),
+//                                                                                        new ColumnConditionOr(
+//                                                                                            new ColumnConditionValue(c5, "AQUEDUCT"),
+//                                                                                            new ColumnConditionAnd(new ColumnConditionValue(c5, "HIGHWAY"), new ColumnConditionValue(c2, "O")),
+//                                                                                            new ColumnConditionAnd(new ColumnConditionValue(c5, "RR"), new ColumnConditionValue(c10, "WOOD")),
+//                                                                                            new ColumnConditionAnd(new ColumnConditionValue(c5, "RR"), new ColumnConditionValue(c8, "N"))
+//                                                                                        ));
+//
+//    ConditionalUniqueColumnCombination column2 = new ConditionalUniqueColumnCombination(new ColumnCombination(c11, c12, c13, c3, c7, c9),
+//                                                                                        new ColumnConditionOr(
+//                                                                                            new ColumnConditionValue(c5, "AQUEDUCT"),
+//                                                                                            new ColumnConditionAnd(new ColumnConditionValue(c5, "HIGHWAY"), new ColumnConditionValue(c2, "O")),
+//                                                                                            new ColumnConditionAnd(new ColumnConditionValue(c5, "RR"), new ColumnConditionValue(c10, "WOOD")),
+//                                                                                            new ColumnConditionAnd(new ColumnConditionValue(c5, "RR"), new ColumnConditionValue(c8, "N"))
+//                                                                                        ));
+//
+
+    verify(cuccResultReceiver, times(0)).receiveResult(
+        new ConditionalUniqueColumnCombination(new ColumnCombination(c11, c12, c13, c3, c7, c9),
+                                               new ColumnConditionOr(
+                                                   new ColumnConditionValue(c5, "AQUEDUCT"),
+                                                   new ColumnConditionAnd(
+                                                       new ColumnConditionValue(c2, "O"),
+                                                       new ColumnConditionValue(c5, "HIGHWAY")),
+                                                   new ColumnConditionAnd(
+                                                       new ColumnConditionValue(c5, "RR"),
+                                                       new ColumnConditionValue(c10, "WOOD"),
+                                                       new ColumnConditionValue(c5, "HIGHWAY"),
+                                                       new ColumnConditionValue(c10, "STEEL")),
+                                                   new ColumnConditionAnd(
+                                                       new ColumnConditionValue(c5, "RR"),
+                                                       new ColumnConditionValue(c5, "HIGHWAY"),
+                                                       new ColumnConditionValue(c8, "N"),
+                                                       new ColumnConditionValue(c8, "G"))
+                                               )));
 
   }
 }
