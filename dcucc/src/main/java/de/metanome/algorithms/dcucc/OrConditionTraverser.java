@@ -186,21 +186,36 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
     List<List<ConditionEntry>> result = new LinkedList<>();
     LinkedList<ConditionTask> queue = new LinkedList();
     LongArrayList satisfiedClusterNumbers = new LongArrayList();
+    Long2LongOpenHashMap totalSizeMap = new Long2LongOpenHashMap();
     long totalSize = 0;
     int i = 0;
     for (ConditionEntry clusters : satisfiedClusters) {
       //satisfiedClusterNumbers.add(conditionMap.get(clusters.get(0)));
       satisfiedClusterNumbers.add(i);
       i++;
-      totalSize = totalSize + clusters.cluster.size();
+      if (clusters.condition.getSetBits().size() < 2) {
+        totalSize = totalSize + clusters.cluster.size();
+      } else {
+        for (long row : clusters.cluster) {
+          if (totalSizeMap.containsKey(row)) {
+            long previousValue = totalSizeMap.get(row);
+            previousValue++;
+            totalSizeMap.put(row, previousValue);
+          } else {
+            totalSizeMap.put(row, 1);
+          }
+        }
+      }
     }
-    if (totalSize < frequency) {
+//    totalSize = totalSize + totalSizeMap.size();
+    if ((totalSize + totalSizeMap.size()) < frequency) {
       return result;
     }
 
     ConditionTask
         firstTask =
-        new ConditionTask(0, satisfiedClusterNumbers, new LongArrayList(), totalSize, frequency);
+        new ConditionTask(0, satisfiedClusterNumbers, new LongArrayList(), totalSize, frequency,
+                          totalSizeMap);
     queue.add(firstTask);
 
     while (!queue.isEmpty()) {
@@ -219,14 +234,14 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
         if (intersectingClusters.get(currentTask.uniqueClusterNumber).contains(conditionCluster)) {
           ConditionTask newTask = currentTask.generateNextTask();
           boolean fullfillsFrequency = true;
+          //remove all other clusters
           for (long clusterItem : intersectingClusters.get(currentTask.uniqueClusterNumber)) {
             if (clusterItem == conditionCluster) {
               continue;
             }
             ConditionEntry currentEntryToRemoved = satisfiedClusters.get((int) clusterItem);
             if (!newTask
-                .remove(clusterItem, currentEntryToRemoved.cluster.size(),
-                        currentEntryToRemoved.condition, currentEntryToRemoved.cluster)) {
+                .remove(clusterItem, currentEntryToRemoved)) {
               fullfillsFrequency = false;
               break;
             }
@@ -268,34 +283,63 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
     protected LongArrayList conditionClusters;
     protected LongArrayList removedConditionClusters;
     protected long frequency;
-    protected long size = -1;
+    protected Long2LongOpenHashMap andJointCluster;
+    private long size = -1;
 
     public ConditionTask(int uniqueCluster, LongArrayList conditionClusters,
-                         LongArrayList removedClusters, long size, long frequency) {
+                         LongArrayList removedClusters, long size, long frequency,
+                         Long2LongOpenHashMap andJointCluster) {
       this.uniqueClusterNumber = uniqueCluster;
       this.conditionClusters = conditionClusters.clone();
       this.removedConditionClusters = removedClusters.clone();
       this.size = size;
       this.frequency = frequency;
+      this.andJointCluster = andJointCluster;
     }
 
     public ConditionTask generateNextTask() {
       ConditionTask
           newTask =
           new ConditionTask(this.uniqueClusterNumber + 1, this.conditionClusters,
-                            this.removedConditionClusters, this.size, this.frequency);
+                            this.removedConditionClusters, this.size, this.frequency,
+                            this.andJointCluster);
       return newTask;
     }
 
-    public boolean remove(long conditionClusterNumber, int size, ColumnCombinationBitset condition,
-                          LongArrayList cluster) {
-      if (this.size - size >= this.frequency) {
-        this.size = this.size - size;
-        this.conditionClusters.remove(conditionClusterNumber);
-        this.removedConditionClusters.add(conditionClusterNumber);
-        return true;
+    public boolean remove(long conditionClusterNumber, ConditionEntry entryToRemove) {
+      if (entryToRemove.condition.getSetBits().size() < 2) {
+        if (((this.size - entryToRemove.cluster.size()) + this.andJointCluster.size())
+            >= this.frequency) {
+          this.size = this.size - entryToRemove.cluster.size();
+          this.conditionClusters.remove(conditionClusterNumber);
+          this.removedConditionClusters.add(conditionClusterNumber);
+          return true;
+        } else {
+          return false;
+        }
       } else {
-        return false;
+        Long2LongOpenHashMap newAndJointCluster = andJointCluster.clone();
+        for (long row : entryToRemove.cluster) {
+          if (newAndJointCluster.containsKey(row)) {
+            long previousValue = newAndJointCluster.get(row);
+            previousValue--;
+            if (0 == previousValue) {
+              newAndJointCluster.remove(row);
+            } else {
+              newAndJointCluster.put(row, previousValue);
+            }
+          } else {
+            //dunno
+          }
+        }
+        if (this.size + newAndJointCluster.size() >= this.frequency) {
+          this.andJointCluster = newAndJointCluster;
+          this.conditionClusters.remove(conditionClusterNumber);
+          this.removedConditionClusters.add(conditionClusterNumber);
+          return true;
+        } else {
+          return false;
+        }
       }
     }
   }

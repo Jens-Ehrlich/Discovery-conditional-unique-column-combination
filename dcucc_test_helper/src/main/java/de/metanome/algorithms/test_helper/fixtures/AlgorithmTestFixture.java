@@ -644,7 +644,7 @@ public class AlgorithmTestFixture {
                                                    , new ColumnConditionValue(room, "I10"))));
 
     verify(conditionalUniqueResultReceiver).receiveResult(
-        new ConditionalUniqueColumnCombination(new ColumnCombination(day, cap),
+        new ConditionalUniqueColumnCombination(new ColumnCombination(cap, day),
                                                new ColumnConditionOr(
                                                    new ColumnConditionValue(room, "A2")
                                                    , new ColumnConditionAnd(
