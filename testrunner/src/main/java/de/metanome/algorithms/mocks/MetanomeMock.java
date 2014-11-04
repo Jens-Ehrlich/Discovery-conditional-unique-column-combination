@@ -18,7 +18,7 @@ public class MetanomeMock {
 
   public static void executeDCUCC(Path file, Path result) {
     Dcucc dcucc;
-    int frequency = 50;
+    int frequency = 80;
     FileInputGenerator fileInputGenerators = null;
     try {
       fileInputGenerators = new DefaultFileInputGenerator(file.toFile());
