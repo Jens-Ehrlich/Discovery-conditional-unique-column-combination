@@ -229,7 +229,7 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
         for (long conditionClusterNumber : currentTask.conditionClusters) {
           validCondition.add(satisfiedClusters.get((int) conditionClusterNumber));
         }
-        result.put(validCondition, currentTask.getCoverage());
+        result.put(validCondition, (currentTask.getCoverage() * 100) / Dcucc.numberOfTuples);
         continue;
       }
       //remove at least one cluster for the current intersecting (unique cluster number) cluster
