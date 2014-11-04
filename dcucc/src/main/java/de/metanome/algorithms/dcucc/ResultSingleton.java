@@ -109,6 +109,18 @@ public class ResultSingleton {
     result.receiveResult(resultCondition);
   }
 
+  protected void addConditionToResult(ColumnCombinationBitset partialUnique,
+                                      List<ConditionEntry> singleCondition, float coverage)
+      throws AlgorithmExecutionException {
+    List<Condition.ConditionElement> conditionMap = new ArrayList<>();
+
+    Condition resultCondition = new Condition(partialUnique, singleCondition);
+    resultCondition.coverage = coverage;
+
+    ResultSingleton result = ResultSingleton.getInstance();
+    result.receiveResult(resultCondition);
+  }
+
 
   protected boolean checkConditionMinimality(ColumnCombinationBitset partialUnique,
                                              Condition condition) {
@@ -139,6 +151,9 @@ public class ResultSingleton {
       throws AlgorithmExecutionException {
 
     ColumnConditionOr columnCondition = new ColumnConditionOr();
+    if (Float.NaN != condition.coverage) {
+      columnCondition.setCoverage(condition.coverage);
+    }
     //build condition
     for (Condition.ConditionElement conditionElement : condition.conditions) {
       ColumnCombinationBitset conditionColumn = conditionElement.condition;

@@ -7,6 +7,7 @@ import de.metanome.algorithm_integration.AlgorithmExecutionException;
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.objects.Object2FloatArrayMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -168,22 +169,24 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
         intersectingClusterList.add(intersectingCluster.get(partialUniqueCluster));
       }
 
-      List<List<ConditionEntry>>
+      Object2FloatArrayMap<List<ConditionEntry>>
           clustergroups =
           this.combineClusters(this.algorithm.frequency, satisfiedCluster,
                                intersectingClusterList);
 
-      for (List<ConditionEntry> singleCondition : clustergroups) {
-        ResultSingleton.getInstance().addConditionToResult(partialUnique, singleCondition);
+      for (List<ConditionEntry> singleCondition : clustergroups.keySet()) {
+        ResultSingleton.getInstance().addConditionToResult(partialUnique, singleCondition,
+                                                           clustergroups.get(singleCondition));
       }
     }
   }
 
 
-  protected List<List<ConditionEntry>> combineClusters(int frequency,
+  protected Object2FloatArrayMap<List<ConditionEntry>> combineClusters(int frequency,
                                                        List<ConditionEntry> satisfiedClusters,
                                                        List<LongArrayList> intersectingClusters) {
-    List<List<ConditionEntry>> result = new LinkedList<>();
+    Object2FloatArrayMap<List<ConditionEntry>> result = new Object2FloatArrayMap();
+    //Map<List<ConditionEntry>, float> result = new LinkedList<>();
     LinkedList<ConditionTask> queue = new LinkedList();
     LongArrayList satisfiedClusterNumbers = new LongArrayList();
     Long2LongOpenHashMap totalSizeMap = new Long2LongOpenHashMap();
@@ -226,7 +229,7 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
         for (long conditionClusterNumber : currentTask.conditionClusters) {
           validCondition.add(satisfiedClusters.get((int) conditionClusterNumber));
         }
-        result.add(validCondition);
+        result.put(validCondition, currentTask.getCoverage());
         continue;
       }
       //remove at least one cluster for the current intersecting (unique cluster number) cluster
@@ -304,6 +307,10 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
                             this.removedConditionClusters, this.size, this.frequency,
                             this.andJointCluster);
       return newTask;
+    }
+
+    public long getCoverage() {
+      return this.size + this.andJointCluster.size();
     }
 
     public boolean remove(long conditionClusterNumber, ConditionEntry entryToRemove) {

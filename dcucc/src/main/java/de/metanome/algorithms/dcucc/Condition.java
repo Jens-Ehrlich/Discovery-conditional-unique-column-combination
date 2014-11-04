@@ -13,6 +13,7 @@ public class Condition {
 
   protected ColumnCombinationBitset partialUnique;
   protected List<ConditionElement> conditions;
+  protected float coverage = Float.NaN;
 
   public Condition(ColumnCombinationBitset partialUnique,
                    Map<ColumnCombinationBitset, SingleCondition> conditions) {
