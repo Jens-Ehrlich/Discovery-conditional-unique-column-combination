@@ -216,16 +216,17 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
       }
       //remove at least one cluster for the current intersecting (unique cluster number) cluster
       for (long conditionCluster : currentTask.conditionClusters) {
-        int intersectingClusterNumber = currentTask.uniqueClusterNumber;
-        if (intersectingClusters.get(intersectingClusterNumber).contains(conditionCluster)) {
+        if (intersectingClusters.get(currentTask.uniqueClusterNumber).contains(conditionCluster)) {
           ConditionTask newTask = currentTask.generateNextTask();
           boolean fullfillsFrequency = true;
-          for (long clusterItem : intersectingClusters.get(intersectingClusterNumber)) {
+          for (long clusterItem : intersectingClusters.get(currentTask.uniqueClusterNumber)) {
             if (clusterItem == conditionCluster) {
               continue;
             }
+            ConditionEntry currentEntryToRemoved = satisfiedClusters.get((int) clusterItem);
             if (!newTask
-                .remove(clusterItem, satisfiedClusters.get((int) clusterItem).cluster.size())) {
+                .remove(clusterItem, currentEntryToRemoved.cluster.size(),
+                        currentEntryToRemoved.condition, currentEntryToRemoved.cluster)) {
               fullfillsFrequency = false;
               break;
             }
@@ -286,11 +287,12 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
       return newTask;
     }
 
-    public boolean remove(long conditionCluster, int size) {
+    public boolean remove(long conditionClusterNumber, int size, ColumnCombinationBitset condition,
+                          LongArrayList cluster) {
       if (this.size - size >= this.frequency) {
         this.size = this.size - size;
-        this.conditionClusters.remove(conditionCluster);
-        this.removedConditionClusters.add(conditionCluster);
+        this.conditionClusters.remove(conditionClusterNumber);
+        this.removedConditionClusters.add(conditionClusterNumber);
         return true;
       } else {
         return false;
