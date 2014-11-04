@@ -151,7 +151,7 @@ public class ResultSingleton {
       throws AlgorithmExecutionException {
 
     ColumnConditionOr columnCondition = new ColumnConditionOr();
-    if (Float.NaN != condition.coverage) {
+    if (!Float.isNaN(condition.coverage)) {
       columnCondition.setCoverage(condition.coverage);
     }
     //build condition
