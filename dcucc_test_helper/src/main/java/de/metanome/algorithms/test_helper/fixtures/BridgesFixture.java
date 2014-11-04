@@ -739,6 +739,7 @@ public class BridgesFixture {
                                                        new ColumnConditionValue(c8, "N"),
                                                        new ColumnConditionValue(c8, "G"))
                                                )));
-
+//  verify(cuccResultReceiver, times(510)).receiveResult(
+//      any(ConditionalUniqueColumnCombination.class));
   }
 }

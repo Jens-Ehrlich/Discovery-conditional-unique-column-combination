@@ -129,9 +129,6 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
 
   protected void combineClusterIntoResult(ColumnCombinationBitset partialUnique)
       throws AlgorithmExecutionException {
-    if (partialUnique.containsColumn(2, 6, 8, 10, 11, 12)) {
-      System.out.println("start debugging");
-    }
     LongArrayList touchedCluster = new LongArrayList();
     Long2LongOpenHashMap partialUniqueHash = this.algorithm.getPLI(partialUnique).asHashMap();
     Set<ColumnCombinationBitset> startPoints = this.getConditionStartPoints();
@@ -203,7 +200,7 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
 
     ConditionTask
         firstTask =
-        new ConditionTask(0, satisfiedClusterNumbers, new LongArrayList(), totalSize);
+        new ConditionTask(0, satisfiedClusterNumbers, new LongArrayList(), totalSize, frequency);
     queue.add(firstTask);
 
     while (!queue.isEmpty()) {
@@ -228,8 +225,7 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
               continue;
             }
             if (!newTask
-                .remove(clusterItem, satisfiedClusters.get((int) clusterItem).cluster.size(),
-                        frequency)) {
+                .remove(clusterItem, satisfiedClusters.get((int) clusterItem).cluster.size())) {
               fullfillsFrequency = false;
               break;
             }
@@ -270,26 +266,28 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
     protected int uniqueClusterNumber;
     protected LongArrayList conditionClusters;
     protected LongArrayList removedConditionClusters;
-    long size = -1;
+    protected long frequency;
+    protected long size = -1;
 
     public ConditionTask(int uniqueCluster, LongArrayList conditionClusters,
-                         LongArrayList removedClusters, long size) {
+                         LongArrayList removedClusters, long size, long frequency) {
       this.uniqueClusterNumber = uniqueCluster;
       this.conditionClusters = conditionClusters.clone();
       this.removedConditionClusters = removedClusters.clone();
       this.size = size;
+      this.frequency = frequency;
     }
 
     public ConditionTask generateNextTask() {
       ConditionTask
           newTask =
           new ConditionTask(this.uniqueClusterNumber + 1, this.conditionClusters,
-                            this.removedConditionClusters, this.size);
+                            this.removedConditionClusters, this.size, this.frequency);
       return newTask;
     }
 
-    public boolean remove(long conditionCluster, int size, int frequency) {
-      if (this.size - size >= frequency) {
+    public boolean remove(long conditionCluster, int size) {
+      if (this.size - size >= this.frequency) {
         this.size = this.size - size;
         this.conditionClusters.remove(conditionCluster);
         this.removedConditionClusters.add(conditionCluster);
