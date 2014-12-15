@@ -181,14 +181,17 @@ public class Dcucc implements ConditionalUniqueColumnCombinationAlgorithm,
         continue;
       } else {
         PositionListIndex nextLevelPLI = this.getPLI(nextLevelBitset);
-        if (nextLevelPLI.isUnique()) {
+        if (nextLevelPLI.isUnique() || this.checkForFD(nextLevelBitset)) {
           this.upperPruningGraph.add(nextLevelBitset);
         } else {
-          if (!this.checkForFD(nextLevelBitset)) {
             nextLevel.add(nextLevelBitset);
-          }
           this.lowerPruningGraph.add(nextLevelBitset);
           resultSingleton.conditionMinimalityGraph.add(nextLevelBitset);
+//          if (!this.checkForFD(nextLevelBitset)) {
+//            nextLevel.add(nextLevelBitset);
+//          }
+//          this.lowerPruningGraph.add(nextLevelBitset);
+//          resultSingleton.conditionMinimalityGraph.add(nextLevelBitset);
         }
       }
     }
