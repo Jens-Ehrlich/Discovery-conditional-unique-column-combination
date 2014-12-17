@@ -80,8 +80,8 @@ public class AndConditionTraverser extends SimpleConditionTraverser {
 
     Map<ColumnCombinationBitset, PositionListIndex> nextLevel = new HashMap<>();
     while (!currentLevel.isEmpty()) {
+      nextLevel.clear();
       for (ColumnCombinationBitset potentialCondition : currentLevel.keySet()) {
-        nextLevel.clear();
         calculateCondition(partialUnique, nextLevel, potentialCondition,
                            currentLevel.get(potentialCondition));
       }
