@@ -233,7 +233,8 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
         continue;
       }
       //remove at least one cluster for the current intersecting (unique cluster number) cluster
-      for (long conditionCluster : currentTask.conditionClusters) {
+//      for (long conditionCluster : currentTask.conditionClusters) {
+      for (long conditionCluster : intersectingClusters.get(currentTask.uniqueClusterNumber)) {
         if (intersectingClusters.get(currentTask.uniqueClusterNumber).contains(conditionCluster)) {
           ConditionTask newTask = currentTask.generateNextTask();
           boolean fullfillsFrequency = true;

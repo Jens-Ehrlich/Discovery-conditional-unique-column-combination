@@ -72,7 +72,7 @@ public class DcuccAndOrTest {
   }
 
   @Test
-  @Ignore //too slow
+  //@Ignore //too slow
   public void testAbaloneFixtureExecute() throws Exception {
     //Setup
     AbaloneFixture fixture = new AbaloneFixture();
