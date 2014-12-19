@@ -240,7 +240,7 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
         }
       }
 
-      if (1 == numberOfIntersects) {
+      if (1 >= numberOfIntersects) {
         ConditionTask newTask = currentTask.generateNextTask();
         queue.add(newTask);
         continue;
