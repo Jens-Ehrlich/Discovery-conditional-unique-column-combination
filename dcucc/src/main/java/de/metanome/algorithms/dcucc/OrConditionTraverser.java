@@ -232,6 +232,20 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
         result.put(validCondition, (currentTask.getCoverage() * 100) / Dcucc.numberOfTuples);
         continue;
       }
+
+      int numberOfIntersects = 0;
+      for (long cluster : intersectingClusters.get(currentTask.uniqueClusterNumber)) {
+        if (currentTask.conditionClusters.contains(cluster)) {
+          numberOfIntersects++;
+        }
+      }
+
+      if (1 == numberOfIntersects) {
+        ConditionTask newTask = currentTask.generateNextTask();
+        queue.add(newTask);
+        continue;
+      }
+
       //remove at least one cluster for the current intersecting (unique cluster number) cluster
 //      for (long conditionCluster : currentTask.conditionClusters) {
       for (long conditionCluster : intersectingClusters.get(currentTask.uniqueClusterNumber)) {
@@ -256,14 +270,14 @@ public class OrConditionTraverser extends SimpleConditionTraverser {
         }
       }
       //no cluster is removed... because all relevant cluster where removed before -> generate the same task
-      for (long removedConditionCluster : currentTask.removedConditionClusters) {
-        if (intersectingClusters.get((currentTask.uniqueClusterNumber))
-            .contains(removedConditionCluster)) {
-          ConditionTask newTask = currentTask.generateNextTask();
-          queue.add(newTask);
-          break;
-        }
-      }
+//      for (long removedConditionCluster : currentTask.removedConditionClusters) {
+//        if (intersectingClusters.get((currentTask.uniqueClusterNumber))
+//            .contains(removedConditionCluster)) {
+//          ConditionTask newTask = currentTask.generateNextTask();
+//          queue.add(newTask);
+//          break;
+//        }
+//      }
     }
     return result;
   }
